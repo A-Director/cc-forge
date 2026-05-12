@@ -278,6 +278,10 @@ Hermes will take it from there.
 
 ---
 
+Quick reference: see [CHEATSHEET.md](./CHEATSHEET.md)
+
+---
+
 ## Philosophy
 
 Most SDLC frameworks are written for teams with dedicated DevOps, QA, security, and product functions. Solo developers and small teams don't have those people — but they need those disciplines.
