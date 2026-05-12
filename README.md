@@ -369,6 +369,29 @@ Premium components (pre-built Clerk + Stripe agents, full persona library, herme
 
 ---
 
+## Security
+
+cc-forge is a collection of markdown instruction files. It contains no
+executable code beyond two shell scripts for installation.
+
+**What cc-forge does NOT do:**
+- Send your code to any cc-forge servers (there are none)
+- Store any project data externally
+- Execute automatically without your input
+
+**What happens to your code:**
+When Hermes reads your codebase during `hermes adopt` or any session,
+that code is processed by Claude Code via Anthropic's API — the same
+as any Claude Code session. Review Anthropic's data privacy policy
+if this is a concern for your project.
+
+**Before running on sensitive projects:**
+- Confirm `.env` and `.env.local` are in `.gitignore`
+- Confirm no secrets are hardcoded in source files
+- Run `npm audit` to check for vulnerable dependencies
+
+---
+
 ## Contributing
 
 Issues, persona improvements, stage agents, and MCP integrations welcome. See `CONTRIBUTING.md`.
