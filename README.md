@@ -276,8 +276,6 @@ cd your-existing-project
 
 Hermes will take it from there.
 
----
-
 Quick reference: see [CHEATSHEET.md](./CHEATSHEET.md)
 
 ---
