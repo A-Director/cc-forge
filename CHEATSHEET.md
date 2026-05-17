@@ -1,6 +1,33 @@
 # cc-forge cheat sheet
 
 > What to run and when. Keep this open in a tab.
+> First time? See [INSTALL.md](./INSTALL.md) for setup instructions.
+
+---
+
+## Installation (first time only)
+
+```bash
+# 1. Clone cc-forge to a permanent location
+git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
+
+# 2. Install all tools globally (plugins, MCPs, commands)
+bash ~/cc-forge/scripts/hermes-install.sh
+
+# 3a. New project
+mkdir my-project && cd my-project && git init
+bash ~/cc-forge/scripts/hermes-init.sh
+claude                    # open Claude Code
+/hermes-init              # complete setup in Claude Code
+
+# 3b. Existing project
+cd your-project
+cp ~/cc-forge/hermes/commands/*.md .claude/commands/
+claude                    # open Claude Code
+/hermes-adopt             # gap report + setup in Claude Code
+```
+
+---
 
 ---
 
@@ -126,7 +153,47 @@ New task           Genuinely unrelated work = new session. /clear and restart.
 
 ---
 
-## The session pattern
+## Product backlog
+
+| When | Command | What it does |
+|---|---|---|
+| After init or adopt | `/hermes-backlog-init` | Customises backlog for your stack, sets DoD per domain |
+| Check launch readiness | `/hermes-backlog` | Shows % completion across all 10 domains |
+| After any gate review | Persona updates domain file | Each persona ticks off their items with evidence |
+| Override an item | Mark `not-applicable` | Triggers DECISIONS.md + RISKS.md entries automatically |
+
+**The 10 backlog domains:**
+```
+01 Product        PRD alignment, scope, success metrics
+02 Development    Code quality, tests, CI gates
+03 Security       OWASP, auth, secrets, hardening
+04 Reliability    Monitoring, runbook, incident response
+05 Design         UX, accessibility, performance
+06 Integrations   Clerk, Stripe, third-party services
+07 Compliance     GDPR, ToS, data retention
+08 Launch         Domain, SSL, email, beta program
+09 Growth         SEO, analytics, activation (post-launch)
+10 Operations     Support, FinOps, cost tracking (post-launch)
+```
+
+**Launch is blocked until** domains 01-08 are 100% (done or not-applicable with decision record).
+
+---
+
+## Decision log and risk register
+
+| When | Action |
+|---|---|
+| Technology or architecture choice | Add entry to `DECISIONS.md` |
+| Backlog item marked not-applicable | Hermes auto-adds to `DECISIONS.md` |
+| Security/reliability item deferred | Hermes auto-adds to `RISKS.md` |
+| Gate bypassed | Hermes auto-adds to both |
+
+**The rule:** nothing is silent. Every override has a paper trail.
+
+---
+
+
 
 ```
 SESSION START

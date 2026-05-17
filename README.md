@@ -156,6 +156,58 @@ Not everything fires every session. That would fill your context window and prod
 
 ---
 
+## The product backlog
+
+Every cc-forge project gets a structured product backlog — not just a list of development tasks, but a complete launch-readiness view across every domain.
+
+**10 domains, each with a Definition of Done:**
+
+| Domain | Owner | Blocks |
+|---|---|---|
+| 01 Product | Product Owner | Stage 03 |
+| 02 Development | CTO + QA | Stage 08 |
+| 03 Security | Security Auditor | Deploy |
+| 04 Reliability | SRE Engineer | Deploy |
+| 05 Design | UX Expert | Launch |
+| 06 Integrations | CTO | Deploy |
+| 07 Compliance | Legal / Compliance | Launch |
+| 08 Launch | Product Owner | Launch |
+| 09 Growth | Growth Agent | Post-launch |
+| 10 Operations | CFO + SRE | Post-launch |
+
+**Backlog item format:**
+```markdown
+### [SEC-003] All webhook endpoints verify request signatures
+
+**Outcome:** No webhook can be spoofed by an external actor
+**Standard:** OWASP ASVS 4.0 — V9.2.1
+**Owner:** Security Auditor
+**Blocks:** Stage 09 DEPLOY
+**Applicability:** Stack: Stripe, Clerk
+**Status:** not-started | in-progress | done | not-applicable
+**Evidence:** [commit / file:line / doc link]
+```
+
+Every item references the standard it comes from. Override decisions go into `DECISIONS.md`. Accepted risks go into `RISKS.md`. Nothing is silent.
+
+**Methodology:** outcome-oriented items (JTBD), Kanban flow states, single Product Owner accountability. See `standards/prompt-standards.md` for the full standards map.
+
+## Standards referenced
+
+cc-forge backlog items are grounded in established industry standards.
+
+| Domain | Standards |
+|---|---|
+| Security | OWASP Top 10 · OWASP ASVS 4.0 · NIST CSF |
+| Reliability | Google SRE Book · DORA metrics · AWS Well-Architected |
+| Design | WCAG 2.1 AA · Nielsen's 10 Heuristics · Core Web Vitals |
+| Compliance | GDPR Articles · CCPA · ePrivacy Directive |
+| Growth | Pirate Metrics (AARRR) · Google HEART Framework |
+| Operations | FinOps Foundation principles |
+| Development | Google Engineering Practices · SOLID · TypeScript Strict |
+| Product | JTBD Framework · Google HEART |
+| Launch | cc-forge opinionated standard |
+
 ## The stack
 
 Hermes is opinionated about services so you don't have to decide:
@@ -244,10 +296,23 @@ hermes-sdlc/
 ├── docs-templates/
 │   ├── PRD.md
 │   ├── ARCHITECTURE.md
-│   ├── DECISIONS.md
+│   ├── DECISIONS.md             ← decision log (upgraded to first-class)
+│   ├── RISKS.md                 ← risk register (new)
 │   ├── RUNBOOK.md
 │   ├── INCIDENT.md
 │   └── MONITORING.md
+├── backlog/                     ← product backlog catalogue (new)
+│   ├── master.md                ← overall % completion view
+│   ├── 01-product.md
+│   ├── 02-development.md
+│   ├── 03-security.md
+│   ├── 04-reliability.md
+│   ├── 05-design.md
+│   ├── 06-integrations.md
+│   ├── 07-compliance.md
+│   ├── 08-launch.md
+│   ├── 09-growth.md
+│   └── 10-operations.md
 ├── session-lifecycle/
 │   ├── session-start.md
 │   ├── phase-gates.md
@@ -275,8 +340,6 @@ cd your-existing-project
 ```
 
 Hermes will take it from there.
-
-Quick reference: see [CHEATSHEET.md](./CHEATSHEET.md)
 
 ---
 
@@ -374,25 +437,30 @@ Premium components (pre-built Clerk + Stripe agents, full persona library, herme
 ## Security
 
 cc-forge is a collection of markdown instruction files. It contains no
-executable code beyond two shell scripts for installation.
+executable code beyond two shell scripts for installation that install
+well-known open source packages via npm.
 
 **What cc-forge does NOT do:**
 - Send your code to any cc-forge servers (there are none)
 - Store any project data externally
 - Execute automatically without your input
+- Make any network calls beyond npm package installation
 
 **What happens to your code:**
 When Hermes reads your codebase during `hermes adopt` or any session,
 that code is processed by Claude Code via Anthropic's API — the same
-as any Claude Code session. Review Anthropic's data privacy policy
-if this is a concern for your project.
+as any standard Claude Code session. Review
+[Anthropic's privacy policy](https://www.anthropic.com/privacy) if
+this is a concern for your project.
 
 **Before running on sensitive projects:**
 - Confirm `.env` and `.env.local` are in `.gitignore`
 - Confirm no secrets are hardcoded in source files
 - Run `npm audit` to check for vulnerable dependencies
 
----
+**Reporting a security issue:**
+If you find a security vulnerability in cc-forge itself, please open
+a GitHub Issue marked `[SECURITY]` rather than a public discussion.
 
 ## Contributing
 
