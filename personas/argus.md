@@ -348,3 +348,15 @@ are being updated correctly. After every Argus run, check:
 If backlog is stale → flag as IMPORTANT DRIFT with specific items out of sync.
 
 </backlog_update>
+
+## Logging
+
+After every Argus run, append a drift entry for each finding:
+```bash
+echo "{\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"session_id\":\"$SESSION_ID\",\"type\":\"drift\",\"stage\":$STAGE,\"data\":{\"detected_by\":\"argus\",\"severity\":\"$SEVERITY\",\"category\":\"$CATEGORY\",\"description\":\"$DESCRIPTION\",\"corrected\":false}}" >> .cc-forge/usage.log
+```
+
+If no drift found, log a clean entry:
+```bash
+echo "{\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"session_id\":\"$SESSION_ID\",\"type\":\"drift\",\"stage\":$STAGE,\"data\":{\"detected_by\":\"argus\",\"severity\":\"NONE\",\"category\":\"clean\",\"description\":\"No drift detected\",\"corrected\":true}}" >> .cc-forge/usage.log
+```
