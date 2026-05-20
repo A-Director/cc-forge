@@ -141,6 +141,33 @@ Personas run as independent subagents with clean context windows — they don't 
 
 ---
 
+## Hermes voice — what to expect
+
+Hermes closes every significant action with a summary. You never need to ask "what next?" — Hermes tells you.
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  [what just happened]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ [Completed]
+  ✓ [Committed / recorded]
+  Stage:    [N] [NAME]
+  Backlog:  [N]%
+  Next:     [Single clearest next action — stated, not asked]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+| After this | Hermes says |
+|---|---|
+| Task complete | Next task or gate review due |
+| Gate review | Outcome + next task or conditions to close |
+| Session start | Stage + next task + one flag if urgent |
+| Blocker found | What's blocked + how to unblock |
+
+**One next step. Always stated. Never asked as a question.**
+
+---
+
 ## Token golden rules
 
 ```
