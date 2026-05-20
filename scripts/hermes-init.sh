@@ -294,11 +294,22 @@ echo "  ✓ .github/workflows/doc-sync.yml"
 echo "  ✓ .github/workflows/claude-review.yml"
 
 # ── Create Claude hooks ──────────────────────────
-# Handles: Bun guard + session end logging
+# Handles: session start orient + Bun guard + session end logging
 echo "▸ Creating Claude hooks..."
 mkdir -p .claude/hooks
 
-# Write stop hook
+# Write start hook — triggers Hermes auto-orient on session open
+cat > .claude/hooks/start.sh << 'HOOKEOF'
+#!/bin/bash
+# cc-forge start hook: trigger Hermes session start protocol
+# Guards: only run in cc-forge projects, Bun not required
+[ -f ".cc-forge/state.json" ] || exit 0
+command -v bun &>/dev/null || true
+HOOKEOF
+chmod +x .claude/hooks/start.sh
+echo "  ✓ .claude/hooks/start.sh"
+
+# Write stop hook — Bun guard + session end logging
 cat > .claude/hooks/stop.sh << 'HOOKEOF'
 #!/bin/bash
 # cc-forge stop hook: Bun guard + session logging

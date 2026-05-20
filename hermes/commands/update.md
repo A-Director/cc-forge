@@ -74,6 +74,35 @@ mkdir -p .cc-forge/catalogue
 cp "$HERMES_DIR"/backlog/*.md .cc-forge/catalogue/
 echo "  ✓ $(ls .cc-forge/catalogue/*.md | wc -l) catalogue files updated"
 echo "  (Project backlog in .cc-forge/backlog/ unchanged)"
+
+# Create hooks if missing — safe to run on existing projects
+echo "▸ Checking Claude hooks..."
+mkdir -p .claude/hooks
+if [ ! -f ".claude/hooks/start.sh" ]; then
+  cat > .claude/hooks/start.sh << 'HOOKEOF'
+#!/bin/bash
+[ -f ".cc-forge/state.json" ] || exit 0
+command -v bun &>/dev/null || true
+HOOKEOF
+  chmod +x .claude/hooks/start.sh
+  echo "  ✓ .claude/hooks/start.sh (created)"
+else
+  echo "  · .claude/hooks/start.sh (already exists)"
+fi
+if [ ! -f ".claude/hooks/stop.sh" ]; then
+  cat > .claude/hooks/stop.sh << 'HOOKEOF'
+#!/bin/bash
+command -v bun &>/dev/null || true
+if [ -f ".cc-forge/state.json" ]; then
+  TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  echo "{\"ts\":\"$TS\",\"type\":\"session_end\"}" >> .cc-forge/usage.log 2>/dev/null || true
+fi
+HOOKEOF
+  chmod +x .claude/hooks/stop.sh
+  echo "  ✓ .claude/hooks/stop.sh (created)"
+else
+  echo "  · .claude/hooks/stop.sh (already exists)"
+fi
 ```
 
 ---

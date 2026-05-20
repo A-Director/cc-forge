@@ -260,6 +260,36 @@ Also create a starter `RISKS.md` if gaps were found during the adopt:
 
 ---
 
+## Phase 4c: Create Claude hooks
+
+Create `.claude/hooks/` with the cc-forge start and stop hooks.
+These are required for the session protocol to work correctly.
+
+```bash
+mkdir -p .claude/hooks
+
+cat > .claude/hooks/start.sh << 'HOOKEOF'
+#!/bin/bash
+# cc-forge start hook: trigger Hermes session start protocol
+[ -f ".cc-forge/state.json" ] || exit 0
+command -v bun &>/dev/null || true
+HOOKEOF
+chmod +x .claude/hooks/start.sh
+
+cat > .claude/hooks/stop.sh << 'HOOKEOF'
+#!/bin/bash
+# cc-forge stop hook: Bun guard + session logging
+command -v bun &>/dev/null || true
+if [ -f ".cc-forge/state.json" ]; then
+  TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  echo "{\"ts\":\"$TS\",\"type\":\"session_end\"}" >> .cc-forge/usage.log 2>/dev/null || true
+fi
+HOOKEOF
+chmod +x .claude/hooks/stop.sh
+```
+
+---
+
 ## Phase 5: Handoff
 
 Summarize what was done and what comes next. Be brief.

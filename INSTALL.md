@@ -135,7 +135,11 @@ This creates the cc-forge structure in your project:
 ```
 my-project/
 ├── .cc-forge/           ← project state
-├── .claude/commands/    ← hermes commands
+├── .claude/
+│   ├── commands/        ← hermes commands
+│   └── hooks/
+│       ├── start.sh     ← auto-orient on session open
+│       └── stop.sh      ← Bun guard + session logging
 ├── .github/workflows/   ← doc sync + @claude actions
 ├── CLAUDE.md            ← standing orders (stub — fill in)
 ├── PRD.md               ← product requirements (stub — fill in)
