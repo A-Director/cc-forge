@@ -241,6 +241,25 @@ has a baseline to work from:
 
 ---
 
+## Phase 4b: Initialise backlog
+
+After generating files, run the backlog initialisation:
+
+```
+/hermes-backlog-init
+```
+
+This customises the 10-domain catalogue to this project's confirmed stack,
+marks items already done based on what was found in the codebase, and
+generates a Definition of Done per domain.
+
+Also create a starter `RISKS.md` if gaps were found during the adopt:
+- For every BLOCK-level gap in the report → add a RISKS.md entry
+- For every security or reliability gap → add a RISKS.md entry with
+  `Status: ACCEPTED` and a review date within 2 weeks
+
+---
+
 ## Phase 5: Handoff
 
 Summarize what was done and what comes next. Be brief.
@@ -250,12 +269,14 @@ Summarize what was done and what comes next. Be brief.
   HERMES ADOPT COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Generated:   CLAUDE.md · ENV.md · ARCHITECTURE.md
-  Initialized: Taskmaster with [N] tasks
+  Initialised: Taskmaster with [N] tasks
+  Backlog:     [N]% complete · [N] launch blockers found
+  Risks:       [N] entries added to RISKS.md
   Stage:        [N] [NAME]
   First task:  [task title]
 
   Recommended next: /hermes gate review
-  (You're at stage [N] — let's run a baseline
+  (You're at stage [N] — run a baseline
   review before adding new features.)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
