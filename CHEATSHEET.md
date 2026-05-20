@@ -63,7 +63,7 @@ claude                    # open Claude Code
 
 | When | Command | What it does |
 |---|---|---|
-| Start of session | `/hermes-status` | Stage, next task, overdue gates, missing docs |
+| First thing every session | `/hermes-status` | Stage, next task, backlog %, flags — run this before anything else |
 | What to work on | `/hermes-next` | Highest-priority unblocked task with full context |
 | End of session | `/compact` | Compress session into summary before closing |
 
