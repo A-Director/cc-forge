@@ -108,3 +108,14 @@ After all MVP features complete, move to stage 08 REVIEW:
 Full gate review → /hermes gate review
 Then stage 09 DEPLOY
 ```
+-e 
+---
+
+## Backlog during build
+
+After each feature completes and gate review runs:
+- The QA persona updates `02-development.md` test coverage items
+- The Security Auditor updates `03-security.md` items if auth/data touched
+- Run `/hermes-status` to see updated backlog % after each gate
+
+If a backlog item is deliberately skipped: record in `DECISIONS.md` + `RISKS.md`.

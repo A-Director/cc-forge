@@ -57,3 +57,13 @@ Every section filled in. Open questions listed.
 
 When done, update `.cc-forge/state.json` to reflect stage 2 complete,
 and prompt: "Run `/hermes gate review` — Product Owner will review the PRD."
+-e 
+---
+
+## Backlog
+
+After PRD is written, update `.cc-forge/backlog/01-product.md`:
+- PRD-001 (PRD written) → mark `done`
+- PRD-002 (MVP scope defined) → mark `done` if scope is explicit
+- PRD-003 (success metrics defined) → mark `done` if metrics are in PRD
+- PRD-005 (open questions listed) → mark `in-progress`

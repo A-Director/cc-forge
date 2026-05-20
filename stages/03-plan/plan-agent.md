@@ -89,3 +89,16 @@ Print a summary:
 ```
 
 Update `.cc-forge/state.json` to stage 3 complete.
+-e 
+---
+
+## Backlog
+
+After Taskmaster is seeded, update `.cc-forge/backlog/01-product.md`:
+- PRD-001 → verify done
+- PRD-002 → verify done
+
+Also check that `backlog-init` has been run — if not:
+```
+/hermes-backlog-init
+```

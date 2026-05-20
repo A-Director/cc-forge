@@ -99,3 +99,13 @@ RECOMMENDED NEXT STEP
 
 If PROCEED: update `.cc-forge/state.json` to stage 2.
 Write the problem statement into `PRD.md`.
+-e 
+---
+
+## Backlog
+
+After completing the idea assessment, initialise the backlog:
+```
+/hermes-backlog-init
+```
+Update `01-product.md`: PRD-001 and PRD-002 status based on idea clarity.

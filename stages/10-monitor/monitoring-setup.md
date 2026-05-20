@@ -134,3 +134,15 @@ Update the monitoring document with actual values:
 ## Runbook location
 See RUNBOOK.md for operational procedures.
 ```
+-e 
+---
+
+## Backlog
+
+After monitoring is configured, update `.cc-forge/backlog/04-reliability.md`:
+- REL-003 (error tracking active) → mark `done` with Sentry DSN evidence
+- REL-004 (uptime monitoring) → mark `done` with UptimeRobot URL
+- REL-005 (health check endpoint) → mark `done` with endpoint URL
+
+Update `10-operations.md`:
+- OPS-001 (weekly cost review) → mark `in-progress`
