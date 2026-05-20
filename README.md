@@ -63,7 +63,62 @@ hermes status        # project health: stage, tasks, personas, docs
 hermes next          # what should I work on right now?
 hermes gate review   # trigger a persona gate review
 hermes deploy        # run the deploy agent
+hermes update        # pull latest cc-forge into this project
+hermes report        # full usage report for review sessions
 ```
+
+---
+
+## How Hermes works — session lifecycle
+
+Every Claude Code session follows the same pattern automatically. You don't run these manually — Hermes handles them via the session protocol in `CLAUDE.md`.
+
+```
+SESSION OPENS
+      │
+      ▼
+┌─────────────────────────────────────────┐
+│  Hermes auto-orients                    │
+│  reads: state.json · tasks · backlog%   │
+│  reads: RISKS.md · claude-mem history   │
+│  prints: stage · next task · one flag   │
+│  begins: first action (no question)     │
+└─────────────────────────────────────────┘
+      │
+      ▼  ┌─────────────────────────────┐
+         │  Build loop                 │
+         │  Taskmaster → next task     │
+         │  code → test → lint         │
+         │  commit                     │
+         │  Hermes closes every action │
+         │  ✓ done · stage · next      │
+         └──────────┬──────────────────┘
+                    │ gate due?
+                    ▼
+      ┌─────────────────────────────────────┐
+      │  Gate review (/hermes gate review)  │
+      │  personas run in clean contexts     │
+      │  PASS · CONDITIONAL · BLOCK         │
+      │  backlog updated · ADRs written     │
+      │  RISKS.md updated                   │
+      └─────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│  Session closes (Hermes speaks last)    │
+│  ✓ done this session                    │
+│  → next session task                    │
+│  · docs to update                       │
+│  runs /compact automatically            │
+└─────────────────────────────────────────┘
+      │
+      ▼
+SESSION COMPRESSED — next opens clean
+```
+
+**Weekly:** Argus runs a compliance audit — checks gate skips, doc staleness, standards drift, backlog accuracy. Flags every deviation specifically.
+
+**The rule:** Hermes always speaks last. Every significant action closes with a summary box — what was done, current stage, backlog %, single next step. You never have to ask "what next?"
 
 ---
 
