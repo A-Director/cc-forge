@@ -94,10 +94,10 @@ for f in "$HERMES_DIR"/hermes/commands/*.md; do
   echo "  ✓ /hermes-${name}"
 done
 
-# 2. hermes/ root — FIX: init, adopt, backlog-init, log were missed before
+# 2. hermes/ root — init, adopt, backlog-init, log, update
 echo ""
-echo "  → workflow commands (init, adopt, backlog-init, log)"
-for f in init adopt backlog-init log; do
+echo "  → workflow commands (init, adopt, backlog-init, log, update)"
+for f in init adopt backlog-init log update; do
   src="$HERMES_DIR/hermes/${f}.md"
   if [ -f "$src" ]; then
     cp "$src" ~/.claude/commands/hermes-${f}.md

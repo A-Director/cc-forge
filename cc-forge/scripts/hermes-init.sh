@@ -74,6 +74,30 @@ EOF
 
 echo "  ✓ .cc-forge/state.json (stack fields blank — /hermes-init will fill these)"
 
+# ── Copy personas and standards into project ─────
+echo "▸ Copying personas and standards..."
+
+mkdir -p .cc-forge/personas
+mkdir -p .cc-forge/standards
+
+# Copy all persona definitions
+for persona_file in "$HERMES_DIR"/personas/*.md; do
+  [ -f "$persona_file" ] || continue
+  name=$(basename "$persona_file")
+  cp "$persona_file" .cc-forge/personas/"$name"
+  echo "  ✓ .cc-forge/personas/$name"
+done
+
+# Copy all standards
+for std_file in "$HERMES_DIR"/standards/*.md; do
+  [ -f "$std_file" ] || continue
+  name=$(basename "$std_file")
+  cp "$std_file" .cc-forge/standards/"$name"
+  echo "  ✓ .cc-forge/standards/$name"
+done
+
+echo ""
+
 # ── Copy Hermes commands ─────────────────────────
 echo "▸ Installing Hermes commands..."
 

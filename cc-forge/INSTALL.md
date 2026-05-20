@@ -67,35 +67,52 @@ git clone https://github.com/A-Director/cc-forge.git
 
 ## Step 2 — Run the install script
 
-This installs all required Claude Code plugins and MCP servers globally.
 Run it once — it applies to all your projects.
 
 ```bash
 bash ~/cc-forge/scripts/hermes-install.sh
 ```
 
-**What it installs:**
+**What the script installs automatically:**
 
 | Tool | Type | Purpose |
 |---|---|---|
-| superpowers | Claude Code plugin | Agentic workflow — brainstorm, TDD, subagent execution |
-| claude-mem | Claude Code plugin | Session memory across projects |
 | task-master-ai | MCP server | Task management — reads your PRD, tracks progress |
 | context7 | MCP server | Live library docs injected into sessions |
 | criticalthink | Command | Forces Claude to challenge its own assumptions |
-| Hermes commands | Commands | /hermes-status, /hermes-next, /hermes-gate, /hermes-deploy |
+| Hermes commands | Commands | /hermes-init, /hermes-adopt, /hermes-status, /hermes-next, /hermes-gate, /hermes-deploy, /hermes-report + all personas |
+
+**Plugins require a manual step inside Claude Code:**
+
+Plugins are Claude Code slash commands — they cannot be installed from a shell script. After the install script completes, open Claude Code and run:
+
+```
+/plugin install claude-mem
+/plugin install superpowers
+```
+
+Then **restart Claude Code** for plugins to activate.
+
+| Plugin | Purpose |
+|---|---|
+| claude-mem | Session memory across projects |
+| superpowers | Agentic workflow — brainstorm, TDD, subagent execution |
+
+**Known first-install issues:**
+- `ERR_MODULE_NOT_FOUND` on task-master-ai → run `npm cache clean --force` then retry the script
+- `/hermes-init`, `/hermes-adopt`, `/hermes-backlog-init` missing → script now copies these automatically; if still missing: `cp ~/cc-forge/hermes/*.md ~/.claude/commands/`
+- Taskmaster CLI warning → harmless, cc-forge uses Taskmaster as an MCP server not a CLI tool
 
 **Verify installation:**
 ```bash
-# Check plugins
-claude plugins list
-
 # Check MCPs
 claude mcp list
 
-# Check commands
-ls ~/.claude/commands/ | grep hermes
-ls ~/.claude/commands/ | grep criticalthink
+# Check commands (should see hermes-*, persona-*, criticalthink)
+ls ~/.claude/commands/
+
+# Check plugins (inside Claude Code after restart)
+/plugins
 ```
 
 ---
@@ -174,20 +191,35 @@ and project type, and generates a Definition of Done for each domain.
 
 ## Keeping cc-forge updated
 
-cc-forge updates regularly as Claude Code ships new features. Pull updates:
+cc-forge updates regularly as Claude Code ships new features.
 
+**The easy way — from inside any project:**
+```bash
+# In Claude Code:
+/hermes-update
+```
+
+This automatically pulls latest from GitHub and copies updated personas,
+standards, and commands into your project. Safe to run anytime — never
+touches project-specific files.
+
+**Manual update:**
 ```bash
 cd ~/cc-forge
 git pull origin main
 
-# Re-run install if new tools were added
+# Re-run install if new global tools were added
 bash scripts/hermes-install.sh
 ```
 
-To update Hermes commands in an existing project:
-```bash
-cp ~/cc-forge/hermes/commands/*.md your-project/.claude/commands/
-```
+**What gets updated vs what stays untouched:**
+
+| Updated by /hermes-update | Never touched |
+|---|---|
+| `.cc-forge/personas/` | `.cc-forge/backlog/` (your project backlog) |
+| `.cc-forge/standards/` | `.cc-forge/state.json` (project state) |
+| `.claude/commands/hermes-*` | `CLAUDE.md` (your standing orders) |
+| `.cc-forge/catalogue/` | `DECISIONS.md` + `RISKS.md` |
 
 ---
 

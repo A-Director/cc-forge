@@ -11,20 +11,35 @@
 # 1. Clone cc-forge to a permanent location
 git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
 
-# 2. Install all tools globally (plugins, MCPs, commands)
+# 2. Install all tools globally (MCPs, commands, personas)
 bash ~/cc-forge/scripts/hermes-install.sh
 
-# 3a. New project
-mkdir my-project && cd my-project && git init
-bash ~/cc-forge/scripts/hermes-init.sh
-claude                    # open Claude Code
-/hermes-init              # complete setup in Claude Code
+# 3. Install plugins manually inside Claude Code
+#    (plugins can't be installed from shell scripts)
+/plugin install claude-mem
+/plugin install superpowers
+# → restart Claude Code after this
 
-# 3b. Existing project
-cd your-project
-cp ~/cc-forge/hermes/commands/*.md .claude/commands/
+# 4a. New project
+mkdir my-project && cd my-project && git init
+bash ~/cc-forge/scripts/hermes-init.sh  # copies personas + standards into project
 claude                    # open Claude Code
-/hermes-adopt             # gap report + setup in Claude Code
+/hermes-init              # complete setup via interview
+
+# 4b. Existing project
+cd your-project
+bash ~/cc-forge/scripts/hermes-init.sh  # scaffolds .cc-forge/ structure
+claude                    # open Claude Code
+/hermes-adopt             # gap report + setup
+```
+
+## Keeping cc-forge updated
+
+```bash
+# When cc-forge releases updates — run inside any project:
+/hermes-update
+# Pulls latest personas, standards, commands from cc-forge
+# Never touches: backlog, CLAUDE.md, state.json, decisions, risks
 ```
 
 ---
@@ -98,6 +113,7 @@ Never skip `/compact` — a healthy session produces a better summary than a deg
 | Ready to ship | `/hermes-deploy` | Pre-flight checks → gate verification → Railway push |
 | Every Monday | `/hermes-health` | App health, Sentry errors, uptime, Railway metrics |
 | Review session | `/hermes-report` | Full usage report — paste into Claude.ai to review together |
+| cc-forge updated | `/hermes-update` | Pull latest personas, standards, commands from cc-forge into this project |
 
 `/hermes-deploy` pre-flight checks: tests passing, build succeeds, TypeScript clean, lint clean, npm audit, RUNBOOK.md exists, SRE gate passed, Security gate passed. Stops if anything fails.
 

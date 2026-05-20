@@ -248,41 +248,44 @@ Token efficiency is not optional — it determines how long Claude Code stays us
 
 ## What's inside
 
+**The cc-forge repo (source):**
 ```
-hermes-sdlc/
-├── README.md                     ← you are here
-├── HERMES.md                     ← Hermes agent definition
+cc-forge/
+├── README.md · HERMES.md · CHEATSHEET.md · INSTALL.md · CONTRIBUTING.md · LICENSE
 ├── hermes/
-│   ├── init.md                   ← greenfield onboarding flow
-│   ├── adopt.md                  ← existing project onboarding flow
+│   ├── init.md · adopt.md · backlog-init.md · log.md
 │   └── commands/
-│       ├── status.md
-│       ├── next.md
-│       ├── gate-review.md
-│       └── deploy.md
-├── standards/
-│   ├── coding.md
-│   ├── security.md
-│   ├── api.md
-│   ├── git.md
-│   ├── testing.md
-│   ├── accessibility.md
-│   └── token-rules.md
-├── personas/
-│   ├── ceo.md
-│   ├── cto.md
-│   ├── product-owner.md
-│   ├── ux-expert.md
-│   ├── qa-engineer.md
-│   ├── sre-engineer.md
-│   ├── security-auditor.md
-│   ├── cfo.md
-│   ├── market-analyst.md
-│   ├── research-agent.md
-│   ├── legal-compliance.md
-│   └── growth-agent.md
-├── stages/
-│   ├── 01-idea/
+│       ├── status.md · next.md · gate-review.md · deploy.md
+│       ├── report.md · update.md
+├── personas/          ← 13 expert persona definitions
+├── standards/         ← 8 standards files
+├── stages/            ← 11 stage agents (01-idea → 11-iterate)
+├── backlog/           ← 10 domain catalogues + master.md
+├── docs-templates/    ← PRD, ARCHITECTURE, RUNBOOK, INCIDENT, MONITORING, DECISIONS, RISKS
+├── session-lifecycle/ ← session-start, session-end, phase-gates
+└── scripts/
+    ├── hermes-install.sh   ← one-time global install
+    └── hermes-init.sh      ← per-project scaffolding
+```
+
+**What gets created in your project (after init or adopt):**
+```
+your-project/
+├── .cc-forge/
+│   ├── state.json          ← project stage and stack (filled by /hermes-init)
+│   ├── personas/           ← persona definitions copied from cc-forge
+│   ├── standards/          ← standards copied from cc-forge
+│   ├── catalogue/          ← default backlog catalogue (reference)
+│   ├── backlog/            ← your project's live backlog (10 domains)
+│   └── usage.log           ← automatic session log (committed)
+├── .claude/
+│   └── commands/           ← all /hermes-* commands + /persona-* + /criticalthink
+├── .github/
+│   └── workflows/          ← doc-sync + @claude actions
+├── CLAUDE.md               ← standing orders (filled by /hermes-init)
+├── PRD.md · ARCHITECTURE.md · DECISIONS.md · RISKS.md · ENV.md
+└── .env.example
+```
 │   ├── 02-spec/
 │   ├── 03-plan/
 │   ├── 04-design/
@@ -326,20 +329,68 @@ hermes-sdlc/
 
 ## Getting started
 
+**Full installation guide: [INSTALL.md](./INSTALL.md)**
+
+The short version:
+
+### Prerequisites
+- [Claude Code](https://claude.ai/code) (Pro or Max plan)
+- Node.js 20+
+- Git
+
+### 1. Clone cc-forge
+```bash
+cd ~
+git clone https://github.com/A-Director/cc-forge.git
+```
+
+### 2. Install tools (one-time, global)
+```bash
+bash ~/cc-forge/scripts/hermes-install.sh
+```
+
+Installs: taskmaster MCP, context7 MCP, criticalthink, all Hermes commands, and all 13 personas globally.
+
+Then open Claude Code and run:
+```
+/plugin install claude-mem
+/plugin install superpowers
+```
+Restart Claude Code after installing plugins.
+
+### 3. Set up your project
+
 **New project:**
 ```bash
-git clone https://github.com/yourusername/hermes-sdlc
-cd your-new-project
-/hermes init
+mkdir my-project && cd my-project && git init
+bash ~/cc-forge/scripts/hermes-init.sh
+claude
+# then in Claude Code:
+/hermes-init
 ```
+
+This copies persona definitions, standards, and commands into your project automatically.
 
 **Existing project:**
 ```bash
 cd your-existing-project
-/hermes adopt
+bash ~/cc-forge/scripts/hermes-init.sh  # scaffolds .cc-forge/ structure
+claude
+# then in Claude Code:
+/hermes-adopt
 ```
 
-Hermes will take it from there.
+### 4. Keeping cc-forge updated
+
+When cc-forge releases updates, pull them into any project:
+```bash
+# Inside Claude Code in your project:
+/hermes-update
+```
+
+Pulls latest personas, standards, and commands from cc-forge — never touches your project-specific files (backlog, CLAUDE.md, decisions, risks).
+
+> See [INSTALL.md](./INSTALL.md) for troubleshooting, Windows setup, and full details.
 
 ---
 
