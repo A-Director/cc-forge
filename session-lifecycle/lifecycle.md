@@ -52,6 +52,26 @@ Before the first task, select the right model:
 - Simple question or lookup → mention Haiku is available
 
 Do not proceed until developer confirms direction.
+## Hermes speaks last — always
+
+After every significant action in the session, append the Hermes closing
+summary (see HERMES.md — Hermes voice section). The format:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  [what just happened]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ [Completed]
+  Stage:    [N] [NAME]
+  Backlog:  [N]%
+  Next:     [Single clearest next action]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+One next step. No questions unless a real decision is needed.
+No "want me to continue?" — just state what happens next.
+
+
 ## Logging
 
 At session start, generate a session ID and write the session_start entry:
