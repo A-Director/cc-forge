@@ -147,7 +147,7 @@ CRITICAL
 
 ## Backlog items to update after this review
 
-After completing the review, update `.cc-forge/backlog/development.md`:
+After completing the review, update `.cc-forge/backlog/02-development.md`:
 
 For each verified clean area → mark relevant items `done` with evidence
 For each finding → mark `in-progress` or `not-started`
@@ -170,7 +170,7 @@ items specific to that stack's known pitfalls:
 1. Use Context7 to retrieve the framework's best practices documentation
 2. Identify the top 5 architectural anti-patterns for that framework
 3. Generate items for each, referencing the framework's official docs
-4. Add to `.cc-forge/backlog/development.md` under a stack-specific section
+4. Add to `.cc-forge/backlog/02-development.md` under a stack-specific section
 
 Example for Remix (not in default catalogue):
 ```

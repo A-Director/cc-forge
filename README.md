@@ -207,7 +207,6 @@ Not everything fires every session. That would fill your context window and prod
 - `/compact` summarizes the session
 - Taskmaster marks completed tasks
 - GitHub Action syncs updated docs
-- Dreaming scheduled for overnight memory refinement
 
 ---
 
@@ -502,20 +501,9 @@ MCP, and command capabilities.
 the GitHub Action that auto-syncs docs on PR merge and enables `@claude`
 in issues and PRs. Powers the documentation stewardship in cc-forge.
 
-**[Claude Design](https://claude.ai/design)** — Anthropic Labs product used
-by the UX Expert persona for visual outputs, prototypes, and design reviews.
-
-**[Claude Security](https://claude.ai/security)** — scans codebases for
-security flaws and writes patches via Claude Code. Augments the Security
-Auditor persona with Anthropic-native scanning capability.
-
-**[Managed Agents / Agent Teams](https://docs.anthropic.com/claude/docs/agents)**
-— the multi-agent orchestration layer that makes persona gate reviews possible.
-Each persona runs as an independent subagent with its own clean context window.
-
-**[Dreaming](https://docs.anthropic.com/claude/docs/dreaming)** — Anthropic's
-scheduled memory refinement feature. cc-forge's session-end protocol triggers
-Dreaming to extract patterns and improve context quality over time.
+**Claude Code subagents** — cc-forge uses Claude Code's native subagent
+capabilities for persona gate reviews. Each persona runs as an independent
+Claude Code subagent with its own clean context window.
 
 ### Standards and inspiration
 

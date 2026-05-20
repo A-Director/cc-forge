@@ -202,27 +202,17 @@ if [ ! -f ".env.example" ]; then
 # Database
 DATABASE_URL=
 
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-CLERK_WEBHOOK_SECRET=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
-
-# Stripe Billing
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
-STRIPE_PRICE_ID_PRO_MONTHLY=
+# LLM API
+ANTHROPIC_API_KEY=
 
 # App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+APP_URL=http://localhost:3000
+APP_ENV=development
 
 # Monitoring (add after deploy)
 SENTRY_DSN=
-NEXT_PUBLIC_SENTRY_DSN=
+
+# Add stack-specific variables here after /hermes-init interview
 EOF
   echo "  ✓ .env.example"
 else

@@ -140,8 +140,8 @@ CRITICAL GAPS
 
 ## Backlog items to update after this review
 
-After completing the review, update `.cc-forge/backlog/development.md`
-(test coverage items) and `.cc-forge/backlog/reliability.md` (CI items):
+After completing the review, update `.cc-forge/backlog/02-development.md`
+(test coverage items) and `.cc-forge/backlog/04-reliability.md` (CI items):
 
 For each verified coverage area → mark relevant items `done`
 For each gap → mark `not-started` or `in-progress`
