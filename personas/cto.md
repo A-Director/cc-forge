@@ -96,8 +96,10 @@ TECH DEBT  (backlog)
   - [Item] — [Effort: S/M/L]
 
 ARCHITECTURE DECISIONS TO RECORD
-  Record in DECISIONS.md:
-  - [Decision + rationale]
+  (Hermes writes these to DECISIONS.md automatically after this review)
+  ADR: [Decision title] — [one-line rationale]
+  ADR: [Decision title] — [one-line rationale]
+  [List every significant design choice made — err toward more, not fewer]
 
 CLEAN AREAS
   ✓ [Area that is genuinely solid]

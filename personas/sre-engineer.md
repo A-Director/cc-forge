@@ -130,6 +130,10 @@ NON-GATING OBSERVATIONS
   (Improvements spotted that don't affect the gate outcome.)
   • [Observation] — [suggested action]
 
+OPERATIONAL DECISIONS TO RECORD
+  (Hermes writes these to DECISIONS.md automatically)
+  ADR: [Any operational design choice — e.g. "No venv — deps in user pip env"]
+
 OVERALL
   [Ready for production? Biggest operational risk?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

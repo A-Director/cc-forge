@@ -1,11 +1,3 @@
-# cc-forge Session Protocol
-#
-# Add this block to the bottom of your project's CLAUDE.md.
-# It makes the three manual commands automatic — Hermes runs
-# them without being asked.
-#
-# ─────────────────────────────────────────────────────────────
-
 ## Session protocol (automatic)
 
 ### On session start — always, before anything else

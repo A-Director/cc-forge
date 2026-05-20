@@ -26,10 +26,10 @@ Format:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Last:     [Last completed task or "nothing completed yet"]
   Next:     #[N] — [Task title]
-  Backlog:  [N]% complete ([N] domains launch-ready)
-  [Any flags — see below]
+  Backlog:  [N]% ([N] domains launch-ready)
+  [One flag only — most urgent]
 
-  Ready? (or tell me what you want to work on)
+  Starting: [first action]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -52,6 +52,14 @@ Before the first task, select the right model:
 - Simple question or lookup → mention Haiku is available
 
 Do not proceed until developer confirms direction.
+
+## 4. Begin
+
+State the next task and start it immediately. Do not ask "what would you
+like to work on?" — that question is answered by Taskmaster.
+
+If a decision is genuinely required before any work can proceed, ask it.
+Otherwise: state the task and begin. The developer will redirect if needed.
 ## Hermes speaks last — always
 
 After every significant action in the session, append the Hermes closing

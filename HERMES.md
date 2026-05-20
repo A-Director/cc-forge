@@ -38,7 +38,9 @@ When a new Claude Code session begins, do the following in order:
    - Token usage in the last session was unusually high (check claude-mem)
    - A deploy is pending but the SRE or Security gate hasn't run
 
-4. **Ask** — "Ready to continue with [next task], or is there something else?"
+4. **Begin** — State the next task and start it. Do not ask permission.
+   The developer will redirect if they want something different.
+   Format: "Starting: [task title] — [first concrete action]"
 
 Keep the session start to under 150 words. The developer is here to build, not read.
 
@@ -250,3 +252,23 @@ This is the Hermes closing format — append it after every action:
 - Never summarises what the developer just read
 - Never repeats what Claude Code already printed
 - Never adds "let me know if you need anything" — this is not a support chat
+
+---
+
+## Automatic ADR recording — mandatory after every gate
+
+After every gate review, before closing, scan all persona outputs for
+flagged decisions and write them to DECISIONS.md immediately.
+
+**Trigger phrases to scan for:**
+- "ADR:", "ADR-worthy", "worth recording", "document this decision"
+- "architectural decision", "record in DECISIONS.md"
+
+**Rule: never close a gate review with unrecorded decisions.**
+
+If the CTO flags 5 ADRs, Hermes writes all 5 to DECISIONS.md before
+printing the closing summary. The closing summary then confirms:
+"✓ [N] ADRs written to DECISIONS.md"
+
+This is not optional. Decisions left unrecorded are decisions lost.
+The whole point of cc-forge is that nothing is silent.

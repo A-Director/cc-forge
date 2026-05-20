@@ -150,6 +150,11 @@ NON-GATING OBSERVATIONS
    Always include — even small improvements are worth noting.)
   • [Observation] — [suggested action]
 
+SECURITY DECISIONS TO RECORD
+  (Hermes writes these to DECISIONS.md automatically)
+  ADR: [Any security design choice worth documenting — e.g. "Accepted risk of no
+        rate limiting at beta — revisit before public launch"]
+
 OVERALL
   [2-3 sentences. Is it safe to deploy?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
