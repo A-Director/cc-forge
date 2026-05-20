@@ -115,3 +115,53 @@
 **Applicability:** Universal
 **Status:** not-started
 **Evidence:** —
+
+---
+
+## Stack-specific: KaTeX / scientific UI
+
+### [DES-STK-KTX-001] KaTeX renders all LaTeX expressions without errors
+
+**Outcome:** Mathematical notation displays correctly for all theory content
+**Standard:** KaTeX Docs — Supported Functions
+**Owner:** UX Expert
+**Blocks:** Launch
+**Applicability:** Stack: KaTeX
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [DES-STK-KTX-002] KaTeX rendering tested across Chrome, Firefox, Safari
+
+**Outcome:** Mathematical expressions consistent across browsers
+**Standard:** cc-forge launch standards — Cross-browser coverage
+**Owner:** UX Expert
+**Blocks:** Launch
+**Applicability:** Stack: KaTeX
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [DES-STK-KTX-003] Long equations wrap or scroll without breaking layout
+
+**Outcome:** No horizontal overflow breaking the UI on standard screen widths
+**Standard:** WCAG 2.1 — 1.4.10 Reflow (Level AA)
+**Owner:** UX Expert
+**Blocks:** Launch
+**Applicability:** Stack: KaTeX
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [DES-STK-SCI-001] Error states for invalid LaTeX shown inline (not silent failure)
+
+**Outcome:** User knows immediately when LaTeX syntax is wrong
+**Standard:** Nielsen Heuristic #9 — Help Users Recognize and Recover from Errors
+**Owner:** UX Expert
+**Blocks:** Launch
+**Applicability:** Stack: Scientific/research UI
+**Status:** not-started
+**Evidence:** —

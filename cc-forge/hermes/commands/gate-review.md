@@ -80,3 +80,27 @@ After every gate review, append entries for each persona invoked:
 ```bash
 echo "{\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"session_id\":\"$SESSION_ID\",\"type\":\"gate\",\"stage\":$STAGE,\"data\":{\"trigger\":\"$TRIGGER\",\"personas\":[$PERSONAS],\"outcomes\":{$OUTCOMES},\"blockers\":$BLOCKERS,\"conditions\":$CONDITIONS,\"backlog_items_updated\":$ITEMS_UPDATED}}" >> .cc-forge/usage.log
 ```
+
+---
+
+## Context to pass to each persona subagent
+
+Each persona runs in a clean context window. To avoid the "false alarm"
+problem (persona flags something as missing that actually exists), pass
+the full Hermes minimum document set to every persona subagent:
+
+**Always include:**
+- `CLAUDE.md` — project constraints and stack
+- `PRD.md` — product requirements
+- `ARCHITECTURE.md` — system design
+- `DECISIONS.md` — decisions already made
+- `ENV.md` — environment variables
+- `.cc-forge/state.json` — current stage and stack
+
+**Include based on gate type:**
+- Pre-deploy gates: also include `RUNBOOK.md`, `INCIDENT.md`, `MONITORING.md`
+- Feature gates: also include the relevant source files being reviewed
+- Backlog gates: also include the relevant `.cc-forge/backlog/[domain].md`
+
+**Never assume a document doesn't exist** — read the file system first.
+If a document is not found after checking, then flag it as missing.

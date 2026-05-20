@@ -145,6 +145,11 @@ SECRETS SCAN
 DEPENDENCIES
   [npm audit summary]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.
+   Always include — even small improvements are worth noting.)
+  • [Observation] — [suggested action]
+
 OVERALL
   [2-3 sentences. Is it safe to deploy?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

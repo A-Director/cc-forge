@@ -16,6 +16,12 @@
 - A known vulnerability or gap is accepted as a temporary risk
 - A security, reliability, or compliance item is intentionally deferred
 
+**Relationship to PRD risk register:**
+Some projects maintain a separate risk register in their PRD (e.g. R-1..R-5).
+Both can coexist — the PRD risk register covers *product and business* risks,
+while this file covers *operational and technical* risks from cc-forge gate
+reviews and backlog overrides. Cross-reference by ID when a risk appears in both.
+
 **Who adds entries:**
 - Hermes adds automatically when a developer overrides a gate or backlog item
 - Any persona can flag a risk during a gate review

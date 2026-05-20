@@ -86,8 +86,8 @@ npm init -y && npm install express typescript @types/express ts-node
 ```
 .cc-forge/
   state.json          ← project state tracking
-  personas/           ← active persona definitions (symlinked from cc-forge)
-  standards/          ← active standards (symlinked from cc-forge)
+  personas/           ← active persona definitions (copied from cc-forge)
+  standards/          ← active standards (copied from cc-forge)
 ```
 
 ### 2.3 Initialize Git
@@ -259,11 +259,21 @@ SENTRY_DSN=
 
 ## Phase 4: Initialize Taskmaster
 
+Taskmaster runs as an MCP server — do not call it as a CLI tool.
+Instead, create the tasks.json file directly:
+
 ```bash
-# Initialize taskmaster in the project
-task-master rules add claude
-task-master init
+mkdir -p .taskmaster/tasks
 ```
+
+Then write `.taskmaster/tasks/tasks.json` with the initial task list below.
+The Taskmaster MCP server will read this file automatically in the next session.
+
+If the user has `task-master` CLI installed globally, also run:
+```bash
+task-master rules add claude 2>/dev/null || true
+```
+But do not fail if the CLI is not installed — the MCP server is what matters.
 
 Create initial tasks in `.taskmaster/tasks/tasks.json`:
 

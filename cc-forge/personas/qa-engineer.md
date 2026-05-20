@@ -99,6 +99,11 @@ TOP 3 MISSING SCENARIOS
 WELL TESTED
   ✓ [Area with solid coverage]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.
+   Always include — even small improvements are worth noting.)
+  • [Observation] — [suggested action]
+
 OVERALL
   [2-3 sentences. Test quality and risk.]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

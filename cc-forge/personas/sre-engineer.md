@@ -126,6 +126,10 @@ THE 3AM TEST
   Know how to fix or roll back?      [✓/✗]
   Do it without waking anyone else?  [✓/✗]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.)
+  • [Observation] — [suggested action]
+
 OVERALL
   [Ready for production? Biggest operational risk?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

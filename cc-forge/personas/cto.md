@@ -102,6 +102,11 @@ ARCHITECTURE DECISIONS TO RECORD
 CLEAN AREAS
   ✓ [Area that is genuinely solid]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.
+   Always include — even small improvements are worth noting.)
+  • [Observation] — [suggested action]
+
 OVERALL
   [2-3 sentences. Structural quality + biggest risk going forward.]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -174,3 +179,30 @@ Applicability: Stack: Remix
 ```
 
 </backlog_generation_rules>
+
+---
+
+## Python/FastAPI stack — known review patterns
+
+When reviewing a Python/FastAPI project, check these common issues
+in addition to the universal review scope:
+
+**FastAPI specific:**
+- Are Pydantic models used for all request/response validation?
+- Are dependencies injected via `Depends()` — not instantiated in handlers?
+- Are background tasks used correctly (not blocking the event loop)?
+- Is `async def` used consistently — no mixing sync/async DB calls?
+
+**SQLAlchemy specific:**
+- Are sessions properly closed after each request (via dependency injection)?
+- Are N+1 query patterns present? (check for `.relationship` access in loops)
+- Are indexes defined on frequently queried columns?
+- Are migrations backwards-compatible?
+
+**Security (Python specific):**
+- Is `SECRET_KEY` / `FERNET_KEY` loaded from environment, never hardcoded?
+- Are file uploads (if any) validated for type and size?
+- Is `DEBUG=False` enforced in production config?
+- Are SQL queries using SQLAlchemy ORM — no raw f-string queries?
+
+Generate backlog items for any gap found using `[DEV-STK-PY-NNN]` prefix.

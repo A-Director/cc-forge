@@ -94,3 +94,93 @@
 **Evidence:** —
 
 ---
+
+---
+
+## Stack-specific: Python / FastAPI
+
+### [INT-PY-001] FastAPI app starts cleanly with no import errors
+
+**Outcome:** Application boots reliably in production
+**Standard:** FastAPI Docs — Application Structure
+**Owner:** CTO
+**Blocks:** Stage 09 DEPLOY
+**Applicability:** Stack: Python/FastAPI
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [INT-PY-002] SQLAlchemy models match database schema (no migration drift)
+
+**Outcome:** ORM and database are in sync — no silent data corruption
+**Standard:** SQLAlchemy Docs — Migration Best Practices; Alembic Docs
+**Owner:** CTO
+**Blocks:** Stage 09 DEPLOY
+**Applicability:** Stack: Python/SQLAlchemy
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [INT-PY-003] Alembic migrations run cleanly on fresh database
+
+**Outcome:** New environment setup is reproducible without manual SQL
+**Standard:** Alembic Docs — Migration Environment
+**Owner:** CTO
+**Blocks:** Stage 09 DEPLOY
+**Applicability:** Stack: Python/SQLAlchemy/Alembic
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [INT-PY-004] FastAPI dependency injection used for DB sessions
+
+**Outcome:** Database connections properly scoped and closed — no connection leaks
+**Standard:** FastAPI Docs — SQL Databases; SQLAlchemy Session Management
+**Owner:** CTO
+**Blocks:** Stage 08 REVIEW
+**Applicability:** Stack: Python/FastAPI/SQLAlchemy
+**Status:** not-started
+**Evidence:** —
+
+---
+
+## Stack-specific: pgvector
+
+### [INT-PGV-001] pgvector extension enabled and vector similarity search working
+
+**Outcome:** Semantic search over embeddings functional
+**Standard:** pgvector Docs — Installation and Usage
+**Owner:** CTO
+**Blocks:** Stage 09 DEPLOY (when pgvector is in scope)
+**Applicability:** Stack: pgvector (Phase 2+)
+**Status:** not-applicable
+**Evidence:** Deferred to Phase 2 — ADR-AUTO-pgvector
+
+---
+
+## Stack-specific: Fernet / symmetric encryption
+
+### [INT-FNT-001] Fernet key stored in environment variable, never in code
+
+**Outcome:** Encryption key not exposed in repository or logs
+**Standard:** cryptography.io Docs — Fernet; OWASP ASVS 4.0 — V2.10.1
+**Owner:** Security Auditor
+**Blocks:** Stage 09 DEPLOY
+**Applicability:** Stack: Python/Fernet encryption
+**Status:** not-started
+**Evidence:** —
+
+---
+
+### [INT-FNT-002] Fernet key rotation procedure documented in RUNBOOK.md
+
+**Outcome:** Encrypted data can be re-keyed without data loss
+**Standard:** cryptography.io Docs — Key Rotation; cc-forge reliability standards
+**Owner:** SRE Engineer
+**Blocks:** Launch
+**Applicability:** Stack: Python/Fernet encryption
+**Status:** not-started
+**Evidence:** —

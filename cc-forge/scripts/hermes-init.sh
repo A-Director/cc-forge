@@ -60,19 +60,19 @@ cat > .cc-forge/state.json << EOF
   "current_stage": 1,
   "stage_name": "IDEA",
   "stack": {
-    "language": "TypeScript",
-    "framework": "Next.js 14",
-    "database": "PostgreSQL via Prisma",
-    "auth": "Clerk",
-    "billing": "Stripe",
-    "hosting": "Railway"
+    "language": "",
+    "framework": "",
+    "database": "",
+    "auth": "",
+    "billing": "",
+    "hosting": ""
   },
   "gates_passed": [],
   "personas_run": []
 }
 EOF
 
-echo "  ✓ .cc-forge/state.json"
+echo "  ✓ .cc-forge/state.json (stack fields blank — /hermes-init will fill these)"
 
 # ── Copy Hermes commands ─────────────────────────
 echo "▸ Installing Hermes commands..."
@@ -92,27 +92,23 @@ if [ ! -f "CLAUDE.md" ]; then
 [One sentence: what it does and who it's for]
 
 ## Stack
-- Runtime: Node 20 / Next.js 14
-- Language: TypeScript (strict)
-- Database: PostgreSQL via Prisma
-- Auth: Clerk
-- Billing: Stripe
-- Hosting: Railway
+[Fill in after /hermes-init interview confirms your stack]
+- Language:
+- Framework:
+- Database:
+- Auth:
+- Billing:
+- Hosting:
 
 ## Commands
-- Dev:           \`npm run dev\`
-- Build:         \`npm run build\`
-- Test:          \`npm test\`
-- DB migrate:    \`npx prisma migrate dev\`
-- DB studio:     \`npx prisma studio\`
-- Type check:    \`npx tsc --noEmit\`
+[Fill in after project is scaffolded]
+- Dev:
+- Build:
+- Test:
 
 ## Conventions
-- Files: kebab-case
-- Components: PascalCase
-- Hooks: use* prefix
-- API routes: /api/[resource]/route.ts
-- Never use \`any\` — use \`unknown\` + type guards
+[Fill in after /hermes-init — only project-specific rules]
+
 - Controllers call services. Services call DB. Never bypass.
 
 ## Current stage
@@ -256,6 +252,22 @@ EOF
 
 echo "  ✓ .github/workflows/doc-sync.yml"
 echo "  ✓ .github/workflows/claude-review.yml"
+
+# ── Create Claude hooks (Bun guard) ──────────────
+# claude-mem stop hook requires Bun — this guard prevents
+# the "Bun not found" error for users who use npm instead
+echo "▸ Creating Claude hooks..."
+mkdir -p .claude/hooks
+
+cat > .claude/hooks/stop.sh << 'EOF'
+#!/bin/bash
+# cc-forge stop hook
+# Guards against claude-mem Bun dependency error
+# Users who don't have Bun installed won't see the error
+command -v bun &>/dev/null || exit 0
+EOF
+chmod +x .claude/hooks/stop.sh
+echo "  ✓ .claude/hooks/stop.sh (Bun guard)"
 
 # ── Write .gitignore additions ───────────────────
 if [ -f ".gitignore" ]; then
