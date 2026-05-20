@@ -53,7 +53,7 @@ Before the first task, select the right model:
 
 Do not proceed until developer confirms direction.
 
-## 4. Begin
+## 5. Begin
 
 State the next task and start it immediately. Do not ask "what would you
 like to work on?" — that question is answered by Taskmaster.
