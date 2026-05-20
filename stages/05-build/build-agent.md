@@ -60,6 +60,32 @@ Don't leave testing to the end of a feature.
 npm test -- --watch
 ```
 
+
+
+### 6. Hermes speaks after every task
+
+When a task is marked done in Taskmaster, Hermes closes with a summary.
+Never leave a completed task without this closing — it's the signal that
+tells the developer the task is truly done and what comes next:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Task #[N] complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ [What was built — one line]
+  ✓ Committed: [hash] — [commit message]
+  ✓ Tests: [N passing]
+
+  Stage:    [N] [NAME]
+  Backlog:  [N]%
+  Next:     Task #[N+1] — [title]
+            [or: /hermes gate review — [persona] due]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+If a gate review is due after this task (feature merged, auth/data touched):
+state it as the next step, not as a question. Then begin the gate review
+immediately unless the developer redirects.
 ### 5. Commit when working
 Commit after each working slice — not at the end of the day.
 Each commit should leave the codebase in a deployable state.
@@ -119,3 +145,23 @@ After each feature completes and gate review runs:
 - Run `/hermes-status` to see updated backlog % after each gate
 
 If a backlog item is deliberately skipped: record in `DECISIONS.md` + `RISKS.md`.
+
+---
+
+## Hermes closes
+
+After completing this stage/command, always end with the Hermes closing summary:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  [what just happened]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ [What was completed]
+  ✓ [What was committed / recorded]
+
+  Stage:    [N] [NAME]
+  Backlog:  [N]%
+  Next:     [Single clearest next action — state it, do not ask]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
