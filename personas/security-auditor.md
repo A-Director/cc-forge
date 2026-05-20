@@ -197,7 +197,7 @@ The weak finding requires them to do the security audit themselves.
 
 ## Backlog items to update after this review
 
-After completing the audit, update `.cc-forge/backlog/security.md`:
+After completing the audit, update `.cc-forge/backlog/03-security.md`:
 
 For each verified clean item → mark `done` with evidence (file:line)
 For each finding → mark `in-progress` or `not-started` as appropriate
@@ -225,7 +225,7 @@ For each unfamiliar service:
 3. Generate items following the standard format with:
    - Standard: [Service name] Security Best Practices — [Section]
    - Applicability: Stack: [Service name]
-4. Add to `.cc-forge/backlog/security.md` under a new stack-specific section
+4. Add to `.cc-forge/backlog/03-security.md` under a new stack-specific section
 
 Example for Supabase Auth (not in default catalogue):
 ```
