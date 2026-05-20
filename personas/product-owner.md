@@ -92,6 +92,12 @@ BACKLOG STATUS
   Overall completion: [N]%
   Domains behind schedule: [list or "none"]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.
+   Always include this section — even minor improvements add value.)
+  • [Observation] — [suggested action]
+  • [Observation] — [suggested action]
+
 OVERALL
   [Is this feature done? What closes it?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

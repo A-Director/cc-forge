@@ -99,6 +99,10 @@ COPY ISSUES
 WHAT WORKS WELL
   ✓ [Genuine strength]
 
+NON-GATING OBSERVATIONS
+  (Improvements spotted that don't affect the gate outcome.)
+  • [Observation] — [suggested action]
+
 OVERALL
   [Ready for users? Biggest UX risk?]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
