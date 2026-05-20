@@ -43,3 +43,24 @@ Output:
 If all tasks are blocked, report:
 "All remaining tasks have unresolved dependencies. Here's what's blocking progress:
 [list the blocking tasks and what they depend on]"
+
+---
+
+## Hermes closes
+
+After surfacing the next task, immediately begin working on it.
+Do not ask for confirmation — the developer invoked /hermes-next
+because they want to work on the next task. Start it.
+
+If the task requires a real decision before starting (e.g. credentials
+needed, external service required), state that specifically:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Starting Task #[N]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Task:     #[N] — [title]
+  Blocked:  [Only if genuinely blocked — what's needed]
+  Starting: [First concrete action]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```

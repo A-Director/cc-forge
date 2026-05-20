@@ -104,3 +104,27 @@ the full Hermes minimum document set to every persona subagent:
 
 **Never assume a document doesn't exist** — read the file system first.
 If a document is not found after checking, then flag it as missing.
+
+---
+
+## Hermes closes the gate review
+
+After the consolidated gate report, always append the Hermes closing:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  [gate name] gate [PASS/CONDITIONAL/BLOCK]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ Gate recorded in .cc-forge/state.json
+  ✓ Backlog updated by [N] personas
+
+  Stage:    [N] [NAME]
+  Backlog:  [N]%  ([N] launch blockers remaining)
+  Next:     [If PASS: next task]
+            [If CONDITIONAL: "Close [N] conditions, then [next task]"]
+            [If BLOCK: "Resolve [issue] before proceeding"]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Never ask "want me to start the next task?" — state it and begin
+unless the developer redirects.

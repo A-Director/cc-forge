@@ -84,3 +84,18 @@ After producing the status report, append a log entry:
 ```bash
 echo "{\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"session_id\":\"$SESSION_ID\",\"type\":\"command\",\"stage\":$STAGE,\"data\":{\"command\":\"/hermes-status\",\"flags_count\":$FLAGS_COUNT,\"backlog_pct\":$BACKLOG_PCT}}" >> .cc-forge/usage.log
 ```
+
+---
+
+## Hermes closes
+
+After the status report, close with one clear priority:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Priority
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Next:     [The single most important thing right now]
+  [One sentence of context if needed]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
