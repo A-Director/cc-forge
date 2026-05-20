@@ -301,8 +301,9 @@ mkdir -p .claude/hooks
 # Write start hook — triggers Hermes auto-orient on session open
 cat > .claude/hooks/start.sh << 'HOOKEOF'
 #!/bin/bash
-# cc-forge start hook: trigger Hermes session start protocol
-# Guards: only run in cc-forge projects, Bun not required
+# cc-forge start hook
+# Note: CC hooks run shell only — cannot inject Claude prompts.
+# Run /hermes-status as first command for session orient.
 [ -f ".cc-forge/state.json" ] || exit 0
 command -v bun &>/dev/null || true
 HOOKEOF
