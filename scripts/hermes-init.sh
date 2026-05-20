@@ -137,6 +137,22 @@ if [ ! -f "CLAUDE.md" ]; then
 
 ## Current stage
 cc-forge stage: 01 IDEA
+
+## Session protocol (automatic)
+
+### On session start — always, before anything else
+Read .cc-forge/state.json, .taskmaster/tasks/tasks.json,
+.cc-forge/backlog/master.md, RISKS.md. Then print the HERMES
+STATUS summary and begin the next task. Do not ask what to work
+on — state it and start. The developer will redirect if needed.
+
+### After every significant action — always
+Close with the Hermes summary: what was done, stage, backlog %,
+single next step. One next step. Stated, not asked.
+
+### On session end — when closing or /compact is run
+Print the session closing summary (done this session, next session,
+docs to update), then run /compact automatically.
 EOF
   echo "  ✓ CLAUDE.md"
 else
@@ -277,21 +293,24 @@ EOF
 echo "  ✓ .github/workflows/doc-sync.yml"
 echo "  ✓ .github/workflows/claude-review.yml"
 
-# ── Create Claude hooks (Bun guard) ──────────────
-# claude-mem stop hook requires Bun — this guard prevents
-# the "Bun not found" error for users who use npm instead
+# ── Create Claude hooks ──────────────────────────
+# Handles: Bun guard + session end logging
 echo "▸ Creating Claude hooks..."
 mkdir -p .claude/hooks
 
-cat > .claude/hooks/stop.sh << 'EOF'
+# Write stop hook
+cat > .claude/hooks/stop.sh << 'HOOKEOF'
 #!/bin/bash
-# cc-forge stop hook
-# Guards against claude-mem Bun dependency error
-# Users who don't have Bun installed won't see the error
-command -v bun &>/dev/null || exit 0
-EOF
+# cc-forge stop hook: Bun guard + session logging
+command -v bun &>/dev/null || true
+if [ -f ".cc-forge/state.json" ]; then
+  TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  echo "{\"ts\":\"$TS\",\"type\":\"session_end\"}" >> .cc-forge/usage.log 2>/dev/null || true
+fi
+HOOKEOF
 chmod +x .claude/hooks/stop.sh
-echo "  ✓ .claude/hooks/stop.sh (Bun guard)"
+echo "  ✓ .claude/hooks/stop.sh"
+
 
 # ── Write .gitignore additions ───────────────────
 if [ -f ".gitignore" ]; then
