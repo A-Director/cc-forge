@@ -132,3 +132,12 @@ fi
 ```
 
 </output_format>
+
+---
+
+## Session orient hook
+
+To enable automatic Hermes status at session start, add the hook from
+`templates/hooks/settings-hook.json` to your `~/.claude/settings.json`
+manually. This is a one-time setup per machine, not per project.
+
