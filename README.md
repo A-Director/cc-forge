@@ -131,10 +131,10 @@ At key phase gates, specialist personas review your work. Each has a specific le
 | CEO | Vision, value, shippability | Opus | Sprint end, before launch |
 | CTO | Architecture, tech debt, scale | Opus | After design, before deploy |
 | Product Owner | PRD alignment, scope | Sonnet | After each feature |
-| UX Expert | User flows, friction, a11y | Sonnet + Claude Design | After design, after build |
+| UX Expert | User flows, friction, a11y | Sonnet | After design, after build |
 | QA Engineer | Test coverage, edge cases | Sonnet + Outcomes | After each feature |
 | SRE Engineer | Reliability, runbook, ops | Sonnet | Before deploy |
-| Security Auditor | OWASP, auth, injection | Opus + Claude Security | Before deploy |
+| Security Auditor | OWASP, auth, injection | Opus | Before deploy |
 | CFO | Infra cost, burn, Stripe revenue | Haiku | Weekly |
 | Market Analyst | Competitors, positioning | Sonnet | Monthly, at pivots |
 | Research Agent | Tech evaluation, library choices | Opus + Context7 | On demand |
