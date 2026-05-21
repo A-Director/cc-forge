@@ -53,8 +53,8 @@ UI or frontend work. The task is a UI/frontend task if **any** of the
 following match:
 
 - Task `tags` include `frontend`, `ui`, or `react`
-- Task `title` contains (case-insensitive) `UI`, `React`, `frontend`,
-  or `component`
+- Task `title` contains (case-insensitive) any of: `UI`, `React`,
+  `frontend`, `component`, `KaTeX`, `panel`, `view`, `page`
 
 When a UI/frontend task is detected, **do not** start the task. Surface
 the UX Expert gate review as the step that comes BEFORE the task:
