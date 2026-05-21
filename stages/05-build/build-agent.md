@@ -105,6 +105,61 @@ tells the developer the task is truly done and what comes next:
 If a gate review is due after this task (feature merged, auth/data touched):
 state it as the next step, not as a question. Then begin the gate review
 immediately unless the developer redirects.
+
+### 7. Hermes gate check — after every task
+
+After every task completion, before surfacing the next task, Hermes
+evaluates what was just built and decides whether a gate review is
+needed. The developer never decides — Hermes decides.
+
+Detection rules (check in this order):
+
+1. **Deploy triggered** → run Security + SRE gates immediately
+   (BLOCKING). Do not surface next task until both pass.
+
+2. **Auth / payment / encryption code touched** → Security Auditor now.
+   Match on: `auth`, `password`, `token`, `key`, `encrypt`, `decrypt`,
+   `webhook`, `stripe`, `clerk`, `fernet`, `jwt`.
+
+3. **Database migration added** → CTO review now.
+   Match on: `alembic`, `migration`, `schema`, `ALTER`, `CREATE TABLE`.
+
+4. **API routes added or changed** → QA Engineer now.
+   Match on: `@router`, `@app`, `route`, `endpoint`, `/api/`.
+
+5. **UI components built** → UX Expert now.
+   Match on: `.tsx`, `.jsx`, `component`, `panel`, `view`, `page`,
+   `KaTeX`.
+
+6. **Multiple triggers** → run all relevant personas in parallel
+   (same as the full gate review pattern).
+
+7. **Config / docs / tests only** → no gate needed. Surface next
+   task immediately.
+
+Gate check output format:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Gate check — Task #[N]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Detected: [what triggered the check]
+  Running:  [persona(s)]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+If no gate needed:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Task #[N] complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ [what was built]
+  ✓ No gate needed — config/docs/tests only
+  Next: Task #[N+1]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ### 5. Commit when working
 Commit after each working slice — not at the end of the day.
 Each commit should leave the codebase in a deployable state.
