@@ -30,6 +30,19 @@ For each Taskmaster task during BUILD:
 Read the task. Read the relevant existing code. Read CLAUDE.md.
 Understand what exists before writing anything new.
 
+**UI/frontend check:** if the task involves UI or frontend work
+(tags include `frontend`, `ui`, or `react`, or the title contains
+`UI`, `React`, `frontend`, or `component`), confirm the UX Expert
+gate review has already run for this task. Check `DECISIONS.md` or
+the latest gate review output for a matching entry. If the UX Expert
+gate has **not** run, stop here and run it before writing any code:
+
+```
+/hermes gate review   ← UX Expert
+```
+
+Proceed to step 2 only after UX Expert returns PASS or CONDITIONAL.
+
 ### 2. Plan
 Before writing code:
 - What files need to change?

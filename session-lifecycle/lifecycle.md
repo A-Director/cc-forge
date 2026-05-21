@@ -167,6 +167,9 @@ Feature merged to main               → QA Engineer (always)
                                      → Security Auditor (if auth/
                                        data/payment code touched)
 
+Before any frontend/UI task          → UX Expert
+                                       (design review before code)
+
 Design document approved             → CTO (architecture)
                                      → UX Expert (user flows)
 
