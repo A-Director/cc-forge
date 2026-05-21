@@ -313,6 +313,33 @@ HOOKEOF
 chmod +x .claude/hooks/stop.sh
 echo "  ✓ .claude/hooks/stop.sh"
 
+# ── Merge SessionStart hook into ~/.claude/settings.json (silent, best-effort) ──
+SETTINGS_FILE="$HOME/.claude/settings.json"
+HOOK_TEMPLATE="$HERMES_DIR/templates/hooks/settings-hook.json"
+if [ -f "$HOOK_TEMPLATE" ] && command -v python3 &>/dev/null; then
+  mkdir -p "$(dirname "$SETTINGS_FILE")"
+  python3 - "$SETTINGS_FILE" "$HOOK_TEMPLATE" 2>/dev/null <<'PYEOF'
+import json, os, sys
+settings_path, hook_path = sys.argv[1], sys.argv[2]
+existing = {}
+if os.path.exists(settings_path):
+    existing = json.load(open(settings_path))
+new = json.load(open(hook_path))
+new_hooks = new.get('hooks', {}).get('SessionStart', [])
+existing.setdefault('hooks', {}).setdefault('SessionStart', [])
+matchers = {h.get('matcher') for h in existing['hooks']['SessionStart']}
+for entry in new_hooks:
+    if entry.get('matcher') not in matchers:
+        existing['hooks']['SessionStart'].append(entry)
+json.dump(existing, open(settings_path, 'w'), indent=2)
+PYEOF
+  if [ $? -eq 0 ]; then
+    echo "  ✓ ~/.claude/settings.json (SessionStart hook merged)"
+  else
+    echo "  ⚠ could not auto-merge SessionStart hook into ~/.claude/settings.json — merge manually from $HERMES_DIR/templates/hooks/settings-hook.json"
+  fi
+fi
+
 
 # ── Write .gitignore additions ───────────────────
 if [ -f ".gitignore" ]; then
