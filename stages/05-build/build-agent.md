@@ -26,22 +26,19 @@ Your job during BUILD:
 
 For each Taskmaster task during BUILD:
 
+### 0. UI task check (runs before Orient)
+Check the task title and tags. If the task involves frontend, UI,
+React, or components:
+
+- Confirm UX Expert gate review has run for this feature
+- If not: run `/hermes gate review` (UX Expert) before writing any code
+- Do not skip this — UX reviews design before build, not after
+
+Proceed to step 1 only after UX Expert returns PASS or CONDITIONAL.
+
 ### 1. Orient
 Read the task. Read the relevant existing code. Read CLAUDE.md.
 Understand what exists before writing anything new.
-
-**UI/frontend check:** if the task involves UI or frontend work
-(tags include `frontend`, `ui`, or `react`, or the title contains
-`UI`, `React`, `frontend`, or `component`), confirm the UX Expert
-gate review has already run for this task. Check `DECISIONS.md` or
-the latest gate review output for a matching entry. If the UX Expert
-gate has **not** run, stop here and run it before writing any code:
-
-```
-/hermes gate review   ← UX Expert
-```
-
-Proceed to step 2 only after UX Expert returns PASS or CONDITIONAL.
 
 ### 2. Plan
 Before writing code:
