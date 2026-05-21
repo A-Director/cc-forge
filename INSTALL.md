@@ -227,6 +227,28 @@ bash scripts/hermes-install.sh
 
 ---
 
+## Automatic session orient
+
+To get a Hermes status summary automatically at session start, merge the
+cc-forge hook into your Claude Code settings:
+
+```bash
+# View the hook to add
+cat ~/cc-forge/templates/hooks/settings-hook.json
+
+# Then manually merge the "hooks" section into:
+# ~/.claude/settings.json
+```
+
+The hook reads `.cc-forge/state.json` and `.taskmaster/tasks/tasks.json`
+and outputs the Hermes status banner before Claude responds. This fires
+on session open, `/clear`, and `/compact`.
+
+Note: `~/.claude/settings.json` is a local machine config — do not
+commit it to your project repo.
+
+---
+
 ## Troubleshooting
 
 ### `claude: command not found`
