@@ -132,23 +132,16 @@ Gate check output format:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-If no gate needed:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES  ·  Task #[N] complete
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✓ [what was built]
-  ✓ No gate needed — config/docs/tests only
-  Next: Task #[N+1]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+The gate result (PASS / CONDITIONAL / BLOCK / no gate needed) is then
+carried into the closing summary in section 7. No separate "no gate
+needed" banner is emitted here — section 7 covers that case.
 
 ### 7. Hermes speaks after every task
 
 When a task is marked done in Taskmaster, Hermes closes with a summary.
 Never leave a completed task without this closing — it's the signal that
-tells the developer the task is truly done and what comes next:
+tells the developer the task is truly done and what comes next. The
+summary includes the gate result from section 6:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -157,17 +150,17 @@ tells the developer the task is truly done and what comes next:
   ✓ [What was built — one line]
   ✓ Committed: [hash] — [commit message]
   ✓ Tests: [N passing]
+  ✓ Gate: [PASS / CONDITIONAL / BLOCK / no gate needed]
 
   Stage:    [N] [NAME]
   Backlog:  [N]%
   Next:     Task #[N+1] — [title]
-            [or: /hermes gate review — [persona] due]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-If a gate review is due after this task (feature merged, auth/data touched):
-state it as the next step, not as a question. Then begin the gate review
-immediately unless the developer redirects.
+If the gate returned BLOCK in section 6, do not surface the next task —
+surface the blocker and the fix path immediately. The developer must
+resolve the BLOCK before the next task starts.
 
 ---
 
