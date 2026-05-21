@@ -26,15 +26,24 @@ Your job during BUILD:
 
 For each Taskmaster task during BUILD:
 
-### 0. UI task check (runs before Orient)
+### 0. UI task check — when to run UX Expert
 Check the task title and tags. If the task involves frontend, UI,
-React, or components:
+React, or components, decide when the UX Expert gate runs based on
+whether a design document already exists:
 
-- Confirm UX Expert gate review has run for this feature
-- If not: run `/hermes gate review` (UX Expert) before writing any code
-- Do not skip this — UX reviews design before build, not after
+- **Look in `docs/`** for a design document, wireframe, mockup, or
+  spec for this feature (e.g. `docs/<feature>-design.md`,
+  `docs/wireframes/<feature>.*`, or any file clearly describing the
+  intended UI for this task).
 
-Proceed to step 1 only after UX Expert returns PASS or CONDITIONAL.
+- **If a design doc exists** → run `/hermes gate review` (UX Expert)
+  **before** writing any code. UX reviews the design against the doc.
+  Proceed to step 1 only after UX Expert returns PASS or CONDITIONAL.
+
+- **If no design doc exists** → proceed straight to step 1. The UX
+  Expert gate runs **after** the UI is built, before merging to main
+  (see "Gate triggers during BUILD" below). Note the pending review
+  so it's not skipped.
 
 ### 1. Orient
 Read the task. Read the relevant existing code. Read CLAUDE.md.
@@ -132,6 +141,12 @@ task-master done [id]   ← mark completed tasks
 After each feature merges to main:
 ```
 QA review due   → /hermes gate review
+```
+
+After a UI/frontend feature is built, **before merging to main**
+(unless UX Expert already ran pre-build per step 0):
+```
+UX Expert review due → /hermes gate review
 ```
 
 After auth + billing complete:

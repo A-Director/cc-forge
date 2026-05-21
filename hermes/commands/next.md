@@ -56,8 +56,16 @@ following match:
 - Task `title` contains (case-insensitive) any of: `UI`, `React`,
   `frontend`, `component`, `KaTeX`, `panel`, `view`, `page`
 
-When a UI/frontend task is detected, **do not** start the task. Surface
-the UX Expert gate review as the step that comes BEFORE the task:
+When a UI/frontend task is detected, decide where the UX Expert
+gate runs based on whether a design document already exists:
+
+**Look in `docs/`** for a design document, wireframe, mockup, or
+spec for this feature (e.g. `docs/<feature>-design.md`,
+`docs/wireframes/<feature>.*`, or any file clearly describing the
+intended UI for this task).
+
+**If a design doc exists** → do not start the task. Surface the UX
+Expert gate review as the step that comes BEFORE the task:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -66,12 +74,31 @@ the UX Expert gate review as the step that comes BEFORE the task:
 
   Next task:  #[id] — [title]
   This task involves UI/frontend work.
+  Design doc found: [path]
 
   Required step before writing code:
   /hermes gate review  ← UX Expert (design review)
 
   Once UX Expert review is complete (PASS or CONDITIONAL),
   proceed with task #[id].
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**If no design doc exists** → surface the task as normal, but include
+an explicit reminder that the UX Expert gate must run after build,
+before merging to main:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  NEXT TASK  ·  #[id]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [Task title]
+  [...standard task surface block...]
+
+  Post-build gate (required before merge to main):
+  /hermes gate review  ← UX Expert
+  No design doc found in docs/ — UX reviews the built UI instead.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
