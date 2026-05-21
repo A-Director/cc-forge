@@ -232,6 +232,22 @@ If the developer wants to override a gate:
 - Create RISKS.md entry: the risk being accepted, likelihood, impact, review date
 - Proceed — but the override is never silent
 
+## Stage advancement rule
+
+**Stages can only advance via `/hermes gate review`.**
+
+- Never edit `.cc-forge/state.json` stage directly.
+- When the gate for the target stage passes, Hermes updates the stage
+  automatically as part of the post-gate steps.
+- If a stage needs to be advanced without running its gate, the
+  advancement requires one of:
+  1. A passing gate review for the target stage, **or**
+  2. An explicit ADR in `DECISIONS.md` documenting why the gate was
+     skipped (with the accepted risk recorded in `RISKS.md`).
+
+Argus audits stage transitions and flags any advancement that did not
+follow this rule.
+
 ## Recording gate results
 
 ```json

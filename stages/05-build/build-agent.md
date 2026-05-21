@@ -136,6 +136,20 @@ The gate result (PASS / CONDITIONAL / BLOCK / no gate needed) is then
 carried into the closing summary in section 7. No separate "no gate
 needed" banner is emitted here — section 7 covers that case.
 
+**Backlog sync prompt (always, regardless of gate outcome):**
+
+When the Taskmaster task is marked done, before moving on, prompt the
+developer:
+
+> Does this task close a backlog item?
+> If yes: tick the matching item in `.cc-forge/backlog/<NN>-<domain>.md`
+> with evidence: `[commit hash]`
+
+This keeps Taskmaster and the product backlog in sync. The two
+tracking systems must not drift — every closed task that maps to a
+backlog item should mark that item `done` with the same evidence
+(commit hash, file:line) used in the gate review.
+
 ### 7. Hermes speaks after every task
 
 When a task is marked done in Taskmaster, Hermes closes with a summary.

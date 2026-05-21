@@ -10,6 +10,36 @@ description: >
 
 You are running the production deploy sequence. This is not a drill.
 
+## Mandatory pre-deploy gate check (runs FIRST, before everything else)
+
+Before executing ANY deploy step:
+
+1. Read `.cc-forge/state.json` and find the `gates_passed` array.
+2. Look for the most recent entry with `personas` containing
+   `security-auditor` — record its date.
+3. Look for the most recent entry with `personas` containing
+   `sre-engineer` — record its date.
+4. Compute the age of each in days against today.
+5. **If either gate is missing OR older than 7 days → STOP.**
+   Do not proceed to the Pre-flight section below.
+
+Output when blocked:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  Deploy blocked
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Security gate: [missing / X days ago — must be < 7]
+  SRE gate:      [missing / X days ago — must be < 7]
+
+  Run /hermes gate review first.
+  Then retry /hermes-deploy.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Only proceed below if **both** Security and SRE gates passed within
+the last 7 days.
+
 ## Pre-flight
 
 Check each item. Stop if anything fails:
