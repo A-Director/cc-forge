@@ -46,6 +46,41 @@ If all tasks are blocked, report:
 
 ---
 
+## UI/frontend task detection
+
+Before surfacing a task as the next action, check whether it involves
+UI or frontend work. The task is a UI/frontend task if **any** of the
+following match:
+
+- Task `tags` include `frontend`, `ui`, or `react`
+- Task `title` contains (case-insensitive) `UI`, `React`, `frontend`,
+  or `component`
+
+When a UI/frontend task is detected, **do not** start the task. Surface
+the UX Expert gate review as the step that comes BEFORE the task:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  GATE DUE  ·  UX Expert review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Next task:  #[id] — [title]
+  This task involves UI/frontend work.
+
+  Required step before writing code:
+  /hermes gate review  ← UX Expert (design review)
+
+  Once UX Expert review is complete (PASS or CONDITIONAL),
+  proceed with task #[id].
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+If the developer has already run the UX Expert gate for this task
+(check `DECISIONS.md` or recent gate review output for a matching
+entry), skip the gate and surface the task as normal.
+
+---
+
 ## Hermes closes
 
 After surfacing the next task, immediately begin working on it.
