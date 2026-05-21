@@ -126,3 +126,39 @@ needed, external service required), state that specifically:
   Starting: [First concrete action]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+---
+
+## When Taskmaster is empty
+
+If no pending tasks exist, do not return "all tasks complete" and
+stop. Instead:
+
+1. Read `.cc-forge/state.json` for current stage and phase.
+2. Read `PRD.md` for the next phase scope.
+3. Check if a gate review produced conditions that need tracking
+   (read `.cc-forge/state.json` `gates_passed` for open conditions).
+4. Generate Taskmaster tasks from:
+   - Open gate conditions (highest priority)
+   - Next PRD phase features (after conditions cleared)
+5. Seed Taskmaster with the generated tasks.
+6. Surface the first unblocked task.
+
+Output format when seeding:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  HERMES  ·  [Phase N] complete — seeding [Phase N+1]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Created [N] tasks from [source]:
+  → [N] blocking (must fix first)
+  → [N] conditions (phase 1.5 work)
+  → [N] features (next phase)
+
+  First task: #[N] — [title]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+After seeding, continue into the standard next-task flow — surface
+the first task using the normal output format and (if it's a UI task)
+the UI/frontend detection logic above.
