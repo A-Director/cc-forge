@@ -15,6 +15,7 @@
 **Owner:** Growth Agent
 **Blocks:** Post-launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -27,6 +28,7 @@
 **Owner:** Growth Agent
 **Blocks:** Post-launch
 **Applicability:** Universal (web apps)
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -39,6 +41,7 @@
 **Owner:** Growth Agent
 **Blocks:** Post-launch
 **Applicability:** Universal
+**Phase:** 5 (Growth)
 **Status:** not-started
 **Evidence:** —
 

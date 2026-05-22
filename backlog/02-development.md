@@ -17,6 +17,7 @@
 **Owner:** CTO
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -29,6 +30,7 @@
 **Owner:** CTO
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Stack: TypeScript
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -41,6 +43,7 @@
 **Owner:** CTO
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -53,6 +56,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -65,6 +69,7 @@
 **Owner:** CTO
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -77,6 +82,7 @@
 **Owner:** QA Engineer
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -89,6 +95,7 @@
 **Owner:** QA Engineer
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -101,6 +108,7 @@
 **Owner:** QA Engineer
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -113,6 +121,7 @@
 **Owner:** QA Engineer
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -125,6 +134,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Node.js
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 

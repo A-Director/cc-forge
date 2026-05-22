@@ -15,6 +15,7 @@
 **Owner:** CFO
 **Blocks:** Post-launch (ongoing)
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -27,6 +28,7 @@
 **Owner:** CFO
 **Blocks:** Post-launch (ongoing)
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -39,6 +41,7 @@
 **Owner:** Product Owner
 **Blocks:** Post-launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -51,5 +54,6 @@
 **Owner:** SRE Engineer
 **Blocks:** Post-launch
 **Applicability:** Stack: projects with encrypted secrets at rest
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —

@@ -16,6 +16,7 @@
 **Owner:** SRE Engineer
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -28,6 +29,7 @@
 **Owner:** SRE Engineer
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -40,6 +42,7 @@
 **Owner:** CTO
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -52,6 +55,7 @@
 **Owner:** Product Owner
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -64,6 +68,7 @@
 **Owner:** Product Owner
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 

@@ -17,6 +17,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -29,6 +30,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -41,6 +43,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -53,6 +56,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -65,6 +69,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -77,6 +82,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -89,6 +95,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -101,6 +108,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -113,6 +121,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -125,6 +134,7 @@
 **Owner:** Security Auditor
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -137,6 +147,7 @@
 **Owner:** Security Auditor
 **Blocks:** Public launch (not beta)
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -149,6 +160,7 @@
 **Owner:** Security Auditor
 **Blocks:** Public launch (not beta)
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -163,6 +175,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -175,6 +188,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -187,6 +201,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -201,6 +216,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -213,6 +229,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -225,6 +242,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -239,6 +257,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Railway
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -253,5 +272,6 @@
 **Owner:** Security Auditor
 **Blocks:** Not blocking — enhancement
 **Applicability:** Optional: SaaS products with sensitive user data
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —

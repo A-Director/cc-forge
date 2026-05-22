@@ -16,6 +16,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -28,6 +29,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -40,6 +42,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Clerk
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -54,6 +57,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -66,6 +70,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -78,6 +83,7 @@
 **Owner:** CTO
 **Blocks:** Launch
 **Applicability:** Stack: Stripe
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -90,6 +96,7 @@
 **Owner:** CTO
 **Blocks:** Launch
 **Applicability:** Stack: Stripe
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -106,6 +113,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Python/FastAPI
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -118,6 +126,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Python/SQLAlchemy
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -130,6 +139,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Python/SQLAlchemy/Alembic
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -142,6 +152,7 @@
 **Owner:** CTO
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Stack: Python/FastAPI/SQLAlchemy
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -156,6 +167,7 @@
 **Owner:** CTO
 **Blocks:** Stage 09 DEPLOY (when pgvector is in scope)
 **Applicability:** Stack: pgvector (Phase 2+)
+**Phase:** 2 (Beta)
 **Status:** not-applicable
 **Evidence:** Deferred to Phase 2 — ADR-AUTO-pgvector
 
@@ -170,6 +182,7 @@
 **Owner:** Security Auditor
 **Blocks:** Stage 09 DEPLOY
 **Applicability:** Stack: Python/Fernet encryption
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -182,5 +195,6 @@
 **Owner:** SRE Engineer
 **Blocks:** Launch
 **Applicability:** Stack: Python/Fernet encryption
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —

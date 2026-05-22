@@ -85,6 +85,19 @@ Never skip `/compact` — a healthy session produces a better summary than a deg
 
 ---
 
+## PDLC vs SDLC — the nesting in one paragraph
+
+cc-forge runs **two** lifecycles. **SDLC** (the 11 stages: idea → iterate) is *what activity you're doing*. **PDLC** (5 phases: MVP → Beta → Pilot → Launch → Growth) is *what maturity bar you're shooting for*. Each PDLC phase consumes many SDLC cycles. Phase changes the bar each backlog domain must hit. See `PHASES.md` for definitions and `session-lifecycle/phase-gates.md` for the gate distinction.
+
+| Lifecycle | Gate command | Frequency |
+|---|---|---|
+| SDLC (within phase) | `/hermes gate review` | Many per phase — features, deploys, design changes |
+| PDLC (between phases) | `/hermes-phase-gate` | 3–5 per project total |
+
+Every backlog item carries a `**Phase:**` field — the earliest phase a typical SaaS project needs the item done.
+
+---
+
 ## Reviews and gates
 
 | When | Command | What it does |
@@ -92,6 +105,7 @@ Never skip `/compact` — a healthy session produces a better summary than a deg
 | Feature merged to main | `/hermes-gate review` | Triggers QA + Security (if auth/data touched) |
 | Design approved | `/hermes-gate review` | Triggers CTO + UX Expert |
 | Before any deploy | `/hermes-gate review` | Triggers CTO + SRE + Security Auditor |
+| Advancing PDLC phase (MVP→Beta etc.) | `/hermes-phase-gate` | Full-panel review, bumps state.json current_phase, dedicated commit |
 | Something feels off | `/hermes-argus` | Compliance monitor — names every deviation |
 | Before release / sprint end | `/hermes-clean` | Dead code report with confidence levels |
 | Tech debt feeling heavy | `/hermes-quality` | Complexity, duplication, lint debt backlog |

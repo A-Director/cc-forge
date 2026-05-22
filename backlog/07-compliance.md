@@ -17,6 +17,7 @@
 **Owner:** Legal / Compliance
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -29,6 +30,7 @@
 **Owner:** Legal / Compliance
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -41,6 +43,7 @@
 **Owner:** Legal / Compliance
 **Blocks:** Launch
 **Applicability:** Universal (if using analytics/tracking)
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -53,6 +56,7 @@
 **Owner:** Legal / Compliance
 **Blocks:** Launch (EU users)
 **Applicability:** Universal if serving EU
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -65,6 +69,7 @@
 **Owner:** Legal / Compliance
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 5 (Growth)
 **Status:** not-started
 **Evidence:** —
 

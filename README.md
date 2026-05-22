@@ -50,6 +50,43 @@ Each stage has a dedicated agent. Stages feed into each other. Nothing is manual
 
 ---
 
+## PDLC vs SDLC — two lifecycles that nest
+
+The eleven stages above are **SDLC** (Software Development Life Cycle) activities — *what* the team is doing right now: planning, designing, building, deploying, monitoring.
+
+Sitting around them is the **PDLC** (Product Development Life Cycle) — *what maturity bar* the product is shooting for right now:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ PDLC (outer) — what bar are we shooting for?                    │
+│                                                                 │
+│   Phase 1 MVP → Phase 2 Beta → Phase 3 Pilot → Phase 4 Launch   │
+│                                              → Phase 5 Growth   │
+│                                                                 │
+│   Each phase has: a goal · an exit gate · domain bars · the     │
+│   personas that activate · the SDLC stages typically run.       │
+│                                                                 │
+│   ┌─────────────────────────────────────────────────────────┐   │
+│   │ SDLC (inner) — what activity right now?                 │   │
+│   │   01 IDEA → 02 SPEC → 03 PLAN → 04 DESIGN → 05 BUILD →  │   │
+│   │   06 AUTH → 07 BILLING → 08 REVIEW → 09 DEPLOY →        │   │
+│   │   10 MONITOR → 11 ITERATE                               │   │
+│   │                                                         │   │
+│   │   Each PDLC phase consumes many SDLC cycles.            │   │
+│   └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Within a phase:** run `/hermes gate review` after features, before deploys, etc. — these are SDLC gates, many per phase.
+
+**Between phases:** run `/hermes-phase-gate` to advance from one phase to the next — this is a PDLC gate, a few per project. It triggers a full-panel persona review and bumps `current_phase` in `state.json`.
+
+Every backlog item carries a `**Phase:**` field — "what's the earliest phase a typical SaaS project needs this done?" — so the backlog naturally rolls up to per-phase target bars (see `backlog/master.md`).
+
+See `docs-templates/PHASES.md` for the full phase definitions, exit gates, and domain bar tables. `session-lifecycle/phase-gates.md` covers the SDLC-vs-PDLC distinction in detail.
+
+---
+
 ## Hermes — the Conductor
 
 Hermes is the orchestrating agent at the center of your SDLC. Named after the Greek messenger god who coordinated between all other gods — Hermes sits between you and every other agent, persona, and tool in this framework.
