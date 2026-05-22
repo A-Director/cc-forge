@@ -135,6 +135,29 @@ cp "$HERMES_DIR"/backlog/*.md .cc-forge/catalogue/
 echo "  ✓ $(ls .cc-forge/catalogue/*.md | wc -l) catalogue files updated"
 echo "  (Project backlog in .cc-forge/backlog/ unchanged)"
 
+# Update Python scripts (Session C onward).
+# Non-markdown deliverables like scripts/hermes-dashboard.py need to land
+# in the project too, otherwise /hermes-dashboard fails on first use
+# with "scripts/hermes-dashboard.py: No such file or directory" — gap #52.
+echo "▸ Updating scripts..."
+mkdir -p scripts
+if [ -d "$HERMES_DIR/scripts" ]; then
+  cp "$HERMES_DIR"/scripts/*.py scripts/ 2>/dev/null || true
+  script_count=$(ls scripts/*.py 2>/dev/null | wc -l)
+  echo "  ✓ $script_count script files updated"
+else
+  echo "  · no scripts/ directory in cc-forge source"
+fi
+
+# Update Hermes calibration files (token-weights, etc.).
+# Same gap #52 concern: non-markdown configs need explicit copy.
+echo "▸ Updating Hermes calibration..."
+mkdir -p .cc-forge
+if [ -f "$HERMES_DIR/hermes/token-weights.json" ]; then
+  cp "$HERMES_DIR/hermes/token-weights.json" .cc-forge/
+  echo "  ✓ token-weights.json updated"
+fi
+
 # Create hooks if missing — safe to run on existing projects
 echo "▸ Checking Claude hooks..."
 mkdir -p .claude/hooks
@@ -163,6 +186,23 @@ HOOKEOF
 else
   echo "  · .claude/hooks/stop.sh (already exists)"
 fi
+
+# Verify Session C deliverables landed correctly (gap #52).
+# Same defense-in-depth pattern as the gap #50 second pass: catch the
+# failure loudly here rather than letting /hermes-dashboard fail later.
+echo "▸ Verifying Session C deliverables..."
+missing=0
+if [ ! -f "scripts/hermes-dashboard.py" ]; then
+  echo "  ✗ scripts/hermes-dashboard.py missing — /hermes-dashboard will fail"
+  missing=$((missing + 1))
+fi
+if [ ! -f ".cc-forge/token-weights.json" ]; then
+  echo "  ✗ .cc-forge/token-weights.json missing — overhead calc will use defaults"
+  missing=$((missing + 1))
+fi
+if [ $missing -eq 0 ]; then
+  echo "  ✓ Session C deliverables present"
+fi
 ```
 
 ---
@@ -180,6 +220,8 @@ fi
   ✓ [N] standards    → .cc-forge/standards/
   ✓ [N] commands     → .claude/commands/
   ✓ [N] catalogue    → .cc-forge/catalogue/
+  ✓ [N] scripts      → scripts/                        ← omit if cc-forge has no scripts/
+  ✓ 1 calibration  → .cc-forge/token-weights.json    ← omit if source file missing
 
   Cleaned:                                              ← only when cleaned > 0
   ✓ [N] legacy unprefixed commands removed (gap #50 hotfix)
