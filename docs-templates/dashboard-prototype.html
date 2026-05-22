@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cc-forge dashboard — CLARK</title>
+<style>
+  :root {
+    --bg: #faf8f3;
+    --bg-card: #ffffff;
+    --bg-subtle: #f3f0e8;
+    --bg-strong: #1c1b18;
+    --ink: #1c1b18;
+    --ink-soft: #5b5950;
+    --ink-faint: #8c8a7e;
+    --rule: #e5e1d4;
+    --accent: #b8472e;
+    --accent-soft: #f5e6e0;
+    --green: #2d6a4f;
+    --green-soft: #dceee2;
+    --amber: #b67800;
+    --amber-soft: #fbeed2;
+    --red: #a01818;
+    --red-soft: #f9dada;
+    --blue: #1d4e89;
+    --blue-soft: #dfe9f5;
+    --purple: #5a3e85;
+    --purple-soft: #ebe2f3;
+    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino', Georgia, serif;
+    --font-body: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 80px;
+  }
+
+  /* Header */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .header-left h1 {
+    font-family: var(--font-display);
+    font-size: 44px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .header-left h1 .small {
+    font-size: 22px;
+    color: var(--ink-soft);
+    margin-left: 8px;
+    font-style: italic;
+  }
+  .header-left .meta {
+    color: var(--ink-faint);
+    font-size: 13px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .stage-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-strong);
+    color: var(--bg);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .stage-pill .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+  .gen-time {
+    color: var(--ink-faint);
+    font-size: 12px;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+  }
+
+  /* Top-level KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--bg-card);
+    padding: 20px 24px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .kpi-value .unit {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-left: 2px;
+  }
+  .kpi-trend {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+  }
+  .kpi-trend.up { color: var(--green); }
+  .kpi-trend.warn { color: var(--amber); }
+  .kpi-trend.bad { color: var(--red); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .tab {
+    padding: 12px 20px 14px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s ease;
+    letter-spacing: 0.01em;
+  }
+  .tab:hover { color: var(--ink-soft); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .tab .badge {
+    display: inline-block;
+    background: var(--bg-subtle);
+    color: var(--ink-soft);
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .tab.active .badge {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Section heading */
+  .section-h {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    color: var(--ink-faint);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  /* Backlog tab */
+  .backlog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .domain-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 18px 20px;
+  }
+  .domain-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .domain-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  .domain-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .domain-pct {
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 400;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--bg-subtle);
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--ink);
+    transition: width 0.6s ease;
+  }
+  .progress-fill.complete { background: var(--green); }
+  .progress-fill.warn { background: var(--amber); }
+  .progress-fill.behind { background: var(--accent); }
+  .domain-meta {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+  }
+  .domain-meta .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .domain-meta .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .dot-done { background: var(--green); }
+  .dot-prog { background: var(--amber); }
+  .dot-todo { background: var(--ink-faint); }
+  .dot-na   { background: var(--rule); border: 1px solid var(--ink-faint); }
+
+  .domain-owner {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Item filter row */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-right: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .chip {
+    padding: 5px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.12s ease;
+  }
+  .chip:hover {
+    border-color: var(--ink-soft);
+  }
+  .chip.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* Item list */
+  .item-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+  }
+  .item-table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-subtle);
+  }
+  .item-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  .item-table tr:last-child td { border-bottom: none; }
+  .item-table tr:hover { background: var(--bg-subtle); }
+  .item-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .status-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+  .status-done { background: var(--green-soft); color: var(--green); }
+  .status-prog { background: var(--amber-soft); color: var(--amber); }
+  .status-todo { background: var(--bg-subtle); color: var(--ink-soft); }
+  .status-na   { background: transparent; color: var(--ink-faint); border: 1px dashed var(--ink-faint); }
+
+  /* Risks tab */
+  .risk-card {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 24px;
+    padding: 20px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-left-width: 4px;
+    margin-bottom: 12px;
+    align-items: start;
+  }
+  .risk-card.crit { border-left-color: var(--red); }
+  .risk-card.high { border-left-color: var(--accent); }
+  .risk-card.med  { border-left-color: var(--amber); }
+  .risk-card.low  { border-left-color: var(--ink-faint); }
+
+  .risk-sev {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .risk-card.crit .risk-sev { color: var(--red); }
+  .risk-card.high .risk-sev { color: var(--accent); }
+  .risk-card.med  .risk-sev { color: var(--amber); }
+  .risk-card.low  .risk-sev { color: var(--ink-faint); }
+
+  .risk-id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+  .risk-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .risk-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .risk-mitigation {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-style: italic;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+  }
+  .risk-mitigation strong {
+    font-style: normal;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .risk-meta {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .risk-meta div + div { margin-top: 4px; }
+
+  /* Decisions tab */
+  .adr-search {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+    font-family: var(--font-body);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .adr-search:focus {
+    outline: none;
+    border-color: var(--ink);
+  }
+  .adr {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    margin-bottom: 10px;
+  }
+  .adr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    gap: 16px;
+  }
+  .adr-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .adr-status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+  }
+  .adr-status.accepted { background: var(--green-soft); color: var(--green); }
+  .adr-status.proposed { background: var(--amber-soft); color: var(--amber); }
+  .adr-status.deprecated { background: var(--bg-subtle); color: var(--ink-faint); text-decoration: line-through; }
+  .adr-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .adr-context {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .adr-rationale {
+    font-size: 12px;
+    color: var(--ink-faint);
+    border-top: 1px dashed var(--rule);
+    padding-top: 8px;
+  }
+  .adr-rationale strong {
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .adr-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  /* Usage tab */
+  .usage-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .panel-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 24px;
+  }
+  .panel-card-h {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .sparkline-wrap {
+    height: 180px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .sparkline-x {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+  }
+  .stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-row-label {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .stat-row-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .token-big {
+    font-family: var(--font-display);
+    font-size: 32px;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .token-sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+  }
+
+  .gate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+  }
+  .gate-table td {
+    padding: 8px 0;
+    font-size: 12px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .gate-table tr:last-child td { border-bottom: none; }
+  .gate-table .persona { font-weight: 500; }
+  .gate-table .pco { font-family: var(--font-mono); color: var(--ink-faint); }
+  .verdict {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .verdict.p { background: var(--green-soft); color: var(--green); }
+  .verdict.c { background: var(--amber-soft); color: var(--amber); }
+  .verdict.b { background: var(--red-soft); color: var(--red); }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    text-align: center;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
+
+  /* Launch readiness bar — top of backlog tab */
+  .readiness {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .readiness-left .h {
+    font-family: var(--font-display);
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .readiness-left .s {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .readiness-track {
+    height: 8px;
+    background: var(--bg-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+  .readiness-fill {
+    height: 100%;
+    background: var(--ink);
+    transition: width 0.8s ease;
+  }
+  .readiness-marker {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--accent);
+  }
+  .readiness-right {
+    text-align: right;
+  }
+  .readiness-pct {
+    font-family: var(--font-display);
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .readiness-pct .sm {
+    font-size: 20px;
+    color: var(--ink-soft);
+  }
+  .readiness-verdict {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .readiness-verdict.green { color: var(--green); }
+  .readiness-verdict.amber { color: var(--amber); }
+  .readiness-verdict.red   { color: var(--red); }
+
+  @media (max-width: 900px) {
+    .container { padding: 20px 16px 40px; }
+    .header { grid-template-columns: 1fr; }
+    .header-right { text-align: left; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .backlog-grid { grid-template-columns: 1fr; }
+    .usage-row { grid-template-columns: 1fr; }
+    .token-grid { grid-template-columns: 1fr; }
+    .readiness { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <h1>CLARK <span class="small">— cc-forge dashboard</span></h1>
+      <div class="meta">realitybyclark.com · python/fastapi + react/vite + railway</div>
+    </div>
+    <div class="header-right">
+      <span class="stage-pill"><span class="dot"></span>Stage 05 · Build</span>
+      <div class="gen-time">Generated 2026-05-21 14:32 UTC</div>
+    </div>
+  </header>
+
+  <!-- KPI row -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Backlog overall</div>
+      <div class="kpi-value">62<span class="unit">%</span></div>
+      <div class="kpi-trend up">↑ 18% this week</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Sessions</div>
+      <div class="kpi-value">23</div>
+      <div class="kpi-trend">across 16 days</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Active risks</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-trend warn">2 high, 3 medium</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Hermes overhead</div>
+      <div class="kpi-value">11<span class="unit">%</span></div>
+      <div class="kpi-trend">132k of 1.2M tokens</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="backlog" role="tab">Backlog <span class="badge">79</span></button>
+    <button class="tab" data-tab="risks" role="tab">Risks <span class="badge">7</span></button>
+    <button class="tab" data-tab="decisions" role="tab">Decisions <span class="badge">18</span></button>
+    <button class="tab" data-tab="usage" role="tab">Usage</button>
+  </div>
+
+  <!-- BACKLOG PANEL -->
+  <section class="panel active" id="panel-backlog">
+
+    <div class="readiness">
+      <div class="readiness-left">
+        <div class="h">Launch readiness</div>
+        <div class="s">Domains 01–08 must reach 100% before public launch · 09–10 are post-launch</div>
+        <div class="readiness-track">
+          <div class="readiness-fill" style="width: 62%;"></div>
+          <div class="readiness-marker" style="left: 100%;"></div>
+        </div>
+      </div>
+      <div class="readiness-right">
+        <div class="readiness-pct">62<span class="sm">%</span></div>
+        <div class="readiness-verdict amber">3 domains blocking</div>
+      </div>
+    </div>
+
+    <h2 class="section-h">Completion by domain</h2>
+    <p class="section-sub">10 domains · 79 active items · 12 not-applicable with decision records</p>
+
+    <div class="backlog-grid" id="domain-grid"></div>
+
+    <h2 class="section-h">Items</h2>
+    <p class="section-sub">Filter by status to find what's in-flight or blocked</p>
+
+    <div class="filter-row">
+      <span class="filter-label">Status</span>
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="in-progress">In progress</button>
+      <button class="chip" data-filter="not-started">Not started</button>
+      <button class="chip" data-filter="done">Done</button>
+      <button class="chip" data-filter="not-applicable">Not applicable</button>
+    </div>
+
+    <table class="item-table" id="item-table">
+      <thead>
+        <tr>
+          <th style="width: 90px;">ID</th>
+          <th>Outcome</th>
+          <th style="width: 110px;">Owner</th>
+          <th style="width: 110px;">Status</th>
+        </tr>
+      </thead>
+      <tbody id="item-tbody"></tbody>
+    </table>
+  </section>
+
+  <!-- RISKS PANEL -->
+  <section class="panel" id="panel-risks">
+    <h2 class="section-h">Risk register</h2>
+    <p class="section-sub">7 active risks · ordered by severity · auto-aggregated from RISKS.md</p>
+
+    <div class="filter-row">
+      <span class="filter-label">Severity</span>
+      <button class="chip active" data-rfilter="all">All</button>
+      <button class="chip" data-rfilter="crit">Critical</button>
+      <button class="chip" data-rfilter="high">High</button>
+      <button class="chip" data-rfilter="med">Medium</button>
+      <button class="chip" data-rfilter="low">Low</button>
+    </div>
+
+    <div id="risk-list"></div>
+  </section>
+
+  <!-- DECISIONS PANEL -->
+  <section class="panel" id="panel-decisions">
+    <h2 class="section-h">Architecture decisions</h2>
+    <p class="section-sub">18 decision records · from DECISIONS.md · search by title, context, or ID</p>
+
+    <input type="text" class="adr-search" id="adr-search" placeholder="Search decisions — try &quot;auth&quot;, &quot;railway&quot;, or &quot;ADR-005&quot;" />
+
+    <div id="adr-list"></div>
+  </section>
+
+  <!-- USAGE PANEL -->
+  <section class="panel" id="panel-usage">
+    <h2 class="section-h">Token & framework usage</h2>
+    <p class="section-sub">Claude Code raw tokens · Hermes framework overhead · session discipline · gate history</p>
+
+    <div class="usage-row">
+      <div class="panel-card">
+        <div class="panel-card-h">Claude Code raw tokens (last 7 days)</div>
+        <div class="token-grid">
+          <div>
+            <div class="kpi-label">Input</div>
+            <div class="token-big">847k</div>
+            <div class="token-sub">avg 36.8k / session</div>
+          </div>
+          <div>
+            <div class="kpi-label">Output</div>
+            <div class="token-big">312k</div>
+            <div class="token-sub">avg 13.6k / session</div>
+          </div>
+          <div>
+            <div class="kpi-label">Cache read</div>
+            <div class="token-big" style="color: var(--green);">576k</div>
+            <div class="token-sub">68% hit rate</div>
+          </div>
+          <div>
+            <div class="kpi-label">Est. cost (7d)</div>
+            <div class="token-big">$4.18</div>
+            <div class="token-sub">at sonnet 4.6 rates</div>
+          </div>
+        </div>
+        <div style="font-size: 11px; color: var(--ink-faint); font-style: italic; border-top: 1px dashed var(--rule); padding-top: 10px; margin-top: 6px;">
+          Parsed from ~/.claude/projects/&lt;hash&gt;/conversation-*.jsonl · message-level metadata
+        </div>
+      </div>
+
+      <div class="panel-card" style="border-left: 4px solid var(--accent);">
+        <div class="panel-card-h">Hermes overhead (last 7 days)</div>
+        <div class="token-grid">
+          <div>
+            <div class="kpi-label">CLAUDE.md context</div>
+            <div class="token-big">38k</div>
+            <div class="token-sub">512 tok × 74 turns</div>
+          </div>
+          <div>
+            <div class="kpi-label">/hermes-* commands</div>
+            <div class="token-big">52k</div>
+            <div class="token-sub">57 invocations</div>
+          </div>
+          <div>
+            <div class="kpi-label">Persona gates</div>
+            <div class="token-big">38k</div>
+            <div class="token-sub">23 reviews</div>
+          </div>
+          <div>
+            <div class="kpi-label">Hermes share</div>
+            <div class="token-big" style="color: var(--accent);">11%</div>
+            <div class="token-sub">$0.46 of $4.18</div>
+          </div>
+        </div>
+        <div style="font-size: 11px; color: var(--ink-faint); font-style: italic; border-top: 1px dashed var(--rule); padding-top: 10px; margin-top: 6px;">
+          Estimated from .cc-forge/usage.log · per-command weights × invocation counts · v2 will measure directly via hook
+        </div>
+      </div>
+    </div>
+
+    <div class="usage-row">
+      <div class="panel-card">
+        <div class="panel-card-h">Backlog trajectory</div>
+        <div class="sparkline-wrap">
+          <svg id="sparkline" viewBox="0 0 800 180" preserveAspectRatio="none" style="width:100%;height:100%;">
+          </svg>
+        </div>
+        <div class="sparkline-x" id="sparkline-x"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-card-h">Hermes session discipline</div>
+        <div class="stat-list">
+          <div class="stat-row"><span class="stat-row-label">CLAUDE.md tokens</span><span class="stat-row-val">512 / 600</span></div>
+          <div class="stat-row"><span class="stat-row-label">/compact frequency</span><span class="stat-row-val">19 / 23 sessions</span></div>
+          <div class="stat-row"><span class="stat-row-label">Argus last run</span><span class="stat-row-val">2 days ago</span></div>
+          <div class="stat-row"><span class="stat-row-label">Drift events</span><span class="stat-row-val">3 (1 outstanding)</span></div>
+          <div class="stat-row"><span class="stat-row-label">Model distribution</span><span class="stat-row-val">Sonnet 78% · Opus 18%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="usage-row">
+      <div class="panel-card">
+        <div class="panel-card-h">Command usage</div>
+        <div class="stat-list">
+          <div class="stat-row"><span class="stat-row-label">/hermes-status</span><span class="stat-row-val">23</span></div>
+          <div class="stat-row"><span class="stat-row-label">/hermes-next</span><span class="stat-row-val">19</span></div>
+          <div class="stat-row"><span class="stat-row-label">/hermes-gate review</span><span class="stat-row-val">8</span></div>
+          <div class="stat-row"><span class="stat-row-label">/hermes-argus</span><span class="stat-row-val">3</span></div>
+          <div class="stat-row"><span class="stat-row-label">/criticalthink</span><span class="stat-row-val">4</span></div>
+          <div class="stat-row"><span class="stat-row-label">/hermes-deploy</span><span class="stat-row-val" style="color: var(--ink-faint);">0 — never used</span></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-card-h">Persona gate history</div>
+        <table class="gate-table">
+          <tr><td class="persona">CTO</td><td class="pco">4 reviews</td><td><span class="verdict p">3P</span> <span class="verdict c">1C</span></td></tr>
+          <tr><td class="persona">Security Auditor</td><td class="pco">5 reviews</td><td><span class="verdict p">2P</span> <span class="verdict c">2C</span> <span class="verdict b">1B</span></td></tr>
+          <tr><td class="persona">QA Engineer</td><td class="pco">6 reviews</td><td><span class="verdict p">4P</span> <span class="verdict c">2C</span></td></tr>
+          <tr><td class="persona">SRE Engineer</td><td class="pco">2 reviews</td><td><span class="verdict p">1P</span> <span class="verdict c">1C</span></td></tr>
+          <tr><td class="persona">Product Owner</td><td class="pco">3 reviews</td><td><span class="verdict p">3P</span></td></tr>
+          <tr><td class="persona">Argus</td><td class="pco">3 runs</td><td><span style="font-size:11px; color: var(--amber); font-family: var(--font-mono);">drifting</span></td></tr>
+          <tr><td class="persona" style="color: var(--ink-faint);">UX Expert</td><td colspan="2" class="pco">never invoked</td></tr>
+          <tr><td class="persona" style="color: var(--ink-faint);">CFO</td><td colspan="2" class="pco">never invoked</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    cc-forge dashboard v0.1 · generated by /hermes-dashboard · markdown is the source of truth · regenerate with one command
+  </footer>
+</div>
+
+<script>
+// ───── FAKE CLARK-SHAPED DATA ─────
+const domains = [
+  { n: '01', name: 'Product',      pct: 85, done: 6, prog: 1, todo: 1, na: 0, owner: 'Product Owner' },
+  { n: '02', name: 'Development',  pct: 78, done: 7, prog: 2, todo: 0, na: 1, owner: 'CTO + QA' },
+  { n: '03', name: 'Security',     pct: 72, done: 8, prog: 1, todo: 2, na: 0, owner: 'Security Auditor' },
+  { n: '04', name: 'Reliability',  pct: 45, done: 4, prog: 2, todo: 4, na: 1, owner: 'SRE Engineer' },
+  { n: '05', name: 'Design',       pct: 60, done: 5, prog: 1, todo: 2, na: 1, owner: 'UX Expert' },
+  { n: '06', name: 'Integrations', pct: 88, done: 7, prog: 0, todo: 1, na: 2, owner: 'CTO' },
+  { n: '07', name: 'Compliance',   pct: 50, done: 3, prog: 0, todo: 3, na: 2, owner: 'Legal/Compliance' },
+  { n: '08', name: 'Launch',       pct: 25, done: 2, prog: 1, todo: 5, na: 0, owner: 'Product Owner' },
+  { n: '09', name: 'Growth',       pct: 0,  done: 0, prog: 0, todo: 6, na: 0, owner: 'Growth Agent' },
+  { n: '10', name: 'Operations',   pct: 0,  done: 0, prog: 0, todo: 5, na: 1, owner: 'CFO + SRE' },
+];
+
+const items = [
+  { id: 'PRD-003', text: 'Success metrics defined and instrumented', owner: 'PO',  status: 'in-progress' },
+  { id: 'DEV-007', text: 'CI gates green on Postgres + SQLite matrix', owner: 'CTO', status: 'done' },
+  { id: 'DEV-008', text: 'Test coverage ≥70% across services', owner: 'QA',  status: 'in-progress' },
+  { id: 'DEV-009', text: 'Linter and formatter enforced in CI', owner: 'CTO', status: 'done' },
+  { id: 'SEC-003', text: 'All webhook endpoints verify request signatures', owner: 'Sec', status: 'done' },
+  { id: 'SEC-005', text: 'Rate limits applied to all auth endpoints', owner: 'Sec', status: 'done' },
+  { id: 'SEC-009', text: 'Secrets rotation runbook documented', owner: 'Sec', status: 'not-started' },
+  { id: 'SEC-011', text: 'Fernet key rotation tested under load', owner: 'Sec', status: 'in-progress' },
+  { id: 'REL-002', text: 'Uptime monitor configured with alerts', owner: 'SRE', status: 'not-started' },
+  { id: 'REL-004', text: 'RUNBOOK.md complete and reviewed', owner: 'SRE', status: 'in-progress' },
+  { id: 'REL-006', text: 'Database backup tested via restore drill', owner: 'SRE', status: 'not-started' },
+  { id: 'REL-008', text: 'Request-ID logging across all routes', owner: 'SRE', status: 'done' },
+  { id: 'DES-003', text: 'Color contrast passes WCAG 2.1 AA', owner: 'UX',  status: 'in-progress' },
+  { id: 'DES-005', text: 'Keyboard navigation verified end-to-end', owner: 'UX',  status: 'not-started' },
+  { id: 'INT-RWY-002', text: 'Railway production env vars documented', owner: 'CTO', status: 'done' },
+  { id: 'CMP-002', text: 'GDPR data export endpoint implemented', owner: 'Legal', status: 'not-started' },
+  { id: 'CMP-004', text: 'Privacy policy reviewed and published', owner: 'Legal', status: 'not-started' },
+  { id: 'LCH-001', text: 'Custom domain configured and resolving correctly', owner: 'SRE', status: 'done' },
+  { id: 'LCH-002', text: 'SSL certificate valid and auto-renewing', owner: 'SRE', status: 'done' },
+  { id: 'LCH-003', text: 'Transactional email configured and delivering', owner: 'CTO', status: 'in-progress' },
+  { id: 'LCH-004', text: 'Support channel active (email or in-app)', owner: 'PO',  status: 'not-started' },
+  { id: 'LCH-005', text: 'Beta program defined (N users, duration, criteria)', owner: 'PO',  status: 'not-started' },
+  { id: 'SEC-STK-CLK-001', text: 'Clerk webhooks set up for user sync', owner: 'Sec', status: 'not-applicable' },
+  { id: 'INT-STR-001', text: 'Stripe billing integration tested', owner: 'CTO', status: 'not-applicable' },
+];
+
+const risks = [
+  { id: 'RISK-007', sev: 'high', title: 'No automated rollback path on Railway',
+    desc: 'Railway production deploys are forward-only. A bad deploy requires manual revert via git + redeploy, ~6 min recovery window.',
+    mit: 'SRE to add staged deploy with health gate before promote — planned Phase 1.5',
+    owner: 'SRE', review: '2026-05-28' },
+  { id: 'RISK-004', sev: 'high', title: 'Fernet key stored only in Railway secrets',
+    desc: 'If Railway loses access or the secret is rotated incorrectly, all encrypted user data becomes unreadable. No secondary key store.',
+    mit: 'Implement key rotation procedure with grace period — planned Phase 2',
+    owner: 'Sec', review: '2026-06-01' },
+  { id: 'RISK-012', sev: 'med', title: 'No uptime monitor configured',
+    desc: 'Service outages would not be detected until a user reports them. Currently relying on manual checks.',
+    mit: 'Provision UptimeRobot or Better Uptime — tracked as REL-002',
+    owner: 'SRE', review: '2026-05-25' },
+  { id: 'RISK-009', sev: 'med', title: 'Rate limit policy not load-tested',
+    desc: 'Per-IP rate limits set defensively at 60/min but not validated under realistic traffic patterns.',
+    mit: 'QA to run k6 scenario before public launch',
+    owner: 'QA',  review: '2026-06-05' },
+  { id: 'RISK-015', sev: 'med', title: 'CHANGELOG.md missing',
+    desc: 'No human-readable version history. Hard to communicate changes to early beta users.',
+    mit: 'Generate from git history + maintain going forward',
+    owner: 'PO',  review: '2026-05-23' },
+  { id: 'RISK-003', sev: 'low', title: 'Chat history grows unbounded per user',
+    desc: 'No retention policy on chat messages. Cost and query performance may degrade at scale.',
+    mit: 'Acceptable while in private beta — revisit at 100 active users',
+    owner: 'CTO', review: '2026-07-01' },
+  { id: 'RISK-018', sev: 'low', title: 'Single-region Railway deployment',
+    desc: 'No multi-region failover. Acceptable for personal research environment but a constraint for scale.',
+    mit: 'Documented as acceptable — review at growth gate',
+    owner: 'SRE', review: '2026-08-01' },
+];
+
+const adrs = [
+  { id: 'ADR-001', date: '2026-04-12', status: 'accepted', title: 'Use FastAPI over Django for backend',
+    ctx: 'Need lightweight async API server for physics queries with structured output.',
+    why: 'FastAPI better matches async LLM call patterns; Django overhead unjustified for this scope.' },
+  { id: 'ADR-002', date: '2026-04-12', status: 'accepted', title: 'Use Vite + React over Next.js',
+    ctx: 'Personal research environment is SPA-shaped; SSR not needed.',
+    why: 'Vite gives faster iteration loop; Next.js features mostly unused for this use case.' },
+  { id: 'ADR-003', date: '2026-04-14', status: 'accepted', title: 'Deploy on Railway over Vercel + Render',
+    ctx: 'Need single-platform deploy for backend + Postgres + frontend.',
+    why: 'Railway provides one-platform deploy; simpler env management than Vercel + external DB.' },
+  { id: 'ADR-004', date: '2026-04-15', status: 'accepted', title: 'Fernet symmetric encryption for chat content',
+    ctx: 'User chat content needs encryption at rest above Postgres-level disk encryption.',
+    why: 'Fernet provides AEAD with key rotation support; sufficient for personal research env threat model.' },
+  { id: 'ADR-005', date: '2026-04-18', status: 'accepted', title: 'Use Anthropic SDK directly, no LLM abstraction layer',
+    ctx: 'Considered LangChain, LlamaIndex, or raw SDK.',
+    why: 'Direct SDK calls keep behavior predictable; structured output via response_format is core feature.' },
+  { id: 'ADR-006', date: '2026-04-20', status: 'accepted', title: 'No Clerk — custom JWT auth',
+    ctx: 'Single-user environment, Clerk overkill and adds external dependency.',
+    why: 'Custom JWT with bcrypt password hashing sufficient; saves $25/mo and removes external auth dependency.' },
+  { id: 'ADR-007', date: '2026-04-22', status: 'accepted', title: 'SQLAlchemy 2.0 async over Tortoise ORM',
+    ctx: 'Need async ORM for FastAPI; considered Tortoise as lighter alternative.',
+    why: 'SQLAlchemy 2.0 async is now mature; ecosystem and migration tools (Alembic) outweigh weight cost.' },
+  { id: 'ADR-008', date: '2026-04-25', status: 'accepted', title: 'PostgreSQL over SQLite for production',
+    ctx: 'SQLite considered for simplicity given single-user scope.',
+    why: 'Railway Postgres adds negligible operational cost and matches CI test target. SQLite stays for local dev only.' },
+  { id: 'ADR-009', date: '2026-04-28', status: 'deprecated', title: 'Use OpenAI as fallback LLM',
+    ctx: 'Initially planned multi-provider fallback.',
+    why: 'Deprecated — Anthropic structured output is core to the product. Falling back would lose that capability.' },
+  { id: 'ADR-010', date: '2026-05-02', status: 'accepted', title: 'Conditions stored as JSONB in Postgres',
+    ctx: 'Physics conditions vary in shape; flat columns insufficient.',
+    why: 'JSONB allows flexible schema while keeping query capability via Postgres JSON operators.' },
+  { id: 'ADR-011', date: '2026-05-05', status: 'accepted', title: 'Per-IP rate limiting via slowapi',
+    ctx: 'Need rate limits before opening to external testers.',
+    why: 'slowapi integrates cleanly with FastAPI; in-memory backend acceptable for single-region single-instance deploy.' },
+  { id: 'ADR-012', date: '2026-05-08', status: 'accepted', title: 'Centralized exception handler in middleware',
+    ctx: 'Inconsistent error responses across routes.',
+    why: 'Single handler normalizes error shape; per-route try/except retained only for domain-specific cases.' },
+  { id: 'ADR-013', date: '2026-05-10', status: 'accepted', title: 'Request-ID header propagated through all logs',
+    ctx: 'Difficult to trace a single request across log lines.',
+    why: 'UUID set in middleware, included in every log line via structlog contextvars. Enables traceable debugging.' },
+  { id: 'ADR-014', date: '2026-05-12', status: 'proposed', title: 'Move to PostgreSQL listen/notify for chat updates',
+    ctx: 'Currently polling for new chat messages.',
+    why: 'Considered — would reduce polling overhead but adds complexity. Defer until user count justifies.' },
+  { id: 'ADR-015', date: '2026-05-14', status: 'accepted', title: 'Tailwind over CSS modules',
+    ctx: 'Component-level styling approach.',
+    why: 'Tailwind matches React component locality; smaller mental model than CSS modules for this team.' },
+  { id: 'ADR-016', date: '2026-05-16', status: 'accepted', title: 'CHANGELOG follows Keep a Changelog format',
+    ctx: 'Need standardized format for release notes.',
+    why: 'Keep a Changelog is the de-facto standard for human-readable logs; integrates with semantic-release.' },
+  { id: 'ADR-017', date: '2026-05-18', status: 'accepted', title: 'INT-STR-* (Stripe) marked not-applicable',
+    ctx: 'Personal research environment, no billing planned.',
+    why: 'Stripe items not applicable. Re-review if monetization is added.' },
+  { id: 'ADR-018', date: '2026-05-19', status: 'accepted', title: 'SEC-STK-CLK-* (Clerk) marked not-applicable',
+    ctx: 'Custom JWT auth chosen in ADR-006.',
+    why: 'Clerk-specific items not applicable. Equivalent items generated for JWT auth approach.' },
+];
+
+const backlogTrajectory = [
+  { day: 'May 6',  pct: 8 },
+  { day: 'May 8',  pct: 14 },
+  { day: 'May 10', pct: 22 },
+  { day: 'May 12', pct: 28 },
+  { day: 'May 14', pct: 35 },
+  { day: 'May 16', pct: 41 },
+  { day: 'May 18', pct: 47 },
+  { day: 'May 19', pct: 52 },
+  { day: 'May 20', pct: 58 },
+  { day: 'May 21', pct: 62 },
+];
+
+// ───── RENDER ─────
+
+function renderDomains() {
+  const grid = document.getElementById('domain-grid');
+  grid.innerHTML = domains.map(d => {
+    const total = d.done + d.prog + d.todo + d.na;
+    const fillClass = d.pct >= 80 ? 'complete' : d.pct >= 40 ? '' : d.pct === 0 ? 'behind' : 'warn';
+    return `
+      <div class="domain-card">
+        <div class="domain-head">
+          <div>
+            <div class="domain-num">${d.n}</div>
+            <div class="domain-name">${d.name}</div>
+          </div>
+          <div class="domain-pct">${d.pct}<span style="font-size:14px;color:var(--ink-soft);">%</span></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill ${fillClass}" style="width: ${d.pct}%;"></div>
+        </div>
+        <div class="domain-meta">
+          <span class="pill"><span class="dot dot-done"></span>${d.done} done</span>
+          <span class="pill"><span class="dot dot-prog"></span>${d.prog} in-prog</span>
+          <span class="pill"><span class="dot dot-todo"></span>${d.todo} todo</span>
+          ${d.na > 0 ? `<span class="pill"><span class="dot dot-na"></span>${d.na} n/a</span>` : ''}
+        </div>
+        <div class="domain-owner">Owner — ${d.owner}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function statusClass(s) {
+  return {
+    'done': 'status-done',
+    'in-progress': 'status-prog',
+    'not-started': 'status-todo',
+    'not-applicable': 'status-na',
+  }[s] || 'status-todo';
+}
+
+function renderItems(filter = 'all') {
+  const tbody = document.getElementById('item-tbody');
+  const filtered = filter === 'all' ? items : items.filter(i => i.status === filter);
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No items match this filter.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(i => `
+    <tr>
+      <td class="item-id">${i.id}</td>
+      <td>${i.text}</td>
+      <td style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft);">${i.owner}</td>
+      <td><span class="status-tag ${statusClass(i.status)}">${i.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderRisks(filter = 'all') {
+  const list = document.getElementById('risk-list');
+  const sevName = { crit: 'Critical', high: 'High', med: 'Medium', low: 'Low' };
+  const filtered = filter === 'all' ? risks : risks.filter(r => r.sev === filter);
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">No risks at this severity.</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(r => `
+    <div class="risk-card ${r.sev}">
+      <div>
+        <div class="risk-sev">${sevName[r.sev]}</div>
+        <div class="risk-id">${r.id}</div>
+      </div>
+      <div>
+        <div class="risk-title">${r.title}</div>
+        <div class="risk-desc">${r.desc}</div>
+        <div class="risk-mitigation"><strong>Mitigation</strong>${r.mit}</div>
+      </div>
+      <div class="risk-meta">
+        <div>${r.owner}</div>
+        <div>review ${r.review}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderADRs(q = '') {
+  const list = document.getElementById('adr-list');
+  const query = q.toLowerCase().trim();
+  const filtered = !query ? adrs : adrs.filter(a =>
+    a.title.toLowerCase().includes(query) ||
+    a.ctx.toLowerCase().includes(query) ||
+    a.why.toLowerCase().includes(query) ||
+    a.id.toLowerCase().includes(query)
+  );
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">No decisions match "${q}".</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(a => `
+    <div class="adr">
+      <div class="adr-head">
+        <div>
+          <span class="adr-num">${a.id}</span>
+          <span class="adr-date" style="margin-left: 10px;">${a.date}</span>
+        </div>
+        <span class="adr-status ${a.status}">${a.status}</span>
+      </div>
+      <div class="adr-title">${a.title}</div>
+      <div class="adr-context">${a.ctx}</div>
+      <div class="adr-rationale"><strong>Rationale</strong>${a.why}</div>
+    </div>
+  `).join('');
+}
+
+function renderSparkline() {
+  const svg = document.getElementById('sparkline');
+  const xAxis = document.getElementById('sparkline-x');
+  const data = backlogTrajectory;
+  const W = 800, H = 180, padL = 30, padR = 8, padT = 12, padB = 24;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const maxV = 100;
+  const points = data.map((d, i) => {
+    const x = padL + (i / (data.length - 1)) * innerW;
+    const y = padT + (1 - d.pct / maxV) * innerH;
+    return { x, y, pct: d.pct, day: d.day };
+  });
+
+  // gridlines
+  let grid = '';
+  for (let g = 0; g <= 100; g += 25) {
+    const y = padT + (1 - g / 100) * innerH;
+    grid += `<line x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}" stroke="#e5e1d4" stroke-width="0.5" stroke-dasharray="${g === 100 || g === 0 ? '0' : '2,3'}"/>`;
+    grid += `<text x="${padL - 6}" y="${y + 3}" font-family="JetBrains Mono, monospace" font-size="9" fill="#8c8a7e" text-anchor="end">${g}%</text>`;
+  }
+
+  // area path
+  const linePath = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
+  const areaPath = linePath + ` L ${points[points.length-1].x} ${padT + innerH} L ${points[0].x} ${padT + innerH} Z`;
+
+  // dots
+  const dots = points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#1c1b18" stroke="#faf8f3" stroke-width="1.5"/>`).join('');
+  const last = points[points.length - 1];
+  const lastLabel = `<text x="${last.x}" y="${last.y - 10}" font-family="Fraunces, serif" font-size="14" fill="#1c1b18" text-anchor="end" font-weight="500">${last.pct}%</text>`;
+
+  svg.innerHTML = `
+    ${grid}
+    <path d="${areaPath}" fill="#1c1b18" fill-opacity="0.05"/>
+    <path d="${linePath}" stroke="#1c1b18" stroke-width="1.5" fill="none"/>
+    ${dots}
+    ${lastLabel}
+  `;
+
+  xAxis.innerHTML = data.filter((_, i) => i % 2 === 0).map(d => `<span>${d.day}</span>`).join('');
+}
+
+// ───── INTERACTIVITY ─────
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'usage') renderSparkline();
+  });
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderItems(btn.dataset.filter);
+  });
+});
+
+document.querySelectorAll('[data-rfilter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-rfilter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderRisks(btn.dataset.rfilter);
+  });
+});
+
+document.getElementById('adr-search').addEventListener('input', e => {
+  renderADRs(e.target.value);
+});
+
+// ───── INIT ─────
+renderDomains();
+renderItems();
+renderRisks();
+renderADRs();
+</script>
+</body>
+</html>
