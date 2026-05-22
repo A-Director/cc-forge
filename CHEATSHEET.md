@@ -127,6 +127,7 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 | Ready to ship | `/hermes-deploy` | Pre-flight checks → gate verification → Railway push |
 | Every Monday | `/hermes-health` | App health, Sentry errors, uptime, Railway metrics |
 | Review session | `/hermes-report` | Full usage report — paste into Claude.ai to review together |
+| Need a one-glance view | `/hermes-dashboard` | Generate `dashboard.html` — backlog, risks, decisions, framework cost |
 | cc-forge updated | `/hermes-update` | Pull latest personas, standards, commands from cc-forge into this project |
 
 `/hermes-deploy` pre-flight checks: tests passing, build succeeds, TypeScript clean, lint clean, npm audit, RUNBOOK.md exists, SRE gate passed, Security gate passed. Stops if anything fails.

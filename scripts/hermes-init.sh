@@ -347,6 +347,7 @@ if [ -f ".gitignore" ]; then
     echo "" >> .gitignore
     echo "# cc-forge" >> .gitignore
     echo ".cc-forge/state.json" >> .gitignore
+    echo "dashboard.html" >> .gitignore
     echo "# usage.log is intentionally committed — it tracks cc-forge usage" >> .gitignore
     echo "  ✓ .gitignore updated"
   fi
@@ -366,6 +367,7 @@ out/
 
 # cc-forge
 .cc-forge/state.json
+dashboard.html
 
 # OS
 .DS_Store
