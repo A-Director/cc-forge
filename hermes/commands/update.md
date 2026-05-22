@@ -151,10 +151,13 @@ fi
 
 # Update Hermes calibration files (token-weights, etc.).
 # Same gap #52 concern: non-markdown configs need explicit copy.
+# Destination is hermes/ (not .cc-forge/) because scripts/hermes-dashboard.py
+# reads token-weights.json via __file__.parent.parent / "hermes" / "token-weights.json"
+# — i.e. <project>/hermes/token-weights.json relative to scripts/.
 echo "▸ Updating Hermes calibration..."
-mkdir -p .cc-forge
+mkdir -p hermes
 if [ -f "$HERMES_DIR/hermes/token-weights.json" ]; then
-  cp "$HERMES_DIR/hermes/token-weights.json" .cc-forge/
+  cp "$HERMES_DIR/hermes/token-weights.json" hermes/
   echo "  ✓ token-weights.json updated"
 fi
 
@@ -196,8 +199,8 @@ if [ ! -f "scripts/hermes-dashboard.py" ]; then
   echo "  ✗ scripts/hermes-dashboard.py missing — /hermes-dashboard will fail"
   missing=$((missing + 1))
 fi
-if [ ! -f ".cc-forge/token-weights.json" ]; then
-  echo "  ✗ .cc-forge/token-weights.json missing — overhead calc will use defaults"
+if [ ! -f "hermes/token-weights.json" ]; then
+  echo "  ✗ hermes/token-weights.json missing — overhead calc will use defaults"
   missing=$((missing + 1))
 fi
 if [ $missing -eq 0 ]; then
@@ -221,7 +224,7 @@ fi
   ✓ [N] commands     → .claude/commands/
   ✓ [N] catalogue    → .cc-forge/catalogue/
   ✓ [N] scripts      → scripts/                        ← omit if cc-forge has no scripts/
-  ✓ 1 calibration  → .cc-forge/token-weights.json    ← omit if source file missing
+  ✓ 1 calibration  → hermes/token-weights.json       ← omit if source file missing
 
   Cleaned:                                              ← only when cleaned > 0
   ✓ [N] legacy unprefixed commands removed (gap #50 hotfix)

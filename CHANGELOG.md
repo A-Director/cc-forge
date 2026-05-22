@@ -14,6 +14,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added `scripts/*.py` and `hermes/token-weights.json` to the
   `/hermes-update` copy list (separate blocks with their own
   existence guards, since older cc-forge clones may not have them).
+  Calibration lands at `hermes/token-weights.json` to match the
+  read path the dashboard generator already uses
+  (`__file__.parent.parent / "hermes" / "token-weights.json"`), so
+  the copied file is actually consulted at runtime.
 - Added a delivery-verification block at the end that warns loudly
   if Session C deliverables are missing after an update — same
   defense-in-depth pattern as PR #19's gap #50 second pass.
