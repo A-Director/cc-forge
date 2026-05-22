@@ -5,6 +5,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed — gap #52: /hermes-update not propagating Session C deliverables
+- `/hermes-dashboard` failed on first use in any project that updated
+  after Session C. The command invokes `scripts/hermes-dashboard.py`,
+  but `/hermes-update` only copied markdown files (personas, standards,
+  commands, catalogue) — it never copied the Python script or the
+  `hermes/token-weights.json` calibration file.
+- Added `scripts/*.py` and `hermes/token-weights.json` to the
+  `/hermes-update` copy list (separate blocks with their own
+  existence guards, since older cc-forge clones may not have them).
+  Calibration lands at `hermes/token-weights.json` to match the
+  read path the dashboard generator already uses
+  (`__file__.parent.parent / "hermes" / "token-weights.json"`), so
+  the copied file is actually consulted at runtime.
+- Added a delivery-verification block at the end that warns loudly
+  if Session C deliverables are missing after an update — same
+  defense-in-depth pattern as PR #19's gap #50 second pass.
+- Banner extended with `✓ [N] scripts → scripts/` and
+  `✓ 1 calibration → .cc-forge/token-weights.json` lines (omitted
+  when the respective sources don't exist).
+- Discovered when CLARK first ran `/hermes-dashboard` on 2026-05-22.
+- Pattern note for future sessions: every session that ships
+  non-markdown files (Python scripts, JSON configs, HTML templates,
+  etc.) must also extend `/hermes-update`'s copy list. A Session F
+  audit item — "what does cc-forge ship that `/hermes-update`
+  doesn't copy?" — would surface any other slip-throughs.
+
 ### Fixed — gap #50 hotfix, second pass
 - The 2026-05-21 hotfix for gap #50 landed in the repo but did not change
   `/hermes-update`'s observable behaviour. CLARK's 2026-05-22 update run
