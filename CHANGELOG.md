@@ -5,6 +5,62 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added — /hermes-dashboard (Session C)
+A new read-only dashboard command. Reads the project's standards-grounded
+markdown sources and emits a single self-contained `dashboard.html` at the
+project root. Markdown stays the source of truth; the dashboard is a
+regeneratable view layer.
+
+- **`scripts/hermes-dashboard.py`** — new stdlib-only generator. Reads
+  `.cc-forge/state.json`, `PHASES.md`, `.cc-forge/backlog/master.md`, all
+  10 domain backlog files, `RISKS.md`, `DECISIONS.md`, `.cc-forge/usage.log`,
+  and (best-effort) `~/.claude/projects/<hash>/conversation-*.jsonl` for raw
+  Claude Code token data. Degrades gracefully when any source is missing —
+  each section shows a tasteful empty state rather than crashing. No
+  external dependencies (no jinja2, no markdown library — hand-rolled
+  field-line parsing plus string-template substitution).
+- **`hermes/commands/dashboard.md`** — `/hermes-dashboard` command spec,
+  covering invocation, source files read, output banner, regeneration
+  cadence guidance, and per-source degradation behaviour.
+- **`hermes/token-weights.json`** — calibration data for the Hermes
+  overhead estimate. Editable so users can re-tune for their stack
+  (e.g. heavier CLAUDE.md ≠ default). v1 estimates from log; v2 will
+  measure directly via a SessionEnd hook.
+- **HTML template embedded in the generator script** — derived from
+  `docs-templates/dashboard-prototype.html` (the design reference, kept
+  pristine). Tabbed layout (Backlog / Risks / Decisions / Usage), KPI
+  row, exact CSS/aesthetic from the prototype.
+- **PDLC phase rendering** — header now shows a phase pill (e.g. "Phase
+  2 · Beta") alongside the stage pill. The Launch-readiness banner
+  rebases to "Phase N readiness". Per-domain cards show current % vs
+  phase target (e.g. "78% / 80% target") with met/miss colouring and a
+  target marker on the progress bar. A new "Phase exit criteria"
+  section between readiness and the domain grid renders the parsed
+  bullets from PHASES.md plus a "N/M domains met" headline.
+- **Drift indicators** — a three-card row on the Backlog tab shows:
+  observed orphan items (in-progress backlog items with no Taskmaster
+  reference — current state), logged `orphan_task` events (from
+  `usage.log`, Session B schema), and logged `missing_coverage` events
+  (template gaps). Each card is colour-graded by count. The Usage tab's
+  "Hermes session discipline" panel additionally counts
+  `standards_strip_detected` events.
+- **`README.md`** — `/hermes-dashboard` and `/hermes-phase-gate` added
+  to the command list. New "Understanding framework cost" section
+  explains the 5–25% Hermes overhead range, the three cost contributors
+  (CLAUDE.md context, commands, persona gates), and when to regenerate
+  the dashboard.
+- **`scripts/hermes-init.sh`** + **`hermes/hermes-init.sh`** —
+  `dashboard.html` added to the gitignore template so generated output
+  doesn't get committed accidentally.
+
+### Honest about methodology
+The Hermes overhead is an **estimate**, not a measurement. Token-weights
+are calibrated from cc-forge command file sizes; turns-per-session is a
+heuristic. The dashboard says so explicitly: every estimated number
+carries a footnote citing source, and the Hermes overhead card is
+labelled *"Estimated from .cc-forge/usage.log · per-command weights ×
+invocation counts · v2 will measure directly via hook."*
+
 ### Fixed / Added — backlog-grounding discipline (Session B)
 Two CLARK-dogfooding gaps closed: (#48) `/hermes-backlog-init` was
 silently stripping `**Standard:**` lines when it rewrote items per

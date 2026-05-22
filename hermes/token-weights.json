@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "description": "Token-cost calibration for the Hermes overhead estimate. Values are tokens per invocation. Re-calibrate by measuring a real session via /compact or transcript inspection. v2 will replace this estimate with direct measurement from a SessionEnd hook.",
+  "claude_md_per_turn": 600,
+  "commands": {
+    "/hermes-status": 800,
+    "/hermes-next": 1000,
+    "/hermes-gate-review": 5000,
+    "/hermes-phase-gate": 8000,
+    "/hermes-argus": 3000,
+    "/hermes-backlog": 600,
+    "/hermes-backlog-init": 4000,
+    "/hermes-dashboard": 800,
+    "/hermes-deploy": 6000,
+    "/hermes-research": 4000,
+    "/hermes-clean": 2000,
+    "/hermes-quality": 2500,
+    "/hermes-report": 1500
+  },
+  "persona_invocation": 2000,
+  "phase_gate_full_panel": 8000,
+  "_notes": [
+    "claude_md_per_turn: cc-forge minimum document set is ~600 tokens; recompute when CLAUDE.md changes substantially.",
+    "commands./hermes-gate-review: a single-persona gate. Multi-persona reviews multiply by personas invoked.",
+    "commands./hermes-phase-gate: full-panel cost is mostly captured via persona_invocation entries; the 8000 here is for the orchestration agent itself.",
+    "persona_invocation: average subagent context + output, used when the log entry doesn't break out per-command cost."
+  ]
+}

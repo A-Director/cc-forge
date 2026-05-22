@@ -99,10 +99,35 @@ hermes adopt         # onboard an existing project
 hermes status        # project health: stage, tasks, personas, docs
 hermes next          # what should I work on right now?
 hermes gate review   # trigger a persona gate review
+hermes phase-gate    # advance PDLC phase (MVP → Beta → Pilot → Launch → Growth)
+hermes dashboard     # generate dashboard.html — single-file project overview
 hermes deploy        # run the deploy agent
 hermes update        # pull latest cc-forge into this project
 hermes report        # full usage report for review sessions
 ```
+
+---
+
+## Understanding framework cost
+
+cc-forge adds structure on top of Claude Code. That structure costs tokens. The framework is honest about how much.
+
+**Where the cost shows up:**
+
+1. **CLAUDE.md context** reloaded each turn — the minimum document set (~600 tokens for the cc-forge baseline) is small but compounds across long sessions.
+2. **`/hermes-*` commands** consume tokens per invocation — light ones like `/hermes-status` (~800) up to heavier ones like `/hermes-phase-gate` (~8000).
+3. **Persona gate reviews** are the single highest-cost activity — each persona is a fresh subagent context (~2000 tokens), and a full panel can invoke 5–7 personas in one gate.
+
+For a normally-disciplined project, Hermes overhead sits in the **5–25%** range of total token spend. Below 5% usually means the framework isn't being used; above 25% means too many gate reviews or a stale CLAUDE.md.
+
+**Seeing your numbers:** `/hermes-dashboard` generates a single-file `dashboard.html` in the project root with a dedicated Usage tab. The Hermes overhead card breaks down where the tokens go — context, commands, persona gates — and shows the overall share. The estimate is derived from `.cc-forge/usage.log` plus `hermes/token-weights.json` (editable per project for re-calibration); a v2 measurement-by-hook will replace the estimate later.
+
+**When to regenerate the dashboard:**
+- After every PDLC phase transition — the phase indicator and target bars rebase.
+- Mid-project sanity check (once a sprint or once a week).
+- Before any major review — hands stakeholders a single artefact.
+
+The dashboard is read-only — it never modifies project files, and `dashboard.html` is gitignored by default.
 
 ---
 
