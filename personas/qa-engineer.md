@@ -138,18 +138,39 @@ CRITICAL GAPS
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-After completing the review, update `.cc-forge/backlog/02-development.md`
-(test coverage items) and `.cc-forge/backlog/04-reliability.md` (CI items):
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding:
 
-For each verified coverage area → mark relevant items `done`
-For each gap → mark `not-started` or `in-progress`
-For overrides → record in DECISIONS.md + RISKS.md
+1. **Identify parent** in `.cc-forge/backlog/02-development.md` (test
+   coverage items) or `.cc-forge/backlog/04-reliability.md` (CI items).
+   No parent? Log `type=missing_coverage`, then orphan-seed with
+   `type=orphan_task`.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID
+   to `**Evidence:**`. For verified-clean items, mark `done` with the
+   test file path and coverage % evidence.
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim.
 
-Items this persona owns:
+### Items this persona owns
 - DEV-TEST-001 through DEV-TEST-010 (test coverage items)
 - REL-CI-001 through REL-CI-005 (CI gate items)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with coverage evidence>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>
 

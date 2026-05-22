@@ -5,6 +5,89 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed / Added — backlog-grounding discipline (Session B)
+Two CLARK-dogfooding gaps closed: (#48) `/hermes-backlog-init` was
+silently stripping `**Standard:**` lines when it rewrote items per
+stack; (#47) persona gate reviews surfaced findings as Taskmaster
+tasks but never updated the parent backlog items, so tasks orphaned
+from the standards-grounded backlog and CLARK's 22 ticked Phase 1.5
+conditions referenced Taskmaster IDs and persona prefixes but no
+backlog IDs.
+
+- **`hermes/backlog-init.md`** — added explicit standards-preservation
+  rules to Phase 2 customisation logic and a mandatory **Phase 6
+  verification** pass that greps for `**Standard:**` lines in every
+  customised file, refuses to print the success banner if any
+  customised item is missing a Standard, and logs each offender as
+  `type=standards_strip_detected`. New failure banner shape returned
+  on verification failure with the offending item IDs and their
+  expected Standard refs.
+- **`personas/_shared/backlog-update-protocol.md`** — new shared
+  subroutine. Every gate-review persona references it instead of
+  duplicating rules. Defines the mandatory 3-step update: identify
+  parent backlog item → mark `in-progress` with Taskmaster task ID
+  as in-flight evidence → seed Taskmaster task via the helper with
+  Standard copied verbatim. Includes correctly-formed and malformed
+  examples; specifies logging shape; covers orphan and
+  missing-coverage flows.
+- **`hermes/commands/taskmaster-seed.md`** — new internal helper.
+  Enforces task title format `[<BACKLOG-ID>] <action>` and a
+  structured description (Parent / Standard / Outcome / Phase /
+  Acceptance / Source). Errors if the title doesn't lead with a
+  backlog ID, if Standard is missing, or if the parent backlog ID
+  isn't found at the referenced path. Personas invoke this — they no
+  longer craft Taskmaster tasks freehand.
+- **`personas/security-auditor.md`** — fully updated as the canonical
+  example. New `<backlog_update>` section references the shared
+  protocol, lists owned items, mandates a `BACKLOG UPDATES` output
+  section, and includes a worked example end-to-end (finding →
+  parent identification → backlog edit → taskmaster-seed invocation).
+- **`personas/cto.md`** · **`personas/qa-engineer.md`** ·
+  **`personas/sre-engineer.md`** · **`personas/ux-expert.md`** ·
+  **`personas/product-owner.md`** · **`personas/legal-compliance.md`** —
+  each gate-review persona's `<backlog_update>` block rewritten to
+  reference the shared protocol, list owned items, and require a
+  closing `BACKLOG UPDATES` output section. Product Owner additionally
+  audits cross-domain backlog drift.
+- **`hermes/log.md`** — schema extended with four new entry types:
+  `orphan_task` (persona seeded a task with no backlog parent),
+  `missing_coverage` (finding has no matching backlog item — indicates
+  cc-forge template gap), `standards_strip_detected` (caught during
+  backlog-init Phase 6 verification or by taskmaster-seed), and
+  `phase_transition` (Session A — added here so the schema is the
+  single source of truth). "When each Hermes command logs" table
+  updated with the new triggers.
+- **`backlog/master.md`** — new "Standards-grounding guarantee" section
+  at the top documenting that every item carries a `**Standard:**`
+  line, that `/hermes-backlog-init` Phase 6 verifies this, and that
+  personas update items via the shared protocol. Orphan and
+  missing-coverage events are called out as framework drift signals.
+
+### Rationale
+The backlog can only be standards-grounded if (a) `Standard:` lines
+survive customisation at init time and (b) work-in-flight stays
+attached to the parent backlog item. (a) is a small bug with a
+durable verification step — the verification is the contribution,
+since it catches future regressions too. (b) is enforced by routing
+all task creation through a shared helper that demands the parent
+backlog ID and the Standard reference. The shared-protocol-file
+approach (rather than per-persona duplication) keeps the rules in
+one place when they evolve.
+
+### Backwards compatibility
+- Existing CLARK-shaped backlog files (no `Phase` field) continue to
+  parse — the `Phase` line is optional in the task description.
+- Existing projects whose backlog items lack `Standard` lines (the
+  gap #48 victims) will hit `standards_strip_detected` events when
+  they next run init or when a persona tries to seed a task. The
+  expected fix path: re-run `/hermes-backlog-init` once it has the
+  fix in place; affected items get their Standards restored from the
+  template.
+- The 3-step protocol is enforced for **new** gate reviews going
+  forward. CLARK's existing 22 ticked Phase 1.5 conditions and IMP-*
+  tasks are not retrofitted by this work — that's a future CLARK
+  session.
+
 ### Added — PDLC phases foundation
 - **`docs-templates/PHASES.md`** — new template defining five PDLC
   phases (MVP, Beta, Pilot, Launch, Growth) with per-phase goals,

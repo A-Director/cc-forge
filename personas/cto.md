@@ -145,16 +145,37 @@ CRITICAL
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-After completing the review, update `.cc-forge/backlog/02-development.md`:
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding:
 
-For each verified clean area → mark relevant items `done` with evidence
-For each finding → mark `in-progress` or `not-started`
-For overrides → record in DECISIONS.md + RISKS.md
+1. **Identify parent** backlog item in `.cc-forge/backlog/02-development.md`.
+   No parent? Log `type=missing_coverage`, then orphan-seed with
+   `type=orphan_task`.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID to
+   `**Evidence:**`. For verified-clean items, mark `done` with file:line.
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   The helper enforces title `[<BACKLOG-ID>] <action>` and carries the
+   Standard line verbatim from the parent.
 
-Items this persona owns:
+### Items this persona owns
 - DEV-001 through DEV-020 (architecture and code quality items)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with file:line evidence>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>
 

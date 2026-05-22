@@ -10,6 +10,33 @@
 
 ---
 
+## Standards-grounding guarantee
+
+Every item in this backlog carries a `**Standard:**` line pointing at a
+real, externally-defined rule (OWASP ASVS, WCAG, GDPR Article, vendor
+security doc, Google SRE Book chapter, etc.). This anchoring is what
+makes the backlog auditable rather than opinion-shaped.
+
+`/hermes-backlog-init` runs a verification step (Phase 6) that refuses
+to complete if any customised item lost its **Standard:** line during
+project-specific rewriting. If you see a backlog item in this file
+without a **Standard:** line, the init was bypassed — re-run
+`/hermes-backlog-init`.
+
+Gate-review personas update items in this backlog as part of their
+review, following the 3-step protocol in
+`personas/_shared/backlog-update-protocol.md`. Every Taskmaster task
+seeded from a persona finding carries its parent backlog ID and the
+parent's Standard reference, so work-in-flight stays traceable.
+
+**Orphan tasks** (tasks seeded with no parent backlog item) and
+**missing coverage** events (findings with no matching template item)
+are logged to `.cc-forge/usage.log` and indicate cc-forge framework
+drift — they should be rare. The Session C dashboard surfaces both
+counters.
+
+---
+
 ## Completion by domain (against current phase target)
 
 ```
