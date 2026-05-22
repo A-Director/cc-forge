@@ -5,6 +5,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed — gap #50 hotfix, second pass
+- The 2026-05-21 hotfix for gap #50 landed in the repo but did not change
+  `/hermes-update`'s observable behaviour. CLARK's 2026-05-22 update run
+  produced unprefixed files (`dashboard.md`, `status.md`, `next.md`,
+  `update.md`, `report.md`, `gate-review.md`, `deploy.md`,
+  `phase-gate.md`, `taskmaster-seed.md`) — the same bug as before.
+- Root cause: `hermes/commands/update.md` is a prompt for a Haiku-class
+  agent, not a shell script. The bash inside it is suggestive, not
+  executed verbatim. Three signals in the file pushed Haiku toward the
+  buggy shortcut: (1) the comment contained the buggy `cp *.md` form as
+  literal backtick'd syntax, (2) the personas section directly above
+  the commands section uses a legitimately-bare `cp "$HERMES_DIR"/personas/*.md
+  .cc-forge/personas/` pattern that Haiku mimicked when it reached the
+  commands section, and (3) there was no post-copy verification, so a
+  slip succeeded silently.
+- This pass:
+  - Removed the buggy command from the comment (replaced with a
+    no-shell-syntax description) so Haiku can't latch onto it.
+  - Added an explicit `<constraints>` bullet forbidding the bare-wildcard
+    form, calling out the personas-section pattern as the lookalike, and
+    requiring the verification step to run.
+  - Added a hard verification block after cleanup: greps
+    `.claude/commands/` for any unprefixed file in the legacy basename
+    list and `exit 2`s with a `✗ FOUND ... — gap #50 regression` message
+    if any are found. Silent slip → loud failure.
+  - Added `update`, `init`, `adopt`, `backlog-init`, `log` to the
+    legacy-cleanup basename list. CLARK's run showed `update.md`
+    surviving, which the previous list missed.
+- Added a verification trace requirement in the prompt protocol so
+  future hotfixes are walked through end-to-end before being declared
+  complete.
+
 ### Fixed — gap #50: /hermes-update prefix bug
 - `/hermes-update` was silently stripping the `hermes-` prefix when
   copying command files, corrupting the user's command namespace on

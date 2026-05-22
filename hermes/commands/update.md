@@ -25,6 +25,16 @@ the latest persona definitions, standards, and commands into the project's
 - Always show what was updated so the developer knows what changed
 - If cc-forge source not found at ~/cc-forge, tell the developer how to fix it
 - Run silently and quickly — this should take under 30 seconds
+- **Command-file copies MUST be prefixed.** For files in
+  `$HERMES_DIR/hermes/commands/*.md`, you MUST iterate the directory and
+  write each file out as `.claude/commands/hermes-<basename>.md`. You MUST
+  NOT use `cp "$HERMES_DIR"/hermes/commands/*.md .claude/commands/` — that
+  bare wildcard form is gap #50 and silently strips the prefix. The
+  personas and standards directories *do* use bare `cp *.md` because those
+  files keep their names; the commands directory does not. Do not mimic
+  the personas pattern in the commands section.
+- **Always run the verification step at the end.** If it fails, surface
+  the failure to the developer — do not declare success.
 </constraints>
 
 ---
@@ -59,13 +69,13 @@ cp "$HERMES_DIR"/standards/*.md .cc-forge/standards/
 echo "  ✓ $(ls .cc-forge/standards/*.md | wc -l) standard files updated"
 
 # Update commands
+# IMPORTANT — gap #50: source files in hermes/commands/ are stored without
+# the hermes- prefix (status.md, next.md, dashboard.md …). The .claude/commands/
+# slash-command namespace expects them prefixed (hermes-status.md, …).
+# The loop below renames on copy; do NOT replace it with a bare-wildcard cp.
 echo "▸ Updating commands..."
 mkdir -p .claude/commands
 
-# Prefix-on-copy, mirroring scripts/hermes-install.sh. Earlier versions of
-# this command did `cp "$HERMES_DIR"/hermes/commands/*.md .claude/commands/`
-# which dropped the hermes- prefix and corrupted the slash-command namespace
-# (gap #50). Iterating + renaming on copy keeps install and update consistent.
 for f in "$HERMES_DIR"/hermes/commands/*.md; do
   [ -f "$f" ] || continue
   name=$(basename "$f" .md)
@@ -78,15 +88,14 @@ cp "$HERMES_DIR"/hermes/log.md .claude/commands/hermes-log.md
 echo "  ✓ $(ls .claude/commands/hermes-*.md | wc -l) hermes commands updated"
 
 # Cleanup: remove unprefixed legacy command files from previous
-# /hermes-update runs (pre-fix bug #50). The list is the historical set
-# of hermes/commands/ basenames; we deliberately do not derive it from
-# the current source tree so future renames don't leave stale shadows.
-# Add new basenames here when new hermes/commands/*.md files are added.
+# /hermes-update runs (pre-fix bug #50). Hardcoded basename list — historical
+# set of hermes/commands/ + hermes/ root files — so future renames don't leave
+# stale shadows. Add new basenames here when new commands are added.
 echo "▸ Cleaning up legacy unprefixed commands..."
 cleaned=0
-for legacy in status next gate-review dashboard deploy report \
+for legacy in status next gate-review dashboard deploy report update \
               quality clean argus phase-gate taskmaster-seed \
-              research backlog; do
+              research backlog init adopt backlog-init log; do
   if [ -f ".claude/commands/${legacy}.md" ]; then
     rm -f ".claude/commands/${legacy}.md"
     echo "  · removed legacy /${legacy} (use /hermes-${legacy})"
@@ -96,6 +105,28 @@ done
 if [ $cleaned -eq 0 ]; then
   echo "  ✓ no legacy commands found — namespace clean"
 fi
+
+# Verification (gap #50, second pass). If any unprefixed legacy command
+# still exists after the cleanup, the prefix-on-copy step above was
+# bypassed or skipped — fail loudly rather than silently succeeding.
+echo "▸ Verifying command namespace..."
+violations=0
+for legacy in status next gate-review dashboard deploy report update \
+              quality clean argus phase-gate taskmaster-seed \
+              research backlog init adopt backlog-init log; do
+  if [ -f ".claude/commands/${legacy}.md" ]; then
+    echo "  ✗ FOUND unprefixed .claude/commands/${legacy}.md — gap #50 regression"
+    violations=$((violations + 1))
+  fi
+done
+if [ $violations -gt 0 ]; then
+  echo ""
+  echo "  Refusing to declare /hermes-update complete."
+  echo "  Re-run the prefix-on-copy loop above and the cleanup pass."
+  echo "  Files in hermes/commands/*.md MUST land as hermes-<name>.md, not <name>.md."
+  exit 2
+fi
+echo "  ✓ namespace clean — only hermes-* command files present"
 
 # Update backlog catalogue (default items only — not project backlog)
 echo "▸ Updating backlog catalogue reference..."
