@@ -17,6 +17,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -29,6 +30,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -41,6 +43,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -53,6 +56,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -65,6 +69,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -77,6 +82,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -89,6 +95,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -101,6 +108,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -113,6 +121,7 @@
 **Owner:** UX Expert
 **Blocks:** Public launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
@@ -127,6 +136,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Stack: KaTeX
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -139,6 +149,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Stack: KaTeX
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -151,6 +162,7 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Stack: KaTeX
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -163,5 +175,6 @@
 **Owner:** UX Expert
 **Blocks:** Launch
 **Applicability:** Stack: Scientific/research UI
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —

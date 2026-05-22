@@ -17,6 +17,7 @@
 **Owner:** Product Owner
 **Blocks:** Stage 03 PLAN
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -29,6 +30,7 @@
 **Owner:** Product Owner
 **Blocks:** Stage 03 PLAN
 **Applicability:** Universal
+**Phase:** 1 (MVP)
 **Status:** not-started
 **Evidence:** —
 
@@ -41,6 +43,7 @@
 **Owner:** Product Owner
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 2 (Beta)
 **Status:** not-started
 **Evidence:** —
 
@@ -53,6 +56,7 @@
 **Owner:** Product Owner
 **Blocks:** Stage 08 REVIEW
 **Applicability:** Universal
+**Phase:** 3 (Pilot)
 **Status:** not-started
 **Evidence:** —
 
@@ -65,6 +69,7 @@
 **Owner:** Product Owner
 **Blocks:** Launch
 **Applicability:** Universal
+**Phase:** 4 (Launch)
 **Status:** not-started
 **Evidence:** —
 
