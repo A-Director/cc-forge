@@ -5,6 +5,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed — gap #50: /hermes-update prefix bug
+- `/hermes-update` was silently stripping the `hermes-` prefix when
+  copying command files, corrupting the user's command namespace on
+  every update. The install script (`hermes-install.sh`) correctly
+  added the prefix; the update command did not — producing `/update`,
+  `/status`, `/next` without prefix that shadowed the canonical
+  `/hermes-*` versions.
+- Fixed by matching the install script's prefix-on-copy pattern in
+  `hermes/commands/update.md`.
+- Added cleanup of unprefixed legacy files from previous
+  `/hermes-update` runs. Run `/hermes-update` once to apply both the
+  fix and the cleanup to any existing project. The post-update banner
+  reports the cleanup count when non-zero (gap #50 hotfix).
+
 ### Added — /hermes-dashboard (Session C)
 A new read-only dashboard command. Reads the project's standards-grounded
 markdown sources and emits a single self-contained `dashboard.html` at the

@@ -61,12 +61,41 @@ echo "  ✓ $(ls .cc-forge/standards/*.md | wc -l) standard files updated"
 # Update commands
 echo "▸ Updating commands..."
 mkdir -p .claude/commands
-cp "$HERMES_DIR"/hermes/commands/*.md .claude/commands/
+
+# Prefix-on-copy, mirroring scripts/hermes-install.sh. Earlier versions of
+# this command did `cp "$HERMES_DIR"/hermes/commands/*.md .claude/commands/`
+# which dropped the hermes- prefix and corrupted the slash-command namespace
+# (gap #50). Iterating + renaming on copy keeps install and update consistent.
+for f in "$HERMES_DIR"/hermes/commands/*.md; do
+  [ -f "$f" ] || continue
+  name=$(basename "$f" .md)
+  cp "$f" .claude/commands/hermes-${name}.md
+done
 cp "$HERMES_DIR"/hermes/init.md .claude/commands/hermes-init.md
 cp "$HERMES_DIR"/hermes/adopt.md .claude/commands/hermes-adopt.md
 cp "$HERMES_DIR"/hermes/backlog-init.md .claude/commands/hermes-backlog-init.md
 cp "$HERMES_DIR"/hermes/log.md .claude/commands/hermes-log.md
 echo "  ✓ $(ls .claude/commands/hermes-*.md | wc -l) hermes commands updated"
+
+# Cleanup: remove unprefixed legacy command files from previous
+# /hermes-update runs (pre-fix bug #50). The list is the historical set
+# of hermes/commands/ basenames; we deliberately do not derive it from
+# the current source tree so future renames don't leave stale shadows.
+# Add new basenames here when new hermes/commands/*.md files are added.
+echo "▸ Cleaning up legacy unprefixed commands..."
+cleaned=0
+for legacy in status next gate-review dashboard deploy report \
+              quality clean argus phase-gate taskmaster-seed \
+              research backlog; do
+  if [ -f ".claude/commands/${legacy}.md" ]; then
+    rm -f ".claude/commands/${legacy}.md"
+    echo "  · removed legacy /${legacy} (use /hermes-${legacy})"
+    cleaned=$((cleaned + 1))
+  fi
+done
+if [ $cleaned -eq 0 ]; then
+  echo "  ✓ no legacy commands found — namespace clean"
+fi
 
 # Update backlog catalogue (default items only — not project backlog)
 echo "▸ Updating backlog catalogue reference..."
@@ -121,6 +150,9 @@ fi
   ✓ [N] commands     → .claude/commands/
   ✓ [N] catalogue    → .cc-forge/catalogue/
 
+  Cleaned:                                              ← only when cleaned > 0
+  ✓ [N] legacy unprefixed commands removed (gap #50 hotfix)
+
   Not touched (project-specific):
   · .cc-forge/backlog/     (your project backlog)
   · .cc-forge/state.json   (project state)
@@ -130,6 +162,9 @@ fi
   Restart Claude Code to activate updated commands.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+When `cleaned == 0`, omit the **Cleaned:** block entirely — a clean
+namespace doesn't need a callout.
 
 </output_format>
 
