@@ -37,7 +37,7 @@ Every entry is one line of JSON appended to `.cc-forge/usage.log`:
 {
   "ts": "2026-05-18T09:23:11Z",
   "session_id": "abc123",
-  "type": "command|gate|session_start|session_end|persona|backlog|drift",
+  "type": "command|gate|session_start|session_end|persona|backlog|drift|orphan_task|missing_coverage|standards_strip_detected|phase_transition",
   "stage": 5,
   "data": {}
 }
@@ -155,6 +155,88 @@ Every entry is one line of JSON appended to `.cc-forge/usage.log`:
 }
 ```
 
+### type: orphan_task
+Emitted when a gate-review persona seeds a Taskmaster task with no parent
+backlog item (after also emitting a `missing_coverage` entry). Indicates
+the work is happening but the framework couldn't anchor it. Feeds the
+Session C dashboard's drift counters.
+```json
+{
+  "ts": "...",
+  "session_id": "...",
+  "type": "orphan_task",
+  "stage": 5,
+  "data": {
+    "persona": "security-auditor",
+    "task_id": "47",
+    "finding": "Stack traces visible on /api/checkout 500s",
+    "reason": "no parent backlog item exists for this finding category"
+  }
+}
+```
+
+### type: missing_coverage
+Emitted when a persona finding has no matching backlog item to update.
+Indicates a cc-forge template gap — a future template update should add
+an item covering this finding category. Distinct from `orphan_task`
+(orphan tracks the resulting task; missing_coverage tracks the
+framework gap that caused it).
+```json
+{
+  "ts": "...",
+  "session_id": "...",
+  "type": "missing_coverage",
+  "stage": 5,
+  "data": {
+    "persona": "security-auditor",
+    "domain": ".cc-forge/backlog/03-security.md",
+    "finding": "WebSocket origin validation missing — no template item exists",
+    "suggested_template_item": "SEC-WS-001 — WebSocket connections validate Origin header"
+  }
+}
+```
+
+### type: standards_strip_detected
+Emitted by `/hermes-backlog-init` Phase 6 verification (or by
+`taskmaster-seed` when it discovers a missing Standard on a parent
+item). Indicates a customisation pass dropped the **Standard:** line off
+a backlog item. Init refuses to complete when this event fires.
+```json
+{
+  "ts": "...",
+  "session_id": "...",
+  "type": "standards_strip_detected",
+  "stage": 5,
+  "data": {
+    "detected_by": "backlog-init|taskmaster-seed",
+    "file": ".cc-forge/backlog/03-security.md",
+    "item_id": "SEC-UNI-001",
+    "expected_standard": "OWASP ASVS 4.0 — V4.1.1",
+    "found": null
+  }
+}
+```
+
+### type: phase_transition
+Emitted by `/hermes-phase-gate` (Session A) when the PDLC phase
+advances. Recorded here so the log schema is the single source of
+truth for entry types.
+```json
+{
+  "ts": "...",
+  "session_id": "...",
+  "type": "phase_transition",
+  "stage": 5,
+  "data": {
+    "from": 1,
+    "to": 2,
+    "outcome": "PASS|CONDITIONAL",
+    "conditions": 3,
+    "override": false
+  }
+}
+```
+
 ### type: session_end
 ```json
 {
@@ -207,7 +289,9 @@ TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 | `/hermes-status` | `command` | After running |
 | `/hermes-next` | `command` | After running |
 | `/hermes-gate review` | `gate` + `persona` per persona | After each persona |
-| `/hermes-backlog-init` | `backlog` per domain | After init |
+| `/hermes-backlog-init` | `backlog` per domain + `standards_strip_detected` per offender | After init / verification failure |
+| `/hermes-phase-gate` | `phase_transition` | After phase advances |
+| Persona gate-review seeding orphan tasks | `orphan_task` + `missing_coverage` | After each persona |
 | `/hermes-argus` | `drift` per finding | After running |
 | `/hermes-deploy` | `command` | After running |
 | `/hermes-clean` | `command` | After running |

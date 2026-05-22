@@ -167,17 +167,47 @@ BLOCKING ISSUES
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-Update `.cc-forge/backlog/04-reliability.md`:
-- REL-001 (RUNBOOK.md complete) → mark done with evidence if verified
-- REL-002 (INCIDENT.md written) → mark done if verified
-- REL-003 (error tracking active) → mark done with Sentry DSN evidence
-- REL-004 (uptime monitoring) → mark done with UptimeRobot URL
-- REL-006 (CI/CD blocks on tests) → mark done if pipeline verified
-- REL-007 (DB backups tested) → mark done with evidence
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding:
 
-For any BLOCK items → add to RISKS.md immediately.
+1. **Identify parent** in `.cc-forge/backlog/04-reliability.md`. No
+   parent? Log `type=missing_coverage`, then orphan-seed with
+   `type=orphan_task`. For BLOCK findings, also add to `RISKS.md`
+   immediately.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID
+   to `**Evidence:**`. For verified-clean items, mark `done` with
+   concrete evidence (URLs for Sentry DSN, UptimeRobot URL, runbook
+   path, etc.).
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim.
+
+### Items this persona owns
+- REL-001 (RUNBOOK.md complete) — done with file:line evidence
+- REL-002 (INCIDENT.md written) — done with file path
+- REL-003 (error tracking active) — done with Sentry DSN evidence
+- REL-004 (uptime monitoring) — done with UptimeRobot URL
+- REL-006 (CI/CD blocks on tests) — done with pipeline link
+- REL-007 (DB backups tested) — done with restore test log evidence
+- REL-008 (rollback procedure tested) — done with runbook section ref
+- REL-STK-* (hosting-platform-specific reliability items)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with evidence URLs/paths>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+  BLOCK items added to RISKS:  <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>
 

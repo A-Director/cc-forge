@@ -195,17 +195,85 @@ The weak finding requires them to do the security audit themselves.
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-After completing the audit, update `.cc-forge/backlog/03-security.md`:
+Before ending your review you MUST follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md`. Summary in three steps:
 
-For each verified clean item → mark `done` with evidence (file:line)
-For each finding → mark `in-progress` or `not-started` as appropriate
-For any item marked `not-applicable` → record override in DECISIONS.md + RISKS.md
+1. **Identify parent.** For each finding, locate the parent backlog item
+   in `.cc-forge/backlog/03-security.md`. If none exists, log
+   `type=missing_coverage` and proceed with parent=null + `type=orphan_task`
+   on the task you seed.
+2. **Mark in-progress.** Edit the parent item's `**Status:**` from
+   `not-started` to `in-progress` and append the Taskmaster task ID to
+   `**Evidence:**` as `in-flight — Taskmaster #<id> seeded by
+   security-auditor on <date>`. For verified-clean items, mark `done`
+   with file:line evidence instead.
+3. **Seed task via the helper.** Use `hermes/commands/taskmaster-seed.md`
+   for every task — never craft Taskmaster tasks directly. The helper
+   enforces the title format `[<BACKLOG-ID>] <action>` and copies the
+   Standard line verbatim from the parent item.
 
-Items this persona owns:
+### Items this persona owns
 - SEC-001 through SEC-020 (standard OWASP items)
 - SEC-STK-* (stack-specific items for Clerk, Stripe, Railway)
+- New stack-specific items you generate (see `<backlog_generation_rules>`)
+
+### Mandatory output section
+
+Append this section at the end of your audit report (after OVERALL):
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:
+    • <BACKLOG-ID> (Taskmaster #<task-id>) — <finding ref>
+    ...
+
+  Items marked done with evidence:
+    • <BACKLOG-ID> — verified <what was checked> (<file:line>)
+    ...
+
+  Tasks seeded via taskmaster-seed: <N>
+  Orphan tasks (no parent found): <N>
+  Missing-coverage events logged:  <N>
+```
+
+If any line of this section would be non-zero for the wrong reason
+(e.g. you couldn't be bothered to identify parents and just orphaned
+everything), Argus will catch the pattern across runs and flag it as
+protocol drift.
+
+### Worked example for security findings
+
+```
+Finding (CRITICAL): [VULN-003] A05 Security Misconfiguration —
+                    src/server/error-handler.ts:42
+                    Stack traces re-thrown to client on 500.
+
+Protocol execution:
+  Step 1 — Parent: .cc-forge/backlog/03-security.md → [SEC-UNI-006]
+                   (template SEC-006: "Error messages do not expose
+                    stack traces to users")
+                   Standard: OWASP ASVS 4.0 — V7.4.1
+
+  Step 2 — Backlog edit on 03-security.md:
+             SEC-UNI-006 Status: not-started → in-progress
+             SEC-UNI-006 Evidence: in-flight — Taskmaster #47
+                                   seeded by security-auditor on 2026-05-22
+
+  Step 3 — Seed via taskmaster-seed:
+             Title:       [SEC-UNI-006] Strip stack traces from
+                          production error handler
+             Standard:    OWASP ASVS 4.0 — V7.4.1
+             Outcome:     Internal system details not visible to
+                          potential attackers
+             Phase:       2 (Beta)
+             Acceptance:  In NODE_ENV=production, error handler
+                          returns generic 500 body; full stack still
+                          emitted to Sentry. Vitest case added.
+             Source:      gate-review:security-auditor
+```
 
 </backlog_update>
 

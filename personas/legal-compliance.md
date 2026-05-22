@@ -133,15 +133,40 @@ REQUIRES ATTENTION
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-Update `.cc-forge/backlog/07-compliance.md`:
-- COM-001 (Privacy Policy published) → mark done with URL evidence
-- COM-002 (ToS published) → mark done with URL evidence
-- COM-003 (Cookie consent) → mark done or not-applicable with reason
-- COM-004 (Data deletion mechanism) → mark done with evidence
-- COM-005 (Data retention policy) → mark done if documented
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding:
 
-Any BLOCK items → add to RISKS.md immediately with review date.
+1. **Identify parent** in `.cc-forge/backlog/07-compliance.md`. No
+   parent? Log `type=missing_coverage`, then orphan-seed with
+   `type=orphan_task`. BLOCK items → add to `RISKS.md` immediately
+   with review date.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID
+   to `**Evidence:**`. For verified-clean items, mark `done` with URL
+   evidence (Privacy Policy URL, ToS URL, consent banner screenshot,
+   data-deletion endpoint path).
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim
+   (GDPR Article, CCPA section, ePrivacy Directive reference).
+
+### Items this persona owns
+- COM-001 through COM-005 (Privacy/ToS/Cookie/Deletion/Retention)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with URL evidence>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+  BLOCK items added to RISKS:  <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>

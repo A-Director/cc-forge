@@ -143,14 +143,37 @@ CRITICAL FRICTION
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-Update `.cc-forge/backlog/05-design.md`:
-- DES-001 (primary action completable without help) → mark done if verified
-- DES-002 (form inputs labeled) → mark done with evidence
-- DES-003 (alt text on images) → mark done with evidence
-- DES-004 (color contrast ≥ 4.5:1) → mark done if verified
-- DES-005 (keyboard navigable) → mark done if verified
-- DES-006 (error messages specific) → mark done if verified
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding:
+
+1. **Identify parent** in `.cc-forge/backlog/05-design.md`. No parent?
+   Log `type=missing_coverage`, then orphan-seed with `type=orphan_task`.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID
+   to `**Evidence:**`. For verified-clean items, mark `done` with
+   evidence (Lighthouse report URL, axe-core output, screenshot path).
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim
+   (WCAG 2.1 section, Nielsen heuristic #, etc.).
+
+### Items this persona owns
+- DES-001 through DES-009 (universal usability + WCAG AA items)
+- DES-STK-* (stack-specific UI items like KaTeX scientific rendering)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with Lighthouse/axe evidence>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>

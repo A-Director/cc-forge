@@ -137,13 +137,50 @@ SCOPE DELTA
 
 <backlog_update>
 
-## Backlog items to update after this review
+## Backlog updates — mandatory 3-step protocol
 
-Update `.cc-forge/backlog/01-product.md`:
-- PRD-001 (PRD current) → verify and mark done if accurate
-- PRD-004 (PRD updated to reflect shipped features) → check and mark done
+Follow the shared protocol at
+`personas/_shared/backlog-update-protocol.md` for every finding on your
+domain items, AND audit that the other personas have followed it on their
+domains.
 
-Also verify all other domain files are being updated by their owning personas.
-Flag any domain that hasn't been updated in the last sprint.
+1. **Identify parent** in `.cc-forge/backlog/01-product.md`. No parent?
+   Log `type=missing_coverage`, then orphan-seed with `type=orphan_task`.
+2. **Mark in-progress** on the parent and append the Taskmaster task ID
+   to `**Evidence:**`. For PRD-current verifications, mark `done` with
+   the date-checked + PRD section reference.
+3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
+   Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim.
+
+### Cross-domain audit (Product Owner role)
+
+In addition to your own domain, scan every other `.cc-forge/backlog/0X-*.md`
+and verify:
+
+- Each persona-owned domain has been updated in the last sprint
+- No backlog item is `in-progress` with stale (>14 day) evidence
+- No domain shows >25% of items lacking Standard lines (gap #48 drift)
+
+Flag any drift as `type=drift` log entries with category
+`backlog_stale_<domain>` or `standards_drift_<domain>`.
+
+### Items this persona owns
+- PRD-001 through PRD-005 (PRD lifecycle + success metrics)
+
+### Mandatory output section
+
+End your review report with:
+
+```
+BACKLOG UPDATES
+  ─────────────────────────────────────────
+  Items moved to in-progress:  <list with task IDs>
+  Items marked done:           <list with PRD section evidence>
+  Tasks seeded via helper:     <N>
+  Orphans / missing coverage:  <N> / <N>
+  Cross-domain drift flagged:  <N>
+```
+
+See `personas/security-auditor.md` for a worked example.
 
 </backlog_update>
