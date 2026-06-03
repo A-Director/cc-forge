@@ -216,7 +216,10 @@ def parse_backlog_item(block: str) -> dict[str, Any]:
         if idm:
             item["id"] = idm.group(1).strip()
             item["title"] = idm.group(2).strip()
-    field_pat = re.compile(r"\*\*([A-Za-z]+):\*\*\s*(.*)$")
+    # Canonical list-item form per spec §3.2 (post-Session-0). Lines look
+    # like "- Field: value". Note: this is line-anchored on the stripped
+    # form; whitespace before "- " is acceptable.
+    field_pat = re.compile(r"^-\s+([A-Za-z][A-Za-z-]*):\s*(.+)$")
     for ln in lines[1:]:
         fm = field_pat.match(ln.strip())
         if not fm:
@@ -1857,9 +1860,25 @@ def main(argv: list[str] | None = None) -> int:
     usage = parse_usage_log(project_root)
     cc_raw = parse_cc_conversations(project_root)
 
-    # Token weights for overhead estimate
-    weights_path = Path(__file__).resolve().parent.parent / "hermes" / "token-weights.json"
-    weights_raw = read_text_safe(weights_path)
+    # Token weights for overhead estimate. Spec §4.3: canonical at
+    # ${CLAUDE_PLUGIN_ROOT}/token-weights.json (Layer 1); per-project
+    # overrides at .cc-forge/overrides/token-weights.json. Override
+    # consulted first, fall back to canonical, fall back to in-code defaults.
+    weights_raw = None
+    override_path = project_root / ".cc-forge" / "overrides" / "token-weights.json"
+    if override_path.is_file():
+        weights_raw = read_text_safe(override_path)
+    if not weights_raw:
+        plugin_root = os.environ.get("CLAUDE_PLUGIN_ROOT")
+        if plugin_root:
+            canonical_path = Path(plugin_root) / "token-weights.json"
+            if canonical_path.is_file():
+                weights_raw = read_text_safe(canonical_path)
+    if not weights_raw:
+        # Last-resort fallback for dev-tree runs where neither override nor
+        # plugin root is reachable. Look in the script's own ancestor tree.
+        legacy_path = Path(__file__).resolve().parent.parent / "token-weights.json"
+        weights_raw = read_text_safe(legacy_path)
     try:
         weights = json.loads(weights_raw) if weights_raw else {}
     except json.JSONDecodeError:

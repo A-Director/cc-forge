@@ -81,7 +81,7 @@ Sitting around them is the **PDLC** (Product Development Life Cycle) — *what m
 
 **Between phases:** run `/hermes-phase-gate` to advance from one phase to the next — this is a PDLC gate, a few per project. It triggers a full-panel persona review and bumps `current_phase` in `state.json`.
 
-Every backlog item carries a `**Phase:**` field — "what's the earliest phase a typical SaaS project needs this done?" — so the backlog naturally rolls up to per-phase target bars (see `backlog/master.md`).
+Every backlog item carries a `- Phase:` field — "what's the earliest phase a typical SaaS project needs this done?" — so the backlog naturally rolls up to per-phase target bars (see `catalogue/master.md`).
 
 See `docs-templates/PHASES.md` for the full phase definitions, exit gates, and domain bar tables. `session-lifecycle/phase-gates.md` covers the SDLC-vs-PDLC distinction in detail.
 
@@ -460,12 +460,25 @@ cd ~
 git clone https://github.com/A-Director/cc-forge.git
 ```
 
-### 2. Install tools (one-time, global)
-```bash
-bash ~/cc-forge/scripts/hermes-install.sh
+### 2. Install the cc-forge plugin (one-time, in Claude Code)
+```
+/plugin install ~/cc-forge
 ```
 
-Installs: taskmaster MCP, context7 MCP, criticalthink, all Hermes commands, and all 13 personas globally.
+cc-forge ships as a Claude Code plugin. The plugin system handles command
+installation, hook registration (SessionStart, Stop, PreCompact, UserPromptSubmit),
+and version management. There is no longer a separate global-install shell
+step — the old `scripts/hermes-install.sh` is now a thin redirect to
+`/plugin install`.
+
+### 3. Bootstrap your project
+```bash
+cd ~/your-project
+bash ~/cc-forge/scripts/hermes-bootstrap.sh
+```
+
+Creates `.cc-forge/state.json`, `.cc-forge/usage.log`, `status/` directory,
+and updates `.gitignore` for cc-forge artifacts. Idempotent — safe to re-run.
 
 Then open Claude Code and run:
 ```

@@ -1,0 +1,13 @@
+{
+  "1": "IDEA",
+  "2": "SPEC",
+  "3": "PLAN",
+  "4": "DESIGN",
+  "5": "BUILD",
+  "6": "AUTH",
+  "7": "BILLING",
+  "8": "REVIEW",
+  "9": "DEPLOY",
+  "10": "MONITOR",
+  "11": "ITERATE"
+}

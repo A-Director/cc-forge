@@ -43,10 +43,10 @@ If you cannot find a parent item:
 Edit `.cc-forge/backlog/0X-<domain>.md`. For the parent item, change:
 
 ```diff
-- **Status:** not-started
-+ **Status:** in-progress
-- **Evidence:** —
-+ **Evidence:** in-flight — Taskmaster #<task-id> seeded by <persona> on <ISO date>
+- - Status: not-started
++ - Status: in-progress
+- - Evidence: —
++ - Evidence: in-flight — Taskmaster #<task-id> seeded by <persona> on <ISO date>
 ```
 
 Rules:

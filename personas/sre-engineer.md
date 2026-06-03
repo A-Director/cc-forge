@@ -177,7 +177,7 @@ Follow the shared protocol at
    `type=orphan_task`. For BLOCK findings, also add to `RISKS.md`
    immediately.
 2. **Mark in-progress** on the parent and append the Taskmaster task ID
-   to `**Evidence:**`. For verified-clean items, mark `done` with
+   to `- Evidence:` line. For verified-clean items, mark `done` with
    concrete evidence (URLs for Sentry DSN, UptimeRobot URL, runbook
    path, etc.).
 3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.

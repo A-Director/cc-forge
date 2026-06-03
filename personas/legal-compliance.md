@@ -143,7 +143,7 @@ Follow the shared protocol at
    `type=orphan_task`. BLOCK items → add to `RISKS.md` immediately
    with review date.
 2. **Mark in-progress** on the parent and append the Taskmaster task ID
-   to `**Evidence:**`. For verified-clean items, mark `done` with URL
+   to `- Evidence:` line. For verified-clean items, mark `done` with URL
    evidence (Privacy Policy URL, ToS URL, consent banner screenshot,
    data-deletion endpoint path).
 3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
