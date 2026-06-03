@@ -14,7 +14,7 @@
 #   3. Dry-run gate (if --dry-run, print and exit before any change).
 #   4. Remove legacy global commands (gap #51 cleanup).
 #   5. Remove hardcoded SessionStart hook from ~/.claude/settings.json.
-#   6. Install plugin (/plugin install <HERMES_DIR>).
+#   6. Add marketplace + install plugin (/plugin marketplace add + /plugin install cc-forge@cc-forge).
 #   7. Confirm Layer 1 reachability via CLAUDE_PLUGIN_ROOT.
 #   8. Catalogue format migration (hermes-migrate-backlog-format.sh applied
 #      to .cc-forge/backlog/) — strict fidelity gate, grandfathered/non
@@ -156,7 +156,7 @@ if [ "$MODE" = "dry-run" ]; then
   echo "▸ Step 3: dry-run gate active. The following steps WOULD be applied:"
   echo "  4. rm -f ~/.claude/commands/hermes-*.md (legacy global commands)"
   echo "  5. edit ~/.claude/settings.json: remove cc-forge SessionStart entry"
-  echo "  6. /plugin install $HERMES_DIR  (operator runs in Claude Code)"
+  echo "  6. /plugin marketplace add $HERMES_DIR && /plugin install cc-forge@cc-forge  (operator runs in Claude Code)"
   echo "  7. verify \${CLAUDE_PLUGIN_ROOT} reachable (operator-visible)"
   echo "  8. catalogue format migration — running script in dry-run now:"
   echo "     ----------------------------------------------------------------"
@@ -206,7 +206,7 @@ fi
 echo ""
 log "▸ Step 6: plugin install"
 log "  Operator must run in Claude Code:"
-log "    /plugin install $HERMES_DIR"
+log "    /plugin marketplace add $HERMES_DIR && /plugin install cc-forge@cc-forge"
 log "  This script cannot install the plugin directly — Claude Code owns plugin install."
 
 # ─── STEP 7: layer 1 reachability ───
@@ -277,7 +277,7 @@ echo "  Backup:           $BACKUP_DIR"
 echo "  Log:              $LOG_FILE"
 echo ""
 echo "  Operator action items:"
-echo "    1. Run /plugin install $HERMES_DIR in Claude Code"
+echo "    1. Run /plugin marketplace add $HERMES_DIR && /plugin install cc-forge@cc-forge in Claude Code"
 echo "    2. Remove any cc-forge entry from ~/.claude/settings.json (see step 5)"
 echo "    3. Verify with /hermes-doctor"
 echo ""

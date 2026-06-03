@@ -461,15 +461,42 @@ git clone https://github.com/A-Director/cc-forge.git
 ```
 
 ### 2. Install the cc-forge plugin (one-time, in Claude Code)
+
+cc-forge ships as a single-plugin Claude Code marketplace. Add the
+marketplace, then install the plugin:
+
 ```
-/plugin install ~/cc-forge
+/plugin marketplace add ~/cc-forge
+/plugin install cc-forge@cc-forge
 ```
 
-cc-forge ships as a Claude Code plugin. The plugin system handles command
-installation, hook registration (SessionStart, Stop, PreCompact, UserPromptSubmit),
-and version management. There is no longer a separate global-install shell
-step — the old `scripts/hermes-install.sh` is now a thin redirect to
-`/plugin install`.
+The plugin system handles command installation, hook registration
+(SessionStart, Stop, PreCompact, UserPromptSubmit), and version management.
+There is no separate global-install shell step — the old
+`scripts/hermes-install.sh` is now a thin redirect to `/plugin install`.
+
+**Verify the install:**
+```
+/hermes-doctor
+```
+
+If the doctor reports Layer 1 failures, the plugin isn't reachable —
+check `${CLAUDE_PLUGIN_ROOT}` is set and `/plugin list` shows
+`cc-forge@cc-forge` as enabled.
+
+**Note for Claude Code CLI v2.1.x and earlier:** there's an upstream bug
+([#17832](https://github.com/anthropics/claude-code/issues/17832)) where
+directory-marketplace plugins install but don't auto-add to
+`settings.json` `enabledPlugins`. If `/plugin list` shows cc-forge as
+*disabled* immediately after install, manually edit `~/.claude/settings.json`:
+
+```json
+"enabledPlugins": {
+  "cc-forge@cc-forge": true
+}
+```
+
+Recent CLI versions auto-enable correctly; verified clean on v2.1.161.
 
 ### 3. Bootstrap your project
 ```bash
