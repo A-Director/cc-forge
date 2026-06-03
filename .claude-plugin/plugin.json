@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "SDLC framework for Claude Code: Hermes the Conductor, Argus the Monitor, expert personas, structured backlog, dashboard.",
   "homepage": "https://github.com/A-Director/cc-forge",
-  "author": "A-Director",
+  "author": {
+    "name": "A-Director"
+  },
   "license": "MIT"
 }

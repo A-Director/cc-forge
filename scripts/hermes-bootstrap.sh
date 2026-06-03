@@ -10,7 +10,7 @@
 # the Claude Code plugin system (the cc-forge plugin handles command
 # installation), so hermes-bootstrap.sh no longer touches ~/.claude/.
 #
-# Plugin install is now: /plugin install <path-to-cc-forge>  (run inside
+# Plugin install is now: /plugin marketplace add <path-to-cc-forge>; /plugin install cc-forge@cc-forge  (run inside
 # Claude Code, not from this script).
 
 set -u
@@ -95,7 +95,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "  Bootstrap complete."
 echo ""
 echo "  Next: install the cc-forge plugin via Claude Code:"
-echo "    /plugin install <path-to-cc-forge>"
+echo "    /plugin marketplace add <path-to-cc-forge>; /plugin install cc-forge@cc-forge"
 echo ""
 echo "  Then in a Claude Code session:"
 echo "    /hermes-init        — initialise PRD, CLAUDE.md, etc."

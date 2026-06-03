@@ -28,7 +28,7 @@ verification.
 - Surface verification failure loudly — do not declare success on a broken
   Layer 1 reachability check.
 - If `${CLAUDE_PLUGIN_ROOT}` is unset, the plugin isn't installed; tell the
-  developer to run `/plugin install <path-to-cc-forge>` first.
+  developer to run `/plugin marketplace add <path>; /plugin install cc-forge@cc-forge` first.
 </constraints>
 
 ---
@@ -39,7 +39,7 @@ verification.
 # Step 1: confirm plugin reachable
 if [ -z "${CLAUDE_PLUGIN_ROOT:-}" ]; then
   echo "✗ CLAUDE_PLUGIN_ROOT not set — cc-forge plugin is not installed."
-  echo "  In Claude Code, run: /plugin install <path-to-cc-forge>"
+  echo "  In Claude Code, run: /plugin marketplace add <path>; /plugin install cc-forge@cc-forge"
   exit 1
 fi
 if [ ! -d "${CLAUDE_PLUGIN_ROOT}" ]; then
