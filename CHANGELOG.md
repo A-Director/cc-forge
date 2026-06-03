@@ -5,6 +5,111 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Session 0 — plugin conversion + format unification + doctor skeleton
+
+Per the v3 plan agreed in design. Major restructuring; CLARK migration is a
+separate operator action that runs the shipped migration script under the
+spec §4.7 safety (dry-run, backup, rollback).
+
+**Plugin layout (spec §4):**
+- New `.claude-plugin/plugin.json` — manifest declaring cc-forge as a
+  Claude Code plugin at v1.0.0.
+- New `hooks/` directory with `hooks.json` declaring SessionStart, Stop,
+  PreCompact, and UserPromptSubmit handlers, plus three executable
+  handler scripts. `hermes-session-start.sh` and `hermes-handoff.sh`
+  close the §1 "Hermes closure regression" — session_start and
+  session_end events now logged deterministically by hooks.
+  `hermes-prompt-submit.sh` is a v1.0.0 stub; the full per-prompt
+  framing lands in Session D.
+- New `migrations/` directory with README documenting the
+  forward-only schema-migration convention. No migrations ship at v1.0.0.
+- New `personas/_shared/phase-names.json` and `stage-names.json` —
+  canonical name maps per §4.3 layout.
+
+**File moves (no `hermes/` directory remains):**
+- `hermes/commands/*.md` → `commands/*.md` (9 files).
+- `hermes/{init,adopt,backlog-init,log,update}.md` → `commands/` (5
+  files).
+- `hermes/token-weights.json` → repo root (Layer 1 canonical).
+- `backlog/*.md` → `catalogue/*.md` (11 files: 10 domain + master).
+- Deleted: duplicate `hermes/hermes-init.sh`.
+
+**Format unification (spec §3.2 strict canonical):**
+- Every catalogue item migrated from bold-field form (`**Field:** value`)
+  to canonical list-item form (`- Field: value`) per spec §3.2. Standalone,
+  re-runnable, dry-run-able transform: `scripts/hermes-migrate-backlog-format.sh`.
+- Transform is **fidelity-gated, not conformance-gated** per the v3 plan
+  correction: the gate proves the sed preserved every field and every
+  value with no stray markers; it does NOT halt on pre-existing data
+  gaps (which §3.2 line 644 grandfathers for one transition cycle).
+  Carry-forward audit buckets gaps into "grandfathered per §3.2 (missing
+  Standard)" vs "pre-existing violation, needs cleanup (other required
+  fields)". 90 items × 8 fields = 720 field/value pairs migrated with
+  fidelity-passed verdict and zero data gaps in the cc-forge catalogue.
+- Writer migration alongside: 13 files updated so personas, commands,
+  and the dashboard reader all produce/consume the canonical list form.
+  Covers `personas/_shared/backlog-update-protocol.md`, 7 gate-review
+  personas, `commands/taskmaster-seed.md`, `commands/backlog-init.md`
+  (including the Phase 6 verification regex), `commands/gate-review.md`
+  ADR template, `commands/init.md` ADR template,
+  `scripts/hermes-dashboard.py` line 219 (`field_pat` regex).
+- Completeness verification: `grep -rln '^\*\*[A-Z][A-Za-z-]*:\*\*'` across
+  catalogue/commands/personas/scripts returns no line-anchored bold
+  declarations. Inline-prose `**Validation:**`-style section headers are
+  intentional and not field declarations.
+
+**Doctor skeleton (Layer 1 / Layer 2 file-existence only):**
+- New `scripts/hermes-doctor.py` ships Layer-1 and Layer-2 file-existence
+  checks per spec §5.3 (subset). Versioned `--json` output (schema_version
+  1.0.0) per §5.6 (E-2). Exit codes 0/1/2 for HEALTHY/DEGRADED/BROKEN.
+  Full check catalogue (format-violation stratification, cache freshness,
+  banner-rendering caveat, intake reconciliation) lands in the Doctor
+  session.
+- New `commands/doctor.md` declares `/hermes-doctor` with
+  `allowed-tools: Read, Bash` and `context: fork`.
+
+**token-weights path migration (spec §4.3 Layer 1):**
+- Canonical at `${CLAUDE_PLUGIN_ROOT}/token-weights.json`; per-project
+  overrides at `.cc-forge/overrides/token-weights.json`. Override
+  consulted first, fall back to canonical, fall back to in-code defaults.
+- `scripts/hermes-dashboard.py` updated to read from the canonical path.
+
+**Install / update unification (gap #51):**
+- `commands/update.md` rewritten per §4.6: no file copies, delegates to
+  `/plugin update`, runs migrations, verifies via doctor, reports. The
+  prefix-strip and copy-list-drift failure modes from gap #50/#52 cannot
+  recur because there is no copy.
+- `scripts/hermes-install.sh` reduced to a thin redirect telling the
+  operator to run `/plugin install`. The global-command-install
+  responsibility is gone; the plugin owns it.
+- `scripts/hermes-bootstrap.sh` (new) handles project-bootstrap
+  responsibility split off from the old install script per #4.
+
+**Command frontmatter standardisation (F-3):**
+- Every command declares `allowed-tools` (renamed from the previous
+  no-op `tools:` field where it existed; added where it didn't).
+  Read-only commands (`status`, `next`, `report`, `doctor`) get
+  read-only sets; mutating commands (`dashboard`, `gate-review`,
+  `phase-gate`, `deploy`, `update`, `taskmaster-seed`, `init`,
+  `adopt`, `backlog-init`, `log`) declare exactly what they touch.
+- `dashboard`, `gate-review`, `phase-gate`, `doctor` declare
+  `context: fork` per F-2 (fork is an optimisation, not a correctness
+  mechanism — every forkable command produces correct results when
+  silently run inline too).
+
+**Pre-plugin → plugin migration script (CLARK + future):**
+- New `scripts/hermes-migrate-to-plugin.sh` ships the 12-step migration
+  with `--dry-run`, `--rollback`, step-wise log, and the fidelity-gated
+  catalogue-format migration inside step 8. CLARK migration is a
+  separate operator action — this PR ships the script but does not run
+  it against any real project.
+
+**README + CHEATSHEET updated** for the plugin install flow.
+
+This PR contains no behaviour against CLARK or any other real project.
+The migration script's dry-run output is the next review checkpoint
+before any apply.
+
 ### Fixed — gap #52: /hermes-update not propagating Session C deliverables
 - `/hermes-dashboard` failed on first use in any project that updated
   after Session C. The command invokes `scripts/hermes-dashboard.py`,

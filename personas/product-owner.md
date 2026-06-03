@@ -147,7 +147,7 @@ domains.
 1. **Identify parent** in `.cc-forge/backlog/01-product.md`. No parent?
    Log `type=missing_coverage`, then orphan-seed with `type=orphan_task`.
 2. **Mark in-progress** on the parent and append the Taskmaster task ID
-   to `**Evidence:**`. For PRD-current verifications, mark `done` with
+   to `- Evidence:` line. For PRD-current verifications, mark `done` with
    the date-checked + PRD section reference.
 3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
    Title format `[<BACKLOG-ID>] <action>`; Standard carried verbatim.

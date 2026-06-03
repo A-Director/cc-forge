@@ -204,9 +204,9 @@ Before ending your review you MUST follow the shared protocol at
    in `.cc-forge/backlog/03-security.md`. If none exists, log
    `type=missing_coverage` and proceed with parent=null + `type=orphan_task`
    on the task you seed.
-2. **Mark in-progress.** Edit the parent item's `**Status:**` from
+2. **Mark in-progress.** Edit the parent item's `- Status:` line from
    `not-started` to `in-progress` and append the Taskmaster task ID to
-   `**Evidence:**` as `in-flight — Taskmaster #<id> seeded by
+   the `- Evidence:` line as `in-flight — Taskmaster #<id> seeded by
    security-auditor on <date>`. For verified-clean items, mark `done`
    with file:line evidence instead.
 3. **Seed task via the helper.** Use `hermes/commands/taskmaster-seed.md`

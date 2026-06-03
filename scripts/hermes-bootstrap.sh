@@ -1,0 +1,104 @@
+#!/bin/bash
+# hermes-bootstrap.sh — first-time per-project setup.
+#
+# Creates the .cc-forge/ directory, seeds an empty usage.log, writes an
+# initial state.json template, and updates .gitignore for status/ artifacts.
+#
+# This is the project-bootstrap responsibility split off from the old
+# scripts/hermes-install.sh (gap #51). The old script also installed slash
+# commands globally to ~/.claude/commands/ — that responsibility moves to
+# the Claude Code plugin system (the cc-forge plugin handles command
+# installation), so hermes-bootstrap.sh no longer touches ~/.claude/.
+#
+# Plugin install is now: /plugin install <path-to-cc-forge>  (run inside
+# Claude Code, not from this script).
+
+set -u
+
+PROJECT_ROOT="$(pwd)"
+CC_FORGE_DIR="${PROJECT_ROOT}/.cc-forge"
+
+echo "▸ Bootstrapping cc-forge in: ${PROJECT_ROOT}"
+
+# 1. Create .cc-forge/ tree
+mkdir -p "${CC_FORGE_DIR}/backlog" "${CC_FORGE_DIR}/overrides"
+echo "  ✓ .cc-forge/ tree ready"
+
+# 2. Initial state.json (idempotent — leaves existing untouched)
+if [ ! -f "${CC_FORGE_DIR}/state.json" ]; then
+  iso_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  cat > "${CC_FORGE_DIR}/state.json" <<EOF
+{
+  "schema_version": "1.0",
+  "project_name": "$(basename "${PROJECT_ROOT}")",
+  "current_pdlc_phase": 1,
+  "current_pdlc_phase_name": "MVP",
+  "current_sdlc_stage": 1,
+  "current_sdlc_stage_name": "IDEA",
+  "phase_entered_at": "${iso_ts}",
+  "phase_history": [],
+  "operator_action_items": [],
+  "cc_forge_required_version": "1.0.0"
+}
+EOF
+  echo "  ✓ .cc-forge/state.json (created)"
+else
+  echo "  · .cc-forge/state.json (already exists; left untouched)"
+fi
+
+# 3. Seed empty usage.log (preserves existing)
+touch "${CC_FORGE_DIR}/usage.log"
+echo "  ✓ .cc-forge/usage.log"
+
+# 4. .gitignore updates — status/ artifacts per spec §4.4
+if [ -f "${PROJECT_ROOT}/.gitignore" ]; then
+  added=0
+  for line in \
+    "# cc-forge" \
+    ".cc-forge/state.json" \
+    "status/dashboard.html" \
+    "status/last-open-banner.md" \
+    "status/last-handoff.md" \
+    "status/*.png" \
+    "# (status/argus-last-run.md and other markdown reports stay committed)" \
+    "# (.cc-forge/usage.log is committed — it's the project's event history)" ; do
+    if ! grep -qFx "$line" "${PROJECT_ROOT}/.gitignore"; then
+      printf "%s\n" "$line" >> "${PROJECT_ROOT}/.gitignore"
+      added=1
+    fi
+  done
+  if [ "$added" -eq 1 ]; then
+    echo "  ✓ .gitignore updated with status/ artifacts"
+  else
+    echo "  · .gitignore (already has cc-forge entries)"
+  fi
+else
+  cat > "${PROJECT_ROOT}/.gitignore" <<'EOF'
+# cc-forge
+.cc-forge/state.json
+status/dashboard.html
+status/last-open-banner.md
+status/last-handoff.md
+status/*.png
+# (status/argus-last-run.md and other markdown reports stay committed)
+# (.cc-forge/usage.log is committed — it's the project's event history)
+EOF
+  echo "  ✓ .gitignore created"
+fi
+
+# 5. status/ directory (where dashboard.html etc. land)
+mkdir -p "${PROJECT_ROOT}/status"
+echo "  ✓ status/ ready"
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  Bootstrap complete."
+echo ""
+echo "  Next: install the cc-forge plugin via Claude Code:"
+echo "    /plugin install <path-to-cc-forge>"
+echo ""
+echo "  Then in a Claude Code session:"
+echo "    /hermes-init        — initialise PRD, CLAUDE.md, etc."
+echo "    /hermes-backlog-init — populate .cc-forge/backlog/"
+echo "    /hermes-doctor       — verify the install"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

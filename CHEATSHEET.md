@@ -11,24 +11,24 @@
 # 1. Clone cc-forge to a permanent location
 git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
 
-# 2. Install all tools globally (MCPs, commands, personas)
-bash ~/cc-forge/scripts/hermes-install.sh
+# 2. Install the cc-forge plugin (inside Claude Code)
+/plugin install ~/cc-forge
+# (Plugin system handles commands, hooks, personas, standards, catalogue.)
 
-# 3. Install plugins manually inside Claude Code
-#    (plugins can't be installed from shell scripts)
+# 3. Install other plugins you use
 /plugin install claude-mem
 /plugin install superpowers
-# → restart Claude Code after this
+# → restart Claude Code after each
 
 # 4a. New project
 mkdir my-project && cd my-project && git init
-bash ~/cc-forge/scripts/hermes-init.sh  # copies personas + standards into project
+bash ~/cc-forge/scripts/hermes-bootstrap.sh   # creates .cc-forge/, state.json, gitignore
 claude                    # open Claude Code
 /hermes-init              # complete setup via interview
 
 # 4b. Existing project
 cd your-project
-bash ~/cc-forge/scripts/hermes-init.sh  # scaffolds .cc-forge/ structure
+bash ~/cc-forge/scripts/hermes-bootstrap.sh   # idempotent
 claude                    # open Claude Code
 /hermes-adopt             # gap report + setup
 ```

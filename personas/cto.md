@@ -154,7 +154,7 @@ Follow the shared protocol at
    No parent? Log `type=missing_coverage`, then orphan-seed with
    `type=orphan_task`.
 2. **Mark in-progress** on the parent and append the Taskmaster task ID to
-   `**Evidence:**`. For verified-clean items, mark `done` with file:line.
+   `- Evidence:` line. For verified-clean items, mark `done` with file:line.
 3. **Seed Taskmaster tasks via** `hermes/commands/taskmaster-seed.md`.
    The helper enforces title `[<BACKLOG-ID>] <action>` and carries the
    Standard line verbatim from the parent.
