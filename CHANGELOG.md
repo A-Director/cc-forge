@@ -5,6 +5,33 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed — Session 0 install unblock (marketplace manifest + plugin.json author)
+
+Session 0 shipped `.claude-plugin/plugin.json` but no `.claude-plugin/marketplace.json`, which made cc-forge uninstallable via the standard Claude Code plugin flow — same trap claude-mem hit. `/plugin install <path>` requires a marketplace manifest pointing at the plugin. Without it, install fails.
+
+- **New `.claude-plugin/marketplace.json`** — single-plugin marketplace at the cc-forge repo root. Marketplace name `cc-forge`, plugin entry name `cc-forge`, `source: "./"` (plugin lives at the marketplace root, the common single-plugin-repo pattern). Validated end-to-end with `claude plugin validate`, `claude plugin marketplace add`, `claude plugin install cc-forge@cc-forge`, and `claude plugin list`. Status reports `√ enabled`; `~/.claude/settings.json` `enabledPlugins` populated automatically.
+- **Fixed `.claude-plugin/plugin.json`** — `author` was a string in Session 0 (`"author": "A-Director"`); the schema requires an object. `claude plugin validate` was failing with `author: Invalid input: expected object, received string`. Now `"author": {"name": "A-Director"}`. The plugin would have failed to install even with a marketplace until this was fixed.
+- **Install commands updated everywhere.** README, CHEATSHEET, `scripts/hermes-install.sh`, `scripts/hermes-bootstrap.sh`, `scripts/hermes-migrate-to-plugin.sh` (steps 6 + log + final report), and `commands/update.md` all now show the two-step `/plugin marketplace add <path>` then `/plugin install cc-forge@cc-forge`, not the broken one-step `/plugin install <path>`.
+- **README note on auto-enable bug [#17832](https://github.com/anthropics/claude-code/issues/17832).** The directory-marketplace auto-enable bug ("installed but not in enabledPlugins") is documented as a post-install manual step for users on older CLI versions. Verified clean on CLI v2.1.161 — the bug doesn't manifest in current Claude Code; `enabledPlugins` populates correctly on install. The README note covers the edge case for v2.1.x users on earlier minor versions.
+
+**Verified install flow (v2.1.161):**
+```
+$ claude plugin marketplace add /home/user/cc-forge
+√ Successfully added marketplace: cc-forge
+$ claude plugin install cc-forge@cc-forge
+√ Successfully installed plugin: cc-forge@cc-forge (scope: user)
+$ claude plugin list
+  > cc-forge@cc-forge
+    Version: 1.0.0
+    Status: √ enabled
+$ claude plugin details cc-forge@cc-forge
+  Skills (14)  adopt, backlog-init, dashboard, deploy, doctor, gate-review,
+               init, log, next, phase-gate, report, status, taskmaster-seed, update
+  Hooks (4)    SessionStart, Stop, PreCompact, UserPromptSubmit
+```
+
+This unblocks CLARK's reset and any future cc-forge install.
+
 ### Session 0 — plugin conversion + format unification + doctor skeleton
 
 Per the v3 plan agreed in design. Major restructuring; CLARK migration is a

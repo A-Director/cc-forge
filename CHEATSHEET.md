@@ -12,7 +12,8 @@
 git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
 
 # 2. Install the cc-forge plugin (inside Claude Code)
-/plugin install ~/cc-forge
+/plugin marketplace add ~/cc-forge
+/plugin install cc-forge@cc-forge
 # (Plugin system handles commands, hooks, personas, standards, catalogue.)
 
 # 3. Install other plugins you use

@@ -24,7 +24,7 @@ cat <<EOF
 
   To install cc-forge as a plugin, open Claude Code and run:
 
-    /plugin install ${HERMES_DIR}
+    /plugin marketplace add ${HERMES_DIR} && /plugin install cc-forge@cc-forge
 
   To bootstrap a project for cc-forge use, run in the project root:
 

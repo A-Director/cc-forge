@@ -1,0 +1,24 @@
+{
+  "name": "cc-forge",
+  "owner": {
+    "name": "A-Director"
+  },
+  "description": "Single-plugin marketplace for cc-forge — Hermes the Conductor, Argus the Monitor, expert personas, structured backlog, dashboard.",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "cc-forge",
+      "source": "./",
+      "version": "1.0.0",
+      "description": "SDLC framework for Claude Code: Hermes the Conductor, Argus the Monitor, expert personas, structured backlog, dashboard.",
+      "author": {
+        "name": "A-Director"
+      },
+      "homepage": "https://github.com/A-Director/cc-forge",
+      "repository": "https://github.com/A-Director/cc-forge",
+      "license": "MIT",
+      "category": "sdlc",
+      "tags": ["sdlc", "framework", "hermes", "personas", "backlog", "dashboard", "hooks"]
+    }
+  ]
+}
