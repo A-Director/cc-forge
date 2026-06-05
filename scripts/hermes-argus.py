@@ -92,7 +92,7 @@ def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
        If set but invalid, fall through to discovery so a broken env var
        doesn't trap us.
     2. Walk up from this script's __file__ looking for a directory that
-       contains .claude-plugin/plugin.json. The doctor lives at
+       contains .claude-plugin/plugin.json. Argus lives at
        <plugin_root>/scripts/hermes-argus.py so the parent of parent is
        the usual hit; we walk further as a safety margin.
     3. None — distinct "cannot locate" condition, NOT BROKEN. The caller
@@ -102,9 +102,9 @@ def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
       source ∈ {"env", "self-discovered", "env-then-self", "not-found"}
       note   is a short human-readable explanation when relevant.
 
-    Critical: the brief's #4 finding (forked doctor reports false BROKEN
+    Critical: the brief's #4 finding (forked Argus reports false BROKEN
     because CLAUDE_PLUGIN_ROOT doesn't survive the forked subshell) is
-    closed by step 2 — the doctor finds its own plugin root from __file__
+    closed by step 2 — Argus finds its own plugin root from __file__
     when the env var is missing, instead of declaring everything broken.
     """
     env_value = os.environ.get("CLAUDE_PLUGIN_ROOT")
@@ -236,7 +236,7 @@ def check_layer2(project_root: Path) -> tuple[list[dict[str, Any]], int, int]:
 FIELD_PATTERN = re.compile(r"^- ([A-Z][A-Za-z-]*):\s*(.+)$")
 ITEM_HEADER_PATTERN = re.compile(r"^### \[([A-Z][A-Z0-9-]+)\]")
 # Required fields per §3.2. Standard is grandfathered per §3.2 line 644 for
-# one transition cycle — the doctor lists missing-Standard separately from
+# one transition cycle — Argus lists missing-Standard separately from
 # the other required-field gaps to preserve the spec's bucketing.
 REQUIRED_FIELDS = {"Outcome", "Standard", "Phase", "Status", "Owner", "Evidence"}
 GRANDFATHERED_FIELD = "Standard"
@@ -323,7 +323,7 @@ def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], in
 
     raw_violations_per_file feeds E-1's stratification. The check itself is
     a single advisory if any non-grandfathered violations exist (we don't
-    halt the doctor — see §3.8 strict-but-not-blocking for Layer 2 data).
+    halt Argus — see §3.8 strict-but-not-blocking for Layer 2 data).
     """
     checks: list[dict[str, Any]] = []
     fails = 0
@@ -763,7 +763,7 @@ def render_human(plugin_root: Path | None, root_source: str, root_note: str | No
     return "\n".join(out)
 
 
-# JSON Schema artifact URL — versioned alongside the doctor. Consumers can
+# JSON Schema artifact URL — versioned alongside Argus. Consumers can
 # fetch the schema and validate the output's shape.
 SCHEMA_URL = (
     "https://raw.githubusercontent.com/A-Director/cc-forge/main/"

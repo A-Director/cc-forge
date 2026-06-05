@@ -221,7 +221,7 @@ def append_intake(project_root: Path, *, intake_id: str, title: str,
 
     # And — critically for the C-1 join — emit one step per created item,
     # carrying the item_id alongside the intake_id. This is what closes
-    # the silent-bypass hole: doctor's intake_seen_ids will contain the
+    # the silent-bypass hole: Argus's intake_seen_ids will contain the
     # item_id, so the subsequent backlog event for that item reconciles.
     if created_item_ids:
         for item_id in created_item_ids:
@@ -236,7 +236,7 @@ def log_intake_step(project_root: Path, intake_id: str, step: str,
     """Emit an intake_step event to usage.log per §3.6.
 
     Pass item_id when the step is linking the intake to a specific
-    backlog item. The doctor's intake_reconciliation reads item_id
+    backlog item. Argus's intake_reconciliation reads item_id
     from intake_step events and uses it as the join key against
     type=backlog events. Without item_id in the link step, the join
     would silently fail and C-1 would false-flag legit work.
@@ -266,7 +266,7 @@ def link_item(project_root: Path, intake_id: str, item_id: str) -> None:
 
 
 def verify_monotonicity(log_path: Path) -> dict[str, Any]:
-    """Doctor-facing check: every INTAKE-NNN heading is monotonically
+    """Argus-facing check: every INTAKE-NNN heading is monotonically
     increasing AND no id is reused. Returns a structured report."""
     ids = find_all_intake_ids(log_path)
     out: dict[str, Any] = {"ids": ids, "violations": []}
