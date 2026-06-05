@@ -82,7 +82,7 @@ files generated, state recorded), with model-rendered output treated as
 a high-reliability-but-not-guaranteed signal that the framework verifies
 retrospectively. Section 2 develops this in full.
 
-Appendix B maps each gap to the specific `/hermes-doctor` check that
+Appendix B maps each gap to the specific `/hermes-argus` check that
 would have caught it in retrospect — the clearest substantiation that
 this document's foundations actually close the structural class of bugs
 that produced the gaps.
@@ -100,12 +100,12 @@ failure. It is deliberately narrow.
 - §4 — Three-layer physical layout: cc-forge ships as a Claude Code
   plugin (framework primitives) wrapped around per-project state and
   user-maintained documents.
-- §5 — `/hermes-doctor` as concrete regression detection.
+- §5 — `/hermes-argus` as concrete regression detection.
 - §6 — What this document deliberately does not cover, including §6.9:
   problems the design does NOT solve, named honestly.
 - §7 — Design roadmap.
 - **Appendix A** — Document conventions.
-- **Appendix B** — Each gap mapped to the doctor check that catches it.
+- **Appendix B** — Each gap mapped to the Argus check that catches it.
 - **Appendix C** — Compatibility table: current vs post-migration shape.
 - **Appendix D** — Hermes responsibility table.
 
@@ -177,7 +177,7 @@ This is the key reframing: earlier designs treated the visible banner
 as the enforcement mechanism. It is not. The visible banner is a
 courtesy to the user. The enforcement is the side effects. If the model
 never rendered a single banner, the framework's state would still be
-correct, the dashboard would still be accurate, and `/hermes-doctor`
+correct, the dashboard would still be accurate, and `/hermes-argus`
 would still catch drift. The banner makes that state *visible in the
 conversation*; it does not *constitute* the state.
 
@@ -206,7 +206,7 @@ ratio, critical risk count, next task.
 
 **Escalated opening banner — fires only when a critical flag is set:**
 
-When the SessionStart hook detects a critical condition — `/hermes-doctor`
+When the SessionStart hook detects a critical condition — `/hermes-argus`
 in BROKEN state, a phase exit blocked, an unhandled critical risk, or
 Argus drift events accumulating — the banner expands to include the
 relevant detail and recommended action:
@@ -218,7 +218,7 @@ relevant detail and recommended action:
   Next: #13 external uptime monitor
 
   ⚠ CRITICAL: last 3 sessions did not close cleanly
-    → run /hermes-doctor for diagnosis
+    → run /hermes-argus for diagnosis
 
   ⚠ Argus has not run in 9 sessions
     → run /hermes-argus (drift detection overdue)
@@ -320,7 +320,7 @@ correctness.
 Because rendering is not guaranteed, the framework verifies it after
 the fact rather than assuming it.
 
-`/hermes-doctor` includes a **banner-rendering sample check**: it reads
+`/hermes-argus` includes a **banner-rendering sample check**: it reads
 recent session transcripts (where available) and compares them against
 the banners the hooks recorded in `status/last-*-banner.md` and the
 `session_start` / `session_end` events in `usage.log`. If the hook
@@ -467,16 +467,16 @@ surfaces hook errors. The hook's deterministic side effects may be
 partial, so the next SessionStart detects the incomplete prior session
 (missing `session_end`) and surfaces it. For the immediate session, the
 self-contained payload is absent, so no banner is injected; the model
-proceeds without one. `/hermes-doctor` reports the hook failure. The
+proceeds without one. `/hermes-argus` reports the hook failure. The
 key point: a hook failure degrades the *visible banner*, not the
 *framework state*, because state lives in side effects that either
 completed or are detectably incomplete.
 
 **Hook produces invalid output.** If the hook returns malformed JSON,
 Claude Code surfaces a parse error and injects nothing. Same handling
-as above — no banner this session, doctor detects it.
+as above — no banner this session, Argus detects it.
 
-**Hook doesn't fire.** `/hooks` shows what's registered. `/hermes-doctor`
+**Hook doesn't fire.** `/hooks` shows what's registered. `/hermes-argus`
 checks `/hooks` output and reports missing cc-forge hooks. This catches
 "cc-forge installed but hooks not registered."
 
@@ -714,7 +714,7 @@ limit, recorded here rather than assumed away. Tightening it (e.g.,
 commit-message ↔ backlog reconciliation) is deferred to Session D/E.
 
 **Append-only.** Never edited or truncated. Archive at 10MB via
-`/hermes-doctor --fix=archive-usage-log` (not automatic): current file
+`/hermes-argus --fix=archive-usage-log` (not automatic): current file
 renamed `usage.log.YYYY-MM-DD`, new empty file created, archives never
 deleted. Dashboard queries read active + overlapping archives.
 
@@ -725,7 +725,7 @@ a markdown body. (Full example in Session D scope; contract here.)
 
 - `intake_id` — `^INTAKE-\d{3,4}$`. **Monotonically increasing, never
   reused** — even rejected/withdrawn intakes keep their ID. Next intake
-  is always max-existing + 1. `/hermes-doctor` verifies monotonicity.
+  is always max-existing + 1. `/hermes-argus` verifies monotonicity.
 - `disposition` — `accepted` | `deferred-to-phase-N` | `rejected` |
   `withdrawn`.
 - `classification` — `feature` | `bug` | `improvement` | `spike` |
@@ -755,7 +755,7 @@ write-path loop below acts on this distinction.
 **Layer 3 files (user-maintained) — advisory mode.** Violations may be
 in-progress edits or preferences. Parser logs `format_violation`
 (`severity: advisory`), skips the line, returns data plus count.
-Doctor reports advisories but not as errors.
+Argus reports advisories but not as errors.
 
 **Partial-parse safety (both modes).** Every consumer of parsed data
 also handles the violation count:
@@ -767,8 +767,8 @@ also handles the violation count:
   parser failed silently. The denominator is always visible.
 - **`/hermes-next`** — refuses to surface a next item if >5% of items
   in the relevant domain are unparseable; tells the user to run
-  `/hermes-doctor` first.
-- **`/hermes-doctor`** — surfaces counts in its Layer 2 / Layer 3
+  `/hermes-argus` first.
+- **`/hermes-argus`** — surfaces counts in its Layer 2 / Layer 3
   output.
 
 **Write-path validation (persona writes).** The strict/advisory modes
@@ -823,7 +823,7 @@ remains valid.
 
 - Dashboard rendering logic — the prototype is the spec.
 - The persona update protocol — `personas/_shared/backlog-update-protocol.md`.
-- File locations — §4. Doctor reporting — §5.
+- File locations — §4. Argus reporting — §5.
 
 ---
 
@@ -913,9 +913,9 @@ whole command set — and continuity with user muscle memory.
 **Tool scoping (technical note):** commands declare `allowed-tools` in
 frontmatter to scope what each can do, rather than every command
 carrying the full tool surface. Read-only commands (`/hermes-status`,
-`/hermes-doctor` without `--fix`) declare a read-only tool set; commands
+`/hermes-argus` without `--fix`) declare a read-only tool set; commands
 that mutate state declare only the tools they need. This is the same
-least-privilege conservatism as the doctor's `--fix` discipline (§5.5):
+least-privilege conservatism as Argus's `--fix` discipline (§5.5):
 a command cannot perform a destructive action it never declared access
 to, which bounds the blast radius of a misbehaving command.
 
@@ -926,7 +926,7 @@ override first, fall back to canonical.
 
 **Forked execution for verbose and parallel operations.** Several
 cc-forge operations produce large volumes of intermediate output that
-has no value in the main conversation: `/hermes-doctor` scans every
+has no value in the main conversation: `/hermes-argus` scans every
 contract file, `/hermes-dashboard` reads the full backlog and usage log,
 and a full persona gate review spawns multiple specialists that each
 examine the codebase in depth. Run inline, each floods the session's
@@ -936,7 +936,7 @@ token-consuming activity.
 
 These operations declare `context: fork` so they execute in an isolated
 sub-agent: the operation does its verbose work in a separate context
-window and returns only its result (a doctor verdict, a
+window and returns only its result (a Argus verdict, a
 dashboard-generated confirmation, a persona's structured findings) to
 the main conversation. Parallel gate reviews are the prime case —
 multiple persona reviewers fork simultaneously, each returning only its
@@ -956,11 +956,11 @@ conversation, and (b) they locate Layer 1 via a self-discovery cascade
 `.claude-plugin/plugin.json`, then a distinct *cannot-locate* verdict
 (never silently reported as Layer 1 being broken).
 
-The cascade closes a subtle regression: a forked doctor that lost
+The cascade closes a subtle regression: a forked Argus that lost
 `CLAUDE_PLUGIN_ROOT` and lacked self-discovery would report every
 Layer-1 check as failed, producing a false-BROKEN verdict on a healthy
 tree. "I can't find Layer 1" is structurally different from "Layer 1
-is broken"; the doctor reports them as different verdicts (`CANNOT_LOCATE`
+is broken"; Argus reports them as different verdicts (`CANNOT_LOCATE`
 vs `BROKEN`) with different exit codes (3 vs 2). Any forked operation
 that reads Layer 1 must adopt the same cascade.
 
@@ -1047,7 +1047,7 @@ framework simply never *depends* on a Layer 3 import existing.
                                     warn/block on major-version mismatch
 3. Run pending migrations        → ${CLAUDE_PLUGIN_ROOT}/migrations/*
                                     (all formats, §3.9)
-4. Verify Layer 1 ↔ Layer 2      → expected files present; run doctor
+4. Verify Layer 1 ↔ Layer 2      → expected files present; run Argus
                                     subset; exit non-zero with explicit
                                     list if anything missing
 5. Report                        → version, migrations applied,
@@ -1100,20 +1100,20 @@ The migration:
 
 ### 4.8 What this section does NOT address
 
-- hooks.json schema — §2.6. File format contracts — §3. Doctor logic —
+- hooks.json schema — §2.6. File format contracts — §3. Argus logic —
   §5. Marketplace distribution — §7.
 
 ---
 
-## §5 — Self-check: `/hermes-doctor`
+## §5 — Argus: framework self-check
 
-`/hermes-doctor` runs concrete checks against the contracts in §2–§4
+`/hermes-argus` runs concrete checks against the contracts in §2–§4
 and reports drift. It exists because frameworks that document behavior
 without checking it accumulate silent failures.
 
-Appendix B maps each gap to the doctor check that catches it.
+Appendix B maps each gap to the Argus check that catches it.
 
-### 5.2 What the doctor does
+### 5.2 What Argus does
 
 Three check categories (one per layer), a drift summary, and an overall
 verdict (`HEALTHY` / `DEGRADED` / `BROKEN`):
@@ -1151,11 +1151,11 @@ count); frontmatter validity; session_end cadence (wall-clock, §5.4
 below); usage.log parseability; intake-log validity + monotonic IDs;
 override consistency; **banner-rendering sample check** (§2.5 — compares
 recorded banners against recent transcripts, reports miss rate). This is
-the one doctor check that is not a clean deterministic predicate: it is
+the one Argus check that is not a clean deterministic predicate: it is
 a fuzzy transcript match, so its own measurement carries error (a
 model-paraphrased banner can read as a miss when a variant was in fact
 rendered). The check reports its rate as approximate for this reason;
-every other doctor check is a definite pass/fail.
+every other Argus check is a definite pass/fail.
 
 **Intake reconciliation** — flags backlog-state changes (`backlog`
 events) in the window that have no corresponding `intake_step` and no
@@ -1187,7 +1187,7 @@ not only as a total:
   `clear` / `compact`). The session-start matcher is already recorded,
   so this is a reporting breakdown, not new collection.
 - **Format violations by file / domain.** §3.8 already counts violations
-  per file; the doctor surfaces that breakdown rather than collapsing it
+  per file; Argus surfaces that breakdown rather than collapsing it
   to one number.
 
 Stratification is applied only to these two — the dimensions where the
@@ -1196,9 +1196,9 @@ single-segment drift (`orphan_task`, `bypass_detected`,
 `intake_reconciliation`) is reported as a plain count; breaking it out
 by an arbitrary segment would be noise, not signal.
 
-### 5.4 When the doctor runs
+### 5.4 When Argus runs
 
-**On-demand — `/hermes-doctor`.** Full report; allowed several seconds.
+**On-demand — `/hermes-argus`.** Full report; allowed several seconds.
 
 **At session start (subset, cached).** The SessionStart hook runs a
 small subset — hook registration (cached), last session_end presence,
@@ -1215,9 +1215,9 @@ no `session_end` is flagged. Cadence measures elapsed active time, not
 message count.
 
 **Scheduled (future).** When Claude Code scheduled agents stabilize,
-doctor can run on a schedule. Not in v1.
+Argus can run on a schedule. Not in v1.
 
-### 5.5 What the doctor can fix
+### 5.5 What Argus can fix
 
 Reports by default; fixes only with explicit `--fix=<category>` (no
 `--fix-all`):
@@ -1240,28 +1240,28 @@ command.
 
 ### 5.6 Implementation notes
 
-Implemented as `scripts/hermes-doctor.py` in the plugin. Uses the *same
-parsers* as the dashboard and other consumers — if doctor's parser
+Implemented as `scripts/hermes-argus.py` in the plugin. Uses the *same
+parsers* as the dashboard and other consumers — if Argus's parser
 disagrees with the dashboard's, the framework has already lost the
-discipline doctor enforces. One canonical parser per format.
+discipline Argus enforces. One canonical parser per format.
 
 Modes: human (default) and `--json` (CI). Exit 0 HEALTHY / 1 DEGRADED /
 2 BROKEN.
 
 The `--json` output conforms to a declared, versioned schema shipped
-with the plugin, not ad-hoc JSON. A CI job consuming the doctor's output
+with the plugin, not ad-hoc JSON. A CI job consuming Argus's output
 (posting findings as PR comments, gating a pipeline) parses against that
 schema and fails loudly if the shape drifts — the same loud-failure
-discipline the doctor enforces on every other contract, applied to the
-doctor's own output. The schema version travels in the output so a
-consumer can detect a doctor upgrade that changed the shape. Declaring
+discipline Argus enforces on every other contract, applied to the
+Argus's own output. The schema version travels in the output so a
+consumer can detect a Argus upgrade that changed the shape. Declaring
 the schema is in scope here; the schema file itself is an implementation
 artifact.
 
 ### 5.7 What this section does NOT address
 
 Persona-behavior checks (Argus, Session E); on-demand performance beyond
-the subset budget; a web view of doctor results; complex auto-remediation
+the subset budget; a web view of Argus results; complex auto-remediation
 (see §5.5 conservatism).
 
 ---
@@ -1341,7 +1341,7 @@ may still drift. This is the most visible regression CLARK experienced,
 and the design *reduces* it without *eliminating* it. There is no known
 mechanism in Claude Code to make in-conversation voice deterministic.
 Tracking: the banner-rendering sample check (§2.5) measures bookend
-misses; a future doctor check could sample mid-session discipline
+misses; a future Argus check could sample mid-session discipline
 similarly. For now, this is a named, accepted limitation.
 
 **Banner rendering is not deterministic.** As developed in §2.4, the
@@ -1372,7 +1372,7 @@ schedule.
 ### 7.1 Two directions
 
 **Vertical** — deepening enforcement of what's specified (new contracts,
-new doctor checks). Mostly mechanical. **Horizontal** — new agents or
+new Argus checks). Mostly mechanical. **Horizontal** — new agents or
 concerns (new personas, multi-project, teams). Rare; needs design care.
 
 ### 7.2 Near-term horizontal growth
@@ -1448,7 +1448,7 @@ a regression worth surfacing.
 
 ## Appendix B — Gap → check mapping
 
-| Gap | Doctor check | Layer | Section |
+| Gap | Argus check | Layer | Section |
 |---|---|---|---|
 | #47 orphan gate findings | `orphan_task` drift count | 2 | §5.3 |
 | #48 standards stripped | `standards_strip_detected` count + backlog format check (missing Standard) | 2 | §5.3 |
@@ -1462,7 +1462,7 @@ a regression worth surfacing.
 
 Every gap maps to a concrete check. Implementing this design makes the
 entire class of silent failures *observable* — surfaced at session start
-or by the doctor, rather than waiting for a human to notice. New failure
+or by Argus, rather than waiting for a human to notice. New failure
 modes will produce new gaps, but those gaps become detectable; the
 rendering-determinism row is itself an example — discovered in review,
 now caught by a check.
@@ -1515,13 +1515,13 @@ namespaced via plugin; `status/` houses operational artifacts;
 | Handoff — *content & side effects* | Stop/PreCompact hook, deterministic | session_end written or absence detected |
 | Handoff — *visible rendering* | Model renders self-contained payload | High-reliability; misses measured |
 | Rendering instruction delivery | Inside hook payload (self-contained) | No external dependency to fail |
-| "Where we left off" computation | Hook reads usage.log + state.json (cached) | Hook failure → no banner, doctor detects |
-| Flag detection | Hook computes vs thresholds (cached) | Hook failure → no banner, doctor detects |
+| "Where we left off" computation | Hook reads usage.log + state.json (cached) | Hook failure → no banner, Argus detects |
+| Flag detection | Hook computes vs thresholds (cached) | Hook failure → no banner, Argus detects |
 | Per-prompt framing | UserPromptSubmit hook (Session D) | Injection deterministic; attendance statistical |
 | In-conversation voice | Model-driven, HERMES.md-guided | **Not solved** — §6.9; decays, per-prompt framing reduces |
-| Phase advancement | `/hermes-phase-gate` + state.json | Doctor checks state consistency |
-| Drift surfacing | `/hermes-doctor` (on-demand + subset) | Doctor failures surface in own output |
-| Intake enforcement | Classifier (first line) + `intake_reconciliation` doctor check (backstop) | Classifier miss caught retrospectively if it touched the backlog; residual gap named §3.6 |
+| Phase advancement | `/hermes-phase-gate` + state.json | Argus checks state consistency |
+| Drift surfacing | `/hermes-argus` (on-demand + subset) | Argus failures surface in own output |
+| Intake enforcement | Classifier (first line) + `intake_reconciliation` Argus check (backstop) | Classifier miss caught retrospectively if it touched the backlog; residual gap named §3.6 |
 | Structured write integrity | Write-path validate-and-retry (§3.8) + retrospective parser | Malformed write re-prompted; hand-edits caught on read |
 | Verbose/parallel ops | `context: fork` (§4.3) | Optimization only; correct whether forked or inline |
 

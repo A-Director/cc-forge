@@ -3,7 +3,7 @@ name: hermes-update
 description: >
   Updates the cc-forge plugin in this project. Delegates to Claude Code's
   /plugin update, runs any pending state.json migrations, verifies layer
-  reachability via /hermes-doctor, and reports.
+  reachability via /hermes-argus, and reports.
 allowed-tools: Bash, Read
 ---
 
@@ -86,15 +86,15 @@ if [ -d "${CLAUDE_PLUGIN_ROOT}/migrations" ]; then
   fi
 fi
 
-# Step 4: verify layer reachability via doctor
-echo "▸ Verifying with /hermes-doctor..."
-if python3 "${CLAUDE_PLUGIN_ROOT}/scripts/hermes-doctor.py" --json 2>/dev/null > /tmp/hermes-doctor-out.json; then
-  verdict=$(python3 -c "import json; print(json.load(open('/tmp/hermes-doctor-out.json'))['summary']['verdict'])" 2>/dev/null)
-  fails=$(python3 -c "import json; print(json.load(open('/tmp/hermes-doctor-out.json'))['summary']['failures'])" 2>/dev/null)
-  echo "  Doctor verdict: ${verdict:-unknown} (${fails:-?} failures)"
-  rm -f /tmp/hermes-doctor-out.json
+# Step 4: verify layer reachability via Argus
+echo "▸ Verifying with /hermes-argus..."
+if python3 "${CLAUDE_PLUGIN_ROOT}/scripts/hermes-argus.py" --json 2>/dev/null > /tmp/hermes-argus-out.json; then
+  verdict=$(python3 -c "import json; print(json.load(open('/tmp/hermes-argus-out.json'))['summary']['verdict'])" 2>/dev/null)
+  fails=$(python3 -c "import json; print(json.load(open('/tmp/hermes-argus-out.json'))['summary']['failures'])" 2>/dev/null)
+  echo "  Argus verdict: ${verdict:-unknown} (${fails:-?} failures)"
+  rm -f /tmp/hermes-argus-out.json
 else
-  echo "  · doctor not invocable (verification skipped — run /hermes-doctor manually)"
+  echo "  · Argus not invocable (verification skipped — run /hermes-argus manually)"
 fi
 
 # Step 5: report
@@ -123,9 +123,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
   failure modes no longer apply because there is no copy.
 - **Migrations are idempotent.** Re-running an already-applied migration is
   a no-op. Safe to run after every plugin update.
-- **Doctor is the verification.** If the plugin's Layer 1 surface isn't
-  reachable from this project, the doctor catches it. If a migration
-  failed to land cleanly, the doctor's Layer 2 checks catch it.
+- **Argus is the verification.** If the plugin's Layer 1 surface isn't
+  reachable from this project, Argus catches it. If a migration
+  failed to land cleanly, Argus's Layer 2 checks catch it.
 - **No CLAUDE.md mutation.** §2.4 dropped the requirement that CLAUDE.md
   carry a rendering instruction — the hook's stdout is self-contained.
   `/hermes-update` never touches CLAUDE.md.
