@@ -71,6 +71,108 @@ precisely so personas don't have to remember every required field.
 
 ---
 
+## Validate-and-retry loop (§3.8 write-path contract)
+
+Persona-produced structured writes (backlog item edits, ADRs, intake
+entries) are validated AT WRITE TIME against the §3.2 / §3.4 / §3.7
+contract. On failure, the persona is re-prompted with the specific
+violation and writes again. This is the §3.8 write-path mechanism —
+the complement to retrospective parsing.
+
+The mechanics (Session D, Phase D):
+
+**1. Validate before declaring the write complete.** Use
+`scripts/_hermes_writepath.py validate-backlog-item --feedback` (or
+the equivalent helper for intake / ADR writes). The validator returns
+either a clean result or a list of violations.
+
+**2. On failure, the writer reads the feedback and revises.** The
+feedback names each violated field and the contract it violated, in
+order. Example feedback for a missing-Standard write:
+
+```
+VALIDATION FAILED (1 violations) — write must conform to §3.2 contract.
+Violations:
+  ↻ Standard: required field 'Standard' missing or empty (§3.2 — required
+    for new writes; grandfathering is read-side only)
+
+Action: revise the write to satisfy the contract above. The contract is
+closed — do not invent values; if a required input genuinely doesn't
+exist, mark the write as non-retryable and surface to the operator.
+```
+
+**3. Retry budget — 3 attempts (initial + 2 retries).** After the third
+attempt:
+- If the violations are RETRYABLE (format errors — typo, missing field
+  the writer could include), the loop hits BUDGET_EXHAUSTED. The write
+  is recorded as a `format_violation` event with `severity:
+  hard_failed` and the persona surfaces to the operator. Three retries
+  not fixing a format error usually means the persona's prompt has a
+  structural problem; re-prompting won't fix it.
+- If a violation is NON-RETRYABLE (the required input genuinely doesn't
+  exist — e.g., the persona was asked to cite a Standard for a finding
+  that has no standard reference, or referenced an item that doesn't
+  exist), the loop halts immediately at attempt 1. There is no writer
+  for a missing fact; re-prompting won't conjure one. The persona
+  reports the missing input to the operator.
+
+**4. Every attempt logs a `format_violation` event in usage.log.** The
+event captures `attempt`, `retryable`, the specific violation, and
+either `severity: strict` (retryable) or `severity: hard_failed`
+(budget exhausted). The doctor's drift report shows these
+stratified per the E-1 contract.
+
+**5. Retrospective read-side validation is the backstop.** The
+validate-and-retry loop catches malformed PERSONA writes at the source.
+A human hand-edit that introduces a violation AFTER the write is caught
+by the read-side parser the doctor runs (Layer 2 check). Both layers
+are needed.
+
+### Helper invocation pattern
+
+```bash
+# Inside a persona prompt or gate review, after composing the
+# proposed write:
+attempt=0
+budget=3
+while [ "$attempt" -lt "$budget" ]; do
+  attempt=$((attempt + 1))
+  feedback=$(echo "$proposed_json" \
+    | python3 "${CLAUDE_PLUGIN_ROOT}/scripts/_hermes_writepath.py" \
+        validate-backlog-item --feedback)
+  rc=$?
+  if [ "$rc" -eq 0 ]; then
+    break                      # validated; commit the write
+  fi
+  # Re-prompt yourself with $feedback; produce a revised $proposed_json
+done
+if [ "$rc" -ne 0 ]; then
+  # Budget exhausted — surface the hard failure
+  echo "✗ write-path budget exhausted after $budget attempts"
+  exit 2
+fi
+```
+
+In Python (when called from agent code rather than shell):
+
+```python
+from _hermes_writepath import run_validate_retry, validate_backlog_item
+
+result = run_validate_retry(
+    writer=produce_write,           # callable returning proposed dict
+    validator=validate_backlog_item,
+    project_root=project_root,
+    write_target_file=".cc-forge/backlog/03-security.md",
+    budget=3,
+)
+if result.success:
+    commit_write(result)
+else:
+    surface_hard_failure(result.reason, result.final_violations)
+```
+
+---
+
 ## Examples — correctly-formed vs malformed
 
 ### ✅ Correctly-formed update (do this)
