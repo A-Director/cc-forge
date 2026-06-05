@@ -22,7 +22,9 @@ the Doctor session), never in the classifier being right.
 
 Testable in isolation: HERMES_CLASSIFIER_STUB env var overrides the
 model call with a fixed confidence so verification can run without
-burning real tokens. Production uses `claude --bare` to call Haiku.
+burning real tokens. Production invokes `claude -p` from a project-
+free temp dir (cwd switch avoids picking up the active session's
+context — that would cause classifier-into-classifier recursion).
 
 CLI:
   python3 _hermes_classifier.py classify --prompt "..." --project-root /path
@@ -46,14 +48,17 @@ from typing import Any
 # Confidence threshold above which we log bypass_detected.
 BYPASS_THRESHOLD = 0.70
 
-# Pre-filter thresholds — tight enough to suppress acknowledgements,
-# loose enough to let real requests through. Cost-sensitive.
-MIN_PROMPT_CHARS = 25
-MIN_PROMPT_WORDS = 5
-
-# Bare-acknowledgement set. Pre-filter rules these out regardless of
-# length (a long "yes please" still doesn't deserve a classifier call).
-# Intentionally small and obvious — not a bypass blacklist.
+# Bare-acknowledgement set. Pre-filter rules these out — explicit,
+# enumerated, not heuristic. A length/word-count threshold would create
+# the dangerous failure mode the pre-filter must avoid: a short-but-
+# substantive prompt ("add OAuth", "drop the cache layer") being
+# silently suppressed and never reaching the classifier, which is
+# exactly a silent bypass — the thing intake exists to prevent.
+#
+# So the pre-filter is conservative: only enumerated bare acks AND
+# empty prompts are suppressed. Everything else hits the classifier.
+# This costs a few more Haiku calls; the cost of over-suppression
+# (silent bypass) is much higher than the cost of an extra cheap call.
 BARE_ACKS = {
     "ok", "okay", "yes", "yeah", "yep", "sure", "no", "nope",
     "thanks", "thank you", "ty", "thx", "ack", "got it", "right",
@@ -68,8 +73,10 @@ def prefilter(prompt: str) -> tuple[bool, str]:
     Return (should_classify, reason). True means "spend a model call";
     False means "don't bother — this is trivially not a scope-change".
 
-    The pre-filter is NOT scope detection. It only decides whether the
-    prompt is even substantive enough to warrant a classifier call.
+    The pre-filter is NOT scope detection. Suppression is enumerated and
+    conservative; short-substantive prompts like "add OAuth" MUST pass
+    through to the classifier. Over-suppression is the one dangerous
+    failure mode — it would create silent bypass.
     """
     if not prompt or not prompt.strip():
         return False, "empty prompt"
@@ -78,19 +85,9 @@ def prefilter(prompt: str) -> tuple[bool, str]:
     if stripped in BARE_ACKS:
         return False, f"bare acknowledgement ({stripped!r})"
 
-    # Length filter — sub-25-char prompts virtually never introduce
-    # scope. The threshold is cheap to tune via constant.
-    if len(prompt.strip()) < MIN_PROMPT_CHARS:
-        return False, f"too short ({len(prompt.strip())} chars < {MIN_PROMPT_CHARS})"
-
-    # Word count — bare acks can be longer ("thanks for that, looks great")
-    # without introducing scope.
-    word_count = len(re.findall(r"\w+", prompt))
-    if word_count < MIN_PROMPT_WORDS:
-        return False, f"too few words ({word_count} < {MIN_PROMPT_WORDS})"
-
-    # Otherwise — let the classifier decide. The pre-filter has done its
-    # one job (suppress trivial calls) and steps aside.
+    # No length or word-count threshold by design. A 2-word
+    # scope-introducing prompt ("add OAuth") reaches the classifier;
+    # the classifier decides whether it's new scope.
     return True, "qualifies for classification"
 
 
@@ -269,11 +266,15 @@ def call_classifier(prompt: str, summary: dict[str, Any]) -> dict[str, Any]:
     full = f"{CLASSIFIER_SYSTEM_PROMPT}\n\n{user_prompt}"
 
     try:
-        # --bare skips hooks, plugins, agents — exactly what we need to
-        # avoid recursion into ourselves.
+        # Run `claude -p` from a project-free cwd so the call doesn't
+        # pick up the current session's context (recursion-avoidance).
+        # `--bare` would skip plugin auth too, so we don't use it here;
+        # the cwd switch is sufficient.
+        import tempfile
         r = subprocess.run(
-            ["claude", "--bare", "-p", full],
+            ["claude", "-p", full],
             capture_output=True, text=True, timeout=15,
+            cwd=tempfile.gettempdir(),
         )
         if r.returncode != 0:
             return {
