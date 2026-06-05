@@ -943,15 +943,26 @@ multiple persona reviewers fork simultaneously, each returning only its
 verdict, so the main session sees the panel's conclusions without the
 panel's deliberation.
 
-*Precondition: forkable operations are self-contained from state.* A
-forked sub-agent does not inherit the conversation history — it receives
-only its own instructions. cc-forge operations can be forked precisely
-because they derive their inputs from Layer 2 state (state.json,
-backlog, usage.log), not from the conversation. This is §2.2's principle
-paying off: an operation whose integrity lives in state files can run
-anywhere, including a fresh context that has never seen the session. An
-operation that needed conversation history could not be forked — and
-none of cc-forge's verbose operations do.
+*Precondition: forkable operations are self-contained from state and
+environment.* A forked sub-agent does not inherit the conversation
+history — it receives only its own instructions, and crucially does not
+inherit the parent's environment variables either. `CLAUDE_PLUGIN_ROOT`
+does not survive into a forked subshell. So an operation that reads
+Layer 1 must **discover** its plugin root, not inherit it. cc-forge
+operations can be forked precisely because (a) they derive their inputs
+from Layer 2 state (state.json, backlog, usage.log), not from the
+conversation, and (b) they locate Layer 1 via a self-discovery cascade
+— env var if present, then walk-up-from-`__file__` looking for
+`.claude-plugin/plugin.json`, then a distinct *cannot-locate* verdict
+(never silently reported as Layer 1 being broken).
+
+The cascade closes a subtle regression: a forked doctor that lost
+`CLAUDE_PLUGIN_ROOT` and lacked self-discovery would report every
+Layer-1 check as failed, producing a false-BROKEN verdict on a healthy
+tree. "I can't find Layer 1" is structurally different from "Layer 1
+is broken"; the doctor reports them as different verdicts (`CANNOT_LOCATE`
+vs `BROKEN`) with different exit codes (3 vs 2). Any forked operation
+that reads Layer 1 must adopt the same cascade.
 
 *Fork is an optimization, not a correctness mechanism.* Whether the
 harness honors `context: fork` on a given version is not guaranteed; a

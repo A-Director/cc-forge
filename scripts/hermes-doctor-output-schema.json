@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/A-Director/cc-forge/main/scripts/hermes-doctor-output-schema.json",
+  "title": "hermes-doctor output schema",
+  "description": "Output contract for `hermes-doctor.py --json`. Versioned alongside scripts/hermes-doctor.py via the schema_version field. Includes Phase A's CANNOT_LOCATE verdict, exit code 3, and the plugin_root_source / plugin_root_note fields; Phase B's drift stratifications, cache_state, and the banner-rendering approximate caveat.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "generated_at",
+    "project_root",
+    "plugin_root",
+    "plugin_root_source",
+    "checks",
+    "drift",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of this schema; consumers fetch to validate."
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver. Bumped whenever the output shape changes in a consumer-visible way."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "project_root": {
+      "type": "string",
+      "description": "Absolute path of the project being checked."
+    },
+    "plugin_root": {
+      "type": ["string", "null"],
+      "description": "Resolved plugin root, or null when CANNOT_LOCATE."
+    },
+    "plugin_root_source": {
+      "type": "string",
+      "enum": ["env", "self-discovered", "env-then-self", "not-found"],
+      "description": "Which step of the root-resolution cascade produced plugin_root. 'not-found' implies plugin_root is null and verdict is CANNOT_LOCATE."
+    },
+    "plugin_root_note": {
+      "type": ["string", "null"],
+      "description": "Human-readable diagnostic about plugin_root resolution. Non-null when the cascade fell through a step (e.g. env was set but invalid)."
+    },
+    "checks": {
+      "type": "object",
+      "required": ["layer1", "layer2"],
+      "additionalProperties": false,
+      "properties": {
+        "layer1": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/check" },
+          "description": "Layer 1 (plugin) check results. Empty array when CANNOT_LOCATE (root not resolvable, checks skipped)."
+        },
+        "layer2": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/check" },
+          "description": "Layer 2 (project state) check results including format, intake_reconciliation, banner_rendering."
+        }
+      }
+    },
+    "drift": {
+      "type": "object",
+      "description": "Stratified drift report (E-1). Two stratifications carried as separate keys; low-volume drift aggregated only (brief explicitly excludes those from segmentation).",
+      "required": [
+        "format_violations_by_file_and_domain",
+        "banner_misses_by_source",
+        "intake_reconciliation_unmatched",
+        "low_volume_aggregate"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "format_violations_by_file_and_domain": {
+          "type": "array",
+          "description": "One entry per backlog file with at least one §3.2 violation.",
+          "items": {
+            "type": "object",
+            "required": ["file", "items_parsed", "violations_total", "violations_non_grandfathered", "violations_grandfathered"],
+            "additionalProperties": false,
+            "properties": {
+              "file": { "type": "string" },
+              "domain": { "type": ["string", "null"] },
+              "items_parsed": { "type": "integer", "minimum": 0 },
+              "violations_total": { "type": "integer", "minimum": 0 },
+              "violations_non_grandfathered": { "type": "integer", "minimum": 0 },
+              "violations_grandfathered": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Per §3.2 line 644, missing-Standard items are grandfathered for one transition cycle. Bucketed separately so consumers can prioritise."
+              }
+            }
+          }
+        },
+        "banner_misses_by_source": {
+          "type": "object",
+          "description": "Approximate — measures SessionStart hook success/timeout per matcher source (startup/resume/clear/compact/unknown), NOT model render verification.",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["started", "timeout"],
+            "additionalProperties": false,
+            "properties": {
+              "started": { "type": "integer", "minimum": 0 },
+              "timeout": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "intake_reconciliation_unmatched": {
+          "type": "array",
+          "description": "C-1: backlog events in usage.log without a matching intake_step. Quiet (empty) until intake actually flows (Session D).",
+          "items": {
+            "type": "object",
+            "required": ["item_id"],
+            "additionalProperties": true,
+            "properties": {
+              "line": { "type": "integer" },
+              "ts": { "type": ["string", "null"] },
+              "item_id": { "type": "string" }
+            }
+          }
+        },
+        "low_volume_aggregate": {
+          "type": "object",
+          "description": "Aggregate counts of low-volume drift events from usage.log. Brief explicitly excludes these from arbitrary stratification.",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "cache_state": {
+      "type": ["object", "null"],
+      "description": "Layer-2 cache state per §2.7. The cache is a freshness-checked read (mtime match), never a TTL guess. null when cache module unavailable.",
+      "additionalProperties": true,
+      "properties": {
+        "used": { "type": "boolean" },
+        "warm": { "type": "boolean" },
+        "path": { "type": "string" },
+        "stale_sources": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reason": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["verdict", "exit_code", "failures", "advisories"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": ["HEALTHY", "DEGRADED", "BROKEN", "CANNOT_LOCATE"],
+          "description": "Distinct verdicts. CANNOT_LOCATE is structurally different from BROKEN: 'I can't find Layer 1' is not 'Layer 1 is broken.'"
+        },
+        "exit_code": {
+          "type": "integer",
+          "enum": [0, 1, 2, 3],
+          "description": "Exit code contract — CI consumers must key on all four. Treating only exit 2 as failure mis-handles CANNOT_LOCATE.\n  0 HEALTHY\n  1 DEGRADED (advisories present, no failures)\n  2 BROKEN (root resolved AND checks failed)\n  3 CANNOT_LOCATE (root could not be located; checks were not run against Layer 1)"
+        },
+        "failures": { "type": "integer", "minimum": 0 },
+        "advisories": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "required": ["name", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "status": { "type": "string", "enum": ["pass", "fail", "advisory"] },
+        "detail": { "type": "string" }
+      }
+    }
+  }
+}
