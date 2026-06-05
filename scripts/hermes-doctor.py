@@ -57,26 +57,85 @@ LAYER2_BACKLOG_FILES = [f".cc-forge/backlog/{n}-*.md" for n in
                         ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"]]
 
 
-def check_layer1(plugin_root: Path | None) -> tuple[list[dict[str, Any]], int]:
+def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
+    """
+    Resolve the plugin root via a cascade — env var first, then self-discovery.
+
+    1. CLAUDE_PLUGIN_ROOT — if set AND it contains .claude-plugin/plugin.json.
+       If set but invalid, fall through to discovery so a broken env var
+       doesn't trap us.
+    2. Walk up from this script's __file__ looking for a directory that
+       contains .claude-plugin/plugin.json. The doctor lives at
+       <plugin_root>/scripts/hermes-doctor.py so the parent of parent is
+       the usual hit; we walk further as a safety margin.
+    3. None — distinct "cannot locate" condition, NOT BROKEN. The caller
+       reports this as its own verdict.
+
+    Returns (root_path, source, note) where:
+      source ∈ {"env", "self-discovered", "env-then-self", "not-found"}
+      note   is a short human-readable explanation when relevant.
+
+    Critical: the brief's #4 finding (forked doctor reports false BROKEN
+    because CLAUDE_PLUGIN_ROOT doesn't survive the forked subshell) is
+    closed by step 2 — the doctor finds its own plugin root from __file__
+    when the env var is missing, instead of declaring everything broken.
+    """
+    env_value = os.environ.get("CLAUDE_PLUGIN_ROOT")
+    env_root: Path | None = None
+    env_was_set_but_invalid = False
+
+    if env_value:
+        candidate = Path(env_value).resolve()
+        if (candidate / ".claude-plugin" / "plugin.json").is_file():
+            return candidate, "env", None
+        env_was_set_but_invalid = True
+        env_root = candidate  # Recorded for diagnostic, not authoritative.
+
+    # Walk up from __file__. The script lives at <root>/scripts/hermes-doctor.py;
+    # parent.parent is the usual answer. Walk further for symlink / nested cases.
+    here = Path(__file__).resolve()
+    ancestors = [here.parent] + list(here.parents)
+    for anc in ancestors:
+        if (anc / ".claude-plugin" / "plugin.json").is_file():
+            if env_was_set_but_invalid:
+                note = (f"CLAUDE_PLUGIN_ROOT={env_root} did not contain "
+                        f".claude-plugin/plugin.json — self-discovered "
+                        f"plugin root from script location")
+                return anc, "env-then-self", note
+            return anc, "self-discovered", None
+
+    # Cascade exhausted.
+    if env_was_set_but_invalid:
+        note = (f"CLAUDE_PLUGIN_ROOT={env_root} did not contain "
+                f".claude-plugin/plugin.json and self-discovery from "
+                f"{here} found no plugin root in any ancestor")
+    else:
+        note = (f"CLAUDE_PLUGIN_ROOT not set and self-discovery from "
+                f"{here} found no .claude-plugin/plugin.json in any ancestor")
+    return None, "not-found", note
+
+
+def check_layer1(plugin_root: Path | None, root_source: str) -> tuple[list[dict[str, Any]], int]:
     """Return (checks, fail_count). Each check is {name, status, detail}."""
     checks: list[dict[str, Any]] = []
     fails = 0
 
-    # Plugin root reachable
+    # The "cannot locate" condition is handled at the verdict level — it is
+    # NOT a Layer-1 failure. If plugin_root is None we return no Layer-1
+    # checks at all; the verdict logic in main() reports CANNOT_LOCATE.
     if plugin_root is None:
-        checks.append({"name": "plugin_root_set", "status": "fail",
-                       "detail": "CLAUDE_PLUGIN_ROOT not set in environment"})
-        fails += 1
         return checks, fails
 
     if not plugin_root.is_dir():
+        # Edge case: resolver returned a path that doesn't exist as a dir
+        # (e.g. file deleted between resolution and check). Treat as fail.
         checks.append({"name": "plugin_root_exists", "status": "fail",
-                       "detail": f"plugin root not a directory: {plugin_root}"})
+                       "detail": f"plugin root resolved but not a directory: {plugin_root}"})
         fails += 1
         return checks, fails
 
-    checks.append({"name": "plugin_root_exists", "status": "pass",
-                   "detail": str(plugin_root)})
+    checks.append({"name": "plugin_root_resolved", "status": "pass",
+                   "detail": f"{plugin_root} (via {root_source})"})
 
     # Expected files present
     for rel in LAYER1_EXPECTED:
@@ -140,7 +199,28 @@ def check_layer2(project_root: Path) -> tuple[list[dict[str, Any]], int, int]:
     return checks, fails, advisories
 
 
-def render_human(plugin_root: Path | None, project_root: Path,
+def compute_verdict(plugin_root: Path | None,
+                    l1_fails: int, l2_fails: int, l2_advisories: int) -> str:
+    """
+    Distinct verdicts:
+      HEALTHY        — all checks pass, no advisories.
+      DEGRADED       — advisories present, no failures.
+      BROKEN         — at least one check failed and root was resolvable.
+      CANNOT_LOCATE  — plugin root could not be located (env not set AND
+                       self-discovery missed). NOT BROKEN: we don't know
+                       whether Layer 1 is broken; we couldn't even find it.
+    """
+    if plugin_root is None:
+        return "CANNOT_LOCATE"
+    if l1_fails + l2_fails > 0:
+        return "BROKEN"
+    if l2_advisories > 0:
+        return "DEGRADED"
+    return "HEALTHY"
+
+
+def render_human(plugin_root: Path | None, root_source: str, root_note: str | None,
+                 project_root: Path,
                  l1_checks: list[dict[str, Any]], l1_fails: int,
                  l2_checks: list[dict[str, Any]], l2_fails: int, l2_advisories: int) -> str:
     """Render the §5.2 banner."""
@@ -150,12 +230,22 @@ def render_human(plugin_root: Path | None, project_root: Path,
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     out.append(f"  HERMES-DOCTOR · {name} · {ts}")
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    out.append("  Layer 1 — Plugin (framework primitives)")
-    for c in l1_checks:
-        glyph = {"pass": "✓", "fail": "✗", "advisory": "⚠"}.get(c["status"], "?")
-        out.append(f"    {glyph} {c['name']}")
-        if c["status"] != "pass":
-            out.append(f"        {c['detail']}")
+
+    if plugin_root is None:
+        out.append("  Plugin root: CANNOT LOCATE")
+        out.append(f"      {root_note}")
+        out.append("      Layer 1 checks skipped — root not discoverable.")
+    else:
+        out.append(f"  Plugin root: {plugin_root}")
+        out.append(f"      resolved via: {root_source}"
+                   + (f" — {root_note}" if root_note else ""))
+        out.append("  Layer 1 — Plugin (framework primitives)")
+        for c in l1_checks:
+            glyph = {"pass": "✓", "fail": "✗", "advisory": "⚠"}.get(c["status"], "?")
+            out.append(f"    {glyph} {c['name']}")
+            if c["status"] != "pass":
+                out.append(f"        {c['detail']}")
+
     out.append("  Layer 2 — Project state (machine-managed)")
     for c in l2_checks:
         glyph = {"pass": "✓", "fail": "✗", "advisory": "⚠"}.get(c["status"], "?")
@@ -163,15 +253,12 @@ def render_human(plugin_root: Path | None, project_root: Path,
         if c["status"] != "pass":
             out.append(f"        {c['detail']}")
 
-    # Verdict
-    if l1_fails + l2_fails > 0:
-        verdict = "BROKEN"
-    elif l2_advisories > 0:
-        verdict = f"DEGRADED with {l2_advisories} advisor{'y' if l2_advisories == 1 else 'ies'}"
-    else:
-        verdict = "HEALTHY"
+    verdict = compute_verdict(plugin_root, l1_fails, l2_fails, l2_advisories)
+    suffix = ""
+    if verdict == "DEGRADED":
+        suffix = f" with {l2_advisories} advisor{'y' if l2_advisories == 1 else 'ies'}"
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    out.append(f"  Overall: {verdict}")
+    out.append(f"  Overall: {verdict}{suffix}")
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     out.append("")
     out.append("  Note: v1.0.0 skeleton — Layer 1 + Layer 2 file-existence checks only.")
@@ -180,21 +267,19 @@ def render_human(plugin_root: Path | None, project_root: Path,
     return "\n".join(out)
 
 
-def render_json(plugin_root: Path | None, project_root: Path,
+def render_json(plugin_root: Path | None, root_source: str, root_note: str | None,
+                project_root: Path,
                 l1_checks: list[dict[str, Any]], l1_fails: int,
                 l2_checks: list[dict[str, Any]], l2_fails: int, l2_advisories: int) -> str:
     """Render §5.6 versioned JSON output."""
-    if l1_fails + l2_fails > 0:
-        verdict = "BROKEN"
-    elif l2_advisories > 0:
-        verdict = "DEGRADED"
-    else:
-        verdict = "HEALTHY"
+    verdict = compute_verdict(plugin_root, l1_fails, l2_fails, l2_advisories)
     payload = {
         "schema_version": SCHEMA_VERSION,
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "project_root": str(project_root),
         "plugin_root": str(plugin_root) if plugin_root else None,
+        "plugin_root_source": root_source,
+        "plugin_root_note": root_note,
         "checks": {
             "layer1": l1_checks,
             "layer2": l2_checks,
@@ -215,24 +300,26 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
 
     project_root = Path(args.project_root).resolve()
-    plugin_root_env = os.environ.get("CLAUDE_PLUGIN_ROOT")
-    plugin_root = Path(plugin_root_env).resolve() if plugin_root_env else None
+    plugin_root, root_source, root_note = resolve_plugin_root()
 
-    l1_checks, l1_fails = check_layer1(plugin_root)
+    l1_checks, l1_fails = check_layer1(plugin_root, root_source)
     l2_checks, l2_fails, l2_advisories = check_layer2(project_root)
 
     if args.json:
-        print(render_json(plugin_root, project_root, l1_checks, l1_fails,
-                          l2_checks, l2_fails, l2_advisories))
+        print(render_json(plugin_root, root_source, root_note, project_root,
+                          l1_checks, l1_fails, l2_checks, l2_fails, l2_advisories))
     else:
-        print(render_human(plugin_root, project_root, l1_checks, l1_fails,
-                           l2_checks, l2_fails, l2_advisories))
+        print(render_human(plugin_root, root_source, root_note, project_root,
+                           l1_checks, l1_fails, l2_checks, l2_fails, l2_advisories))
 
-    if l1_fails + l2_fails > 0:
-        return 2
-    if l2_advisories > 0:
-        return 1
-    return 0
+    verdict = compute_verdict(plugin_root, l1_fails, l2_fails, l2_advisories)
+    # Exit codes:
+    #   0  HEALTHY
+    #   1  DEGRADED
+    #   2  BROKEN
+    #   3  CANNOT_LOCATE (distinct from BROKEN — we couldn't find the
+    #                    plugin to check it; not a Layer-1 failure verdict)
+    return {"HEALTHY": 0, "DEGRADED": 1, "BROKEN": 2, "CANNOT_LOCATE": 3}[verdict]
 
 
 if __name__ == "__main__":
