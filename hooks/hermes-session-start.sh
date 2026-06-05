@@ -20,6 +20,26 @@ CC_FORGE_DIR="${PROJECT_ROOT}/.cc-forge"
 USAGE_LOG="${CC_FORGE_DIR}/usage.log"
 STATE_JSON="${CC_FORGE_DIR}/state.json"
 
+# SessionStart matcher source — Claude Code passes this via stdin JSON.
+# Capture it for E-1 banner-miss stratification.
+SOURCE=""
+if [ -t 0 ]; then
+  : # interactive — no JSON on stdin
+else
+  HOOK_INPUT=$(cat 2>/dev/null || true)
+  if [ -n "$HOOK_INPUT" ]; then
+    SOURCE=$(printf '%s' "$HOOK_INPUT" | python3 -c 'import json,sys
+try:
+    d=json.loads(sys.stdin.read())
+    print(d.get("source","") or "")
+except Exception:
+    print("")' 2>/dev/null || true)
+  fi
+fi
+if [ -z "$SOURCE" ]; then
+  SOURCE="unknown"
+fi
+
 # Hard budget — if we exceed this, emit the minimal banner and log a timeout
 # event instead of waiting and producing a stale signal.
 BUDGET_SECONDS=3
@@ -36,6 +56,8 @@ banner=$(timeout "${BUDGET_SECONDS}s" bash -c '
   STATE_JSON="'"$STATE_JSON"'"
   CC_FORGE_DIR="'"$CC_FORGE_DIR"'"
   PROJECT_ROOT="'"$PROJECT_ROOT"'"
+  USAGE_LOG="'"$USAGE_LOG"'"
+  SOURCE="'"$SOURCE"'"
 
   # --- project basics from state.json ---
   project_name=$(grep -o "\"project_name\":[[:space:]]*\"[^\"]*\"" "$STATE_JSON" 2>/dev/null \
@@ -110,9 +132,9 @@ banner=$(timeout "${BUDGET_SECONDS}s" bash -c '
     echo "    Last session closed at ${last_session_close}."
   fi
 
-  # --- log the session_start event ---
+  # --- log the session_start event with source matcher (E-1) ---
   iso_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  echo "{\"ts\":\"${iso_ts}\",\"type\":\"session_start\"}" >> "$USAGE_LOG" 2>/dev/null || true
+  echo "{\"ts\":\"${iso_ts}\",\"type\":\"session_start\",\"data\":{\"source\":\"${SOURCE}\",\"minimal\":false}}" >> "$USAGE_LOG" 2>/dev/null || true
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 ') 2>/dev/null
@@ -120,7 +142,9 @@ banner=$(timeout "${BUDGET_SECONDS}s" bash -c '
 # If timeout fired (exit 124) or compute errored, emit minimal banner per §2.7.
 if [ $? -ne 0 ] || [ -z "$banner" ]; then
   iso_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  echo "{\"ts\":\"${iso_ts}\",\"type\":\"subset_check_timeout\"}" >> "$USAGE_LOG" 2>/dev/null || true
+  # Timeout/error path — record the matcher source so E-1 banner-miss
+  # stratification can pinpoint which session-start type tends to fail.
+  echo "{\"ts\":\"${iso_ts}\",\"type\":\"subset_check_timeout\",\"data\":{\"source\":\"${SOURCE}\",\"minimal\":true}}" >> "$USAGE_LOG" 2>/dev/null || true
   ts=$(date -u +"%Y-%m-%d %H:%M")
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "  HERMES · $(basename "$PROJECT_ROOT") · ${ts}"
