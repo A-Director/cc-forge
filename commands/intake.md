@@ -105,7 +105,8 @@ cat <<JSON | python3 "${CLAUDE_PLUGIN_ROOT}/scripts/_hermes_intake.py" append \
   "requirement": "<the requirement in your own words>",
   "triage_decision": "<why this disposition>",
   "outcome": "<what was created — backlog item IDs, ADR references, or
-              'none — rejected/withdrawn'>"
+              'none — rejected/withdrawn'>",
+  "created_item_ids": ["<BACKLOG-ID>", ...]
 }
 JSON
 ```
@@ -115,6 +116,28 @@ JSON
 item via the persona-protocol if one is needed. Every resulting
 backlog change MUST have this intake_id in its evidence so C-1
 (intake_reconciliation) can later confirm the trace.
+
+**Critical for the C-1 join:** the intake helper stamps `item_id` onto
+the `intake_step` events it emits ONLY when you pass `created_item_ids`
+on append (or run `link-item` separately for an item created later).
+Without that, the C-1 reconciliation would have only the `intake_id` to
+join against, and a subsequent `type: backlog` event keyed by
+`item_id` would false-flag as bypass. So:
+
+- If the item is created at intake-append time → include it in
+  `created_item_ids`.
+- If the item is created LATER (a persona seeds it after the intake) →
+  run `link-item` to stamp the join key:
+
+  ```bash
+  python3 "${CLAUDE_PLUGIN_ROOT}/scripts/_hermes_intake.py" link-item \
+      --project-root "$PWD" \
+      --intake-id "$INTAKE_ID" --item-id "SEC-OAUTH-001"
+  ```
+
+  This is what closes the silent-bypass hole: every backlog item that
+  resulted from an intake gets explicitly traced, in the same event
+  schema the deterministic backstop joins on.
 
 **Step 8 — Report.**
 

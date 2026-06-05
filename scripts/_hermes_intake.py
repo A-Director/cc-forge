@@ -154,9 +154,19 @@ def append_intake(project_root: Path, *, intake_id: str, title: str,
                   disposition: str, target_phase: int | None,
                   personas_consulted: list[str], requirement: str,
                   triage_decision: str = "", outcome: str = "",
+                  created_item_ids: list[str] | None = None,
                   validate: bool = True) -> Path:
     """Append a new intake event to .cc-forge/intake-log.md. Validates
-    by default. Returns the log path."""
+    by default. Returns the log path.
+
+    created_item_ids: backlog item IDs created (or marked intake-pending)
+    as a result of this intake. The helper emits one intake_step PER ITEM
+    carrying the item_id so the C-1 reconciliation join works without
+    the persona having to remember to log the link. This closes the
+    silent-bypass hole: an intake with disposition=accepted that creates
+    backlog items WILL stamp item_id onto intake_step events, so a
+    later backlog event with that item_id reconciles cleanly.
+    """
     entry = {
         "intake_id": intake_id,
         "classification": classification,
@@ -188,6 +198,8 @@ def append_intake(project_root: Path, *, intake_id: str, title: str,
     if target_phase is not None:
         fm["target_phase"] = target_phase
     fm["personas_consulted"] = personas_consulted
+    if created_item_ids:
+        fm["created_item_ids"] = created_item_ids
 
     body_parts = [f"## {intake_id} — {title}", "", _yaml_block(fm), "",
                   "### Requirement", "", requirement.strip(), ""]
@@ -203,25 +215,54 @@ def append_intake(project_root: Path, *, intake_id: str, title: str,
             fh.write("\n")
         fh.write("\n".join(body_parts))
 
+    # Always emit a "appended" step (the intake_id presence is what the
+    # bypass check uses for intake_id reconciliation).
     log_intake_step(project_root, intake_id, "appended", "ok")
+
+    # And — critically for the C-1 join — emit one step per created item,
+    # carrying the item_id alongside the intake_id. This is what closes
+    # the silent-bypass hole: doctor's intake_seen_ids will contain the
+    # item_id, so the subsequent backlog event for that item reconciles.
+    if created_item_ids:
+        for item_id in created_item_ids:
+            log_intake_step(project_root, intake_id, "linked-item", "ok",
+                            item_id=item_id)
+
     return intake_log
 
 
 def log_intake_step(project_root: Path, intake_id: str, step: str,
-                    result: str) -> None:
-    """Emit an intake_step event to usage.log per §3.6."""
+                    result: str, *, item_id: str | None = None) -> None:
+    """Emit an intake_step event to usage.log per §3.6.
+
+    Pass item_id when the step is linking the intake to a specific
+    backlog item. The doctor's intake_reconciliation reads item_id
+    from intake_step events and uses it as the join key against
+    type=backlog events. Without item_id in the link step, the join
+    would silently fail and C-1 would false-flag legit work.
+    """
     usage_log = project_root / ".cc-forge" / "usage.log"
     iso_ts = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    entry = {
-        "ts": iso_ts,
-        "type": "intake_step",
-        "data": {"intake_id": intake_id, "step": step, "result": result},
-    }
+    data = {"intake_id": intake_id, "step": step, "result": result}
+    if item_id is not None:
+        data["item_id"] = item_id
+    entry = {"ts": iso_ts, "type": "intake_step", "data": data}
     try:
         with usage_log.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(entry) + "\n")
     except OSError:
         pass
+
+
+def link_item(project_root: Path, intake_id: str, item_id: str) -> None:
+    """For items created AFTER the intake was appended (e.g., a persona
+    later seeds the backlog item). The intake helper logs the link step
+    with the item_id so C-1 reconciliation can join.
+
+    Without this surface, a deferred-create flow would lose the join.
+    """
+    log_intake_step(project_root, intake_id, "linked-item", "ok",
+                    item_id=item_id)
 
 
 def verify_monotonicity(log_path: Path) -> dict[str, Any]:
@@ -259,6 +300,12 @@ def main(argv: list[str] | None = None) -> int:
     mon = sub.add_parser("verify", help="Verify monotonicity of an intake log")
     mon.add_argument("--project-root", default=".")
 
+    lnk = sub.add_parser("link-item",
+                         help="Emit an intake_step linking an intake to an item")
+    lnk.add_argument("--project-root", default=".")
+    lnk.add_argument("--intake-id", required=True)
+    lnk.add_argument("--item-id", required=True)
+
     args = p.parse_args(argv)
 
     if args.cmd == "next-id":
@@ -287,6 +334,7 @@ def main(argv: list[str] | None = None) -> int:
                 requirement=data.get("requirement", ""),
                 triage_decision=data.get("triage_decision", ""),
                 outcome=data.get("outcome", ""),
+                created_item_ids=data.get("created_item_ids") or [],
                 validate=(not args.allow_invalid),
             )
             print(json.dumps({"appended": True, "path": str(path),
@@ -297,6 +345,13 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"appended": False, "violations": e.violations}),
                   file=sys.stderr)
             return 3
+
+    if args.cmd == "link-item":
+        link_item(Path(args.project_root).resolve(),
+                  args.intake_id, args.item_id)
+        print(json.dumps({"linked": True, "intake_id": args.intake_id,
+                          "item_id": args.item_id}))
+        return 0
 
     if args.cmd == "validate":
         try:

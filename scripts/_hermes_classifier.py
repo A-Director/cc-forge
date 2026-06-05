@@ -240,6 +240,35 @@ def classifier_user_prompt(prompt: str, summary: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _ensure_isolated_classifier_cwd() -> Path:
+    """Return a dedicated project-free cwd for the classifier's claude
+    call. Created on first call, reused on subsequent calls. Uses a
+    deterministic path under tempfile.gettempdir() so we don't leak
+    dirs over a long-running session.
+
+    The dir is explicitly empty of any .cc-forge/ — guarantees the
+    `claude -p` call from this cwd sees no project, so there's no
+    session-context recursion risk."""
+    import tempfile
+    path = Path(tempfile.gettempdir()) / "hermes-classifier-isolated"
+    try:
+        path.mkdir(exist_ok=True, parents=True)
+    except OSError:
+        # Fall back to system tempdir root; still better than the
+        # caller's cwd, which IS a cc-forge project.
+        return Path(tempfile.gettempdir())
+    # Defensive: if someone managed to place a .cc-forge/ in our
+    # isolated dir, remove the marker so claude doesn't see a project.
+    marker = path / ".cc-forge"
+    if marker.exists():
+        try:
+            import shutil
+            shutil.rmtree(marker)
+        except OSError:
+            pass
+    return path
+
+
 def call_classifier(prompt: str, summary: dict[str, Any]) -> dict[str, Any]:
     """
     Returns dict with introduces_new_scope, confidence, reason, source.
@@ -266,15 +295,33 @@ def call_classifier(prompt: str, summary: dict[str, Any]) -> dict[str, Any]:
     full = f"{CLASSIFIER_SYSTEM_PROMPT}\n\n{user_prompt}"
 
     try:
-        # Run `claude -p` from a project-free cwd so the call doesn't
-        # pick up the current session's context (recursion-avoidance).
-        # `--bare` would skip plugin auth too, so we don't use it here;
-        # the cwd switch is sufficient.
-        import tempfile
+        # Run `claude -p` from a dedicated isolated tempdir so the call
+        # doesn't pick up an active session's context (which would cause
+        # classifier-into-classifier recursion). Three robustness rules:
+        #
+        # 1. Don't reuse tempfile.gettempdir() directly — on the off-
+        #    chance the user has a .cc-forge/ inside /tmp, that cwd
+        #    would itself be a cc-forge project and the call would
+        #    recurse. We use a dedicated subdir that we own.
+        # 2. Create-on-first-call, cache, reuse. mkdtemp leaks dirs on
+        #    crash; a deterministic path under /tmp is fine because
+        #    the dir contains nothing — it's just a project-free cwd.
+        # 3. Clear PWD env so any heuristics that look at PWD see the
+        #    explicit tempdir, not the parent shell's cwd.
+        #
+        # Timeout: 15s. Haiku responses are typically 1-3s. 15s catches
+        # cold-start + slow-network but doesn't pin the SessionStart
+        # hook for too long. The classifier returning "error" on
+        # timeout is safe — bypass is logged false, and the
+        # deterministic backstop (C-1) catches misses retrospectively.
+        isolated_cwd = _ensure_isolated_classifier_cwd()
+        env = dict(os.environ)
+        env["PWD"] = str(isolated_cwd)
         r = subprocess.run(
             ["claude", "-p", full],
             capture_output=True, text=True, timeout=15,
-            cwd=tempfile.gettempdir(),
+            cwd=str(isolated_cwd),
+            env=env,
         )
         if r.returncode != 0:
             return {
