@@ -1,5 +1,5 @@
 ---
-name: hermes-doctor
+name: hermes-argus
 description: >
   Framework self-check. Verifies Layer 1 (plugin) and Layer 2 (project
   state) integrity per spec §5. Stratified drift report (E-1), C-1
@@ -11,9 +11,9 @@ allowed-tools: Read, Bash
 context: fork
 ---
 
-# Hermes Doctor
+# Hermes Argus
 
-Runs `scripts/hermes-doctor.py` from the plugin and surfaces the result.
+Runs `scripts/hermes-argus.py` from the plugin and surfaces the result.
 
 ## What it checks
 
@@ -59,9 +59,9 @@ mis-handles `CANNOT_LOCATE`.
 
 ## Plugin root resolution cascade
 
-The doctor resolves Layer 1 without depending on environment
-inheritance — required because `CLAUDE_PLUGIN_ROOT` doesn't survive
-into a forked subshell:
+Argus resolves Layer 1 without depending on environment inheritance
+— required because `CLAUDE_PLUGIN_ROOT` doesn't survive into a
+forked subshell:
 
 1. `CLAUDE_PLUGIN_ROOT` if set AND points at `.claude-plugin/plugin.json`
 2. Walk up from `__file__` to find an ancestor containing
@@ -72,25 +72,25 @@ into a forked subshell:
 ## Invocation
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/hermes-doctor.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/hermes-argus.py" \
   --project-root "${PWD}" "$@"
 ```
 
 Useful flags:
 - `--json` — versioned machine-readable output (E-2). `$schema` URL
   embedded in the payload; schema artifact ships at
-  `scripts/hermes-doctor-output-schema.json`.
+  `scripts/hermes-argus-output-schema.json`.
 - `--no-cache` — bypass the Layer-2 cache; always recompute. Useful
   when debugging the cache itself.
 
 ## Notes
 
 - Forkable per §4.3 — verbose scan happens in a fresh sub-agent context.
-  Fork is an optimization, not a correctness mechanism: the doctor
-  produces the same result whether forked or run inline.
+  Fork is an optimization, not a correctness mechanism: Argus produces
+  the same result whether forked or run inline.
 - Self-discovering Layer 1 — does not require `CLAUDE_PLUGIN_ROOT` to
   be set. Per §4.3 rewrite: forkable operations are self-contained
   from state and environment.
 - Conservative `--fix` (when implemented in a later session): every
-  auto-fix is logged. Every category the doctor *could* fix but didn't
-  is reported with the explicit suggestion `/hermes-doctor --fix=<category>`.
+  auto-fix is logged. Every category Argus *could* fix but didn't
+  is reported with the explicit suggestion `/hermes-argus --fix=<category>`.

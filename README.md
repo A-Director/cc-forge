@@ -477,10 +477,10 @@ There is no separate global-install shell step — the old
 
 **Verify the install:**
 ```
-/hermes-doctor
+/hermes-argus
 ```
 
-If the doctor reports Layer 1 failures, the plugin isn't reachable —
+If Argus reports Layer 1 failures, the plugin isn't reachable —
 check `${CLAUDE_PLUGIN_ROOT}` is set and `/plugin list` shows
 `cc-forge@cc-forge` as enabled.
 

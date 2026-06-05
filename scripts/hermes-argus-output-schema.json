@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/A-Director/cc-forge/main/scripts/hermes-doctor-output-schema.json",
-  "title": "hermes-doctor output schema",
-  "description": "Output contract for `hermes-doctor.py --json`. Versioned alongside scripts/hermes-doctor.py via the schema_version field. Includes Phase A's CANNOT_LOCATE verdict, exit code 3, and the plugin_root_source / plugin_root_note fields; Phase B's drift stratifications, cache_state, and the banner-rendering approximate caveat.",
+  "$id": "https://raw.githubusercontent.com/A-Director/cc-forge/main/scripts/hermes-argus-output-schema.json",
+  "title": "hermes-argus output schema",
+  "description": "Output contract for `hermes-argus.py --json`. Versioned alongside scripts/hermes-argus.py via the schema_version field. Includes Phase A's CANNOT_LOCATE verdict, exit code 3, and the plugin_root_source / plugin_root_note fields; Phase B's drift stratifications, cache_state, and the banner-rendering approximate caveat.",
   "type": "object",
   "required": [
     "$schema",

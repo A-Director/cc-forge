@@ -32,7 +32,7 @@ cat <<EOF
 
   To verify the install:
 
-    /hermes-doctor
+    /hermes-argus
 
   See README.md in ${HERMES_DIR} for the full install + bootstrap flow.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

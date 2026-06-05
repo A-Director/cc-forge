@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""hermes-doctor.py — framework self-check.
+"""hermes-argus.py — framework self-check (Argus, the watcher).
 
-Doctor session output (post-skeleton): Layer-1 / Layer-2 file checks, plus
-the spec §5.3 check catalogue: C-1 intake_reconciliation, format-violation
-stratification per file/domain (E-1), banner-rendering approximate caveat
-(E-3), and a freshness-checked cache for Layer-2 re-reads (§2.7 / C-2).
+Argus is the deterministic counterpart to Hermes: Hermes directs the
+session; Argus watches the framework. This script performs the §5
+check catalogue: C-1 intake_reconciliation, format-violation
+stratification per file/domain (E-1), banner-rendering approximate
+caveat (E-3), and a freshness-checked cache for Layer-2 re-reads
+(§2.7 / C-2).
+
+Historical note: this code originally shipped under "hermes-doctor"
+during the Doctor session. The function is the same; the name was
+unified with the Argus persona (who was always meant to be the
+framework-watcher) in Session E. The Argus persona file is at
+`personas/argus.md`; the slash command is `/hermes-argus`.
 
 Stdlib only. Two output modes: human (default), JSON (`--json`).
 
-Exit code contract (versioned in the JSON schema; CI consumers must key on
-all four — treating only one as failure mis-handles the rest):
+Exit code contract (versioned in the JSON schema; CI consumers must key
+on all four — treating only one as failure mis-handles the rest):
   0  HEALTHY
   1  DEGRADED (advisories present, no failures)
   2  BROKEN (root resolved AND checks failed)
@@ -29,7 +37,7 @@ from typing import Any
 
 # Schema version — bump when the JSON output shape changes in a
 # consumer-visible way. The shipped schema artifact at
-# scripts/hermes-doctor-output-schema.json must match this version.
+# scripts/hermes-argus-output-schema.json must match this version.
 SCHEMA_VERSION = "1.1.0"
 
 # Make the cache module importable when run from the plugin tree.
@@ -84,8 +92,8 @@ def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
        If set but invalid, fall through to discovery so a broken env var
        doesn't trap us.
     2. Walk up from this script's __file__ looking for a directory that
-       contains .claude-plugin/plugin.json. The doctor lives at
-       <plugin_root>/scripts/hermes-doctor.py so the parent of parent is
+       contains .claude-plugin/plugin.json. Argus lives at
+       <plugin_root>/scripts/hermes-argus.py so the parent of parent is
        the usual hit; we walk further as a safety margin.
     3. None — distinct "cannot locate" condition, NOT BROKEN. The caller
        reports this as its own verdict.
@@ -94,9 +102,9 @@ def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
       source ∈ {"env", "self-discovered", "env-then-self", "not-found"}
       note   is a short human-readable explanation when relevant.
 
-    Critical: the brief's #4 finding (forked doctor reports false BROKEN
+    Critical: the brief's #4 finding (forked Argus reports false BROKEN
     because CLAUDE_PLUGIN_ROOT doesn't survive the forked subshell) is
-    closed by step 2 — the doctor finds its own plugin root from __file__
+    closed by step 2 — Argus finds its own plugin root from __file__
     when the env var is missing, instead of declaring everything broken.
     """
     env_value = os.environ.get("CLAUDE_PLUGIN_ROOT")
@@ -110,7 +118,7 @@ def resolve_plugin_root() -> tuple[Path | None, str, str | None]:
         env_was_set_but_invalid = True
         env_root = candidate  # Recorded for diagnostic, not authoritative.
 
-    # Walk up from __file__. The script lives at <root>/scripts/hermes-doctor.py;
+    # Walk up from __file__. The script lives at <root>/scripts/hermes-argus.py;
     # parent.parent is the usual answer. Walk further for symlink / nested cases.
     here = Path(__file__).resolve()
     ancestors = [here.parent] + list(here.parents)
@@ -228,7 +236,7 @@ def check_layer2(project_root: Path) -> tuple[list[dict[str, Any]], int, int]:
 FIELD_PATTERN = re.compile(r"^- ([A-Z][A-Za-z-]*):\s*(.+)$")
 ITEM_HEADER_PATTERN = re.compile(r"^### \[([A-Z][A-Z0-9-]+)\]")
 # Required fields per §3.2. Standard is grandfathered per §3.2 line 644 for
-# one transition cycle — the doctor lists missing-Standard separately from
+# one transition cycle — Argus lists missing-Standard separately from
 # the other required-field gaps to preserve the spec's bucketing.
 REQUIRED_FIELDS = {"Outcome", "Standard", "Phase", "Status", "Owner", "Evidence"}
 GRANDFATHERED_FIELD = "Standard"
@@ -315,7 +323,7 @@ def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], in
 
     raw_violations_per_file feeds E-1's stratification. The check itself is
     a single advisory if any non-grandfathered violations exist (we don't
-    halt the doctor — see §3.8 strict-but-not-blocking for Layer 2 data).
+    halt Argus — see §3.8 strict-but-not-blocking for Layer 2 data).
     """
     checks: list[dict[str, Any]] = []
     fails = 0
@@ -673,7 +681,7 @@ def render_human(plugin_root: Path | None, root_source: str, root_note: str | No
     name = project_root.name
     out: list[str] = []
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    out.append(f"  HERMES-DOCTOR · {name} · {ts}")
+    out.append(f"  HERMES-ARGUS · {name} · {ts}")
     out.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
     if plugin_root is None:
@@ -755,11 +763,11 @@ def render_human(plugin_root: Path | None, root_source: str, root_note: str | No
     return "\n".join(out)
 
 
-# JSON Schema artifact URL — versioned alongside the doctor. Consumers can
+# JSON Schema artifact URL — versioned alongside Argus. Consumers can
 # fetch the schema and validate the output's shape.
 SCHEMA_URL = (
     "https://raw.githubusercontent.com/A-Director/cc-forge/main/"
-    "scripts/hermes-doctor-output-schema.json"
+    "scripts/hermes-argus-output-schema.json"
 )
 
 
@@ -770,7 +778,7 @@ def render_json(plugin_root: Path | None, root_source: str, root_note: str | Non
                 drift: dict[str, Any],
                 cache_state: dict[str, Any] | None) -> str:
     """Render the versioned JSON output (E-2). Conforms to the schema at
-    scripts/hermes-doctor-output-schema.json — fetchable via the $schema
+    scripts/hermes-argus-output-schema.json — fetchable via the $schema
     URL embedded in the payload.
 
     Schema covers (per Phase B carryforward): CANNOT_LOCATE verdict, exit
