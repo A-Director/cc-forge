@@ -40,6 +40,20 @@ from typing import Any
 # scripts/hermes-argus-output-schema.json must match this version.
 SCHEMA_VERSION = "1.1.0"
 
+# Durable run record — "Argus's memory" (§5.4). Path is fixed by DESIGN §4.4:
+# project-root status/argus-last-run.md, the one operational artifact that is
+# committed (not gitignored) so drift findings survive in history. Written on
+# every run unless --no-record. This is the ONLY project file Argus writes
+# besides its own freshness cache: Argus reports framework drift, it never
+# mutates backlog state (.cc-forge/backlog/*.md) or state.json. The record is
+# what the SessionStart staleness check reads to compute "Argus hasn't run in
+# N sessions."
+RUN_RECORD_REL = "status/argus-last-run.md"
+# Machine-readable block embedded in the record so the next run can compute
+# "what changed since last run" without re-parsing prose.
+_RECORD_STATE_OPEN = "<!-- argus-machine-state: do not edit by hand"
+_RECORD_STATE_CLOSE = "-->"
+
 # Make the cache module importable when run from the plugin tree.
 _THIS_DIR = Path(__file__).resolve().parent
 if str(_THIS_DIR) not in sys.path:
@@ -824,12 +838,155 @@ def _layer2_source_files(project_root: Path) -> list[Path]:
     return sources
 
 
+def _drift_counts(drift: dict[str, Any]) -> dict[str, Any]:
+    """Reduce the drift summary to the scalar counts the record tracks for
+    'what changed since last run'. Framework-drift kinds only — Argus does
+    not measure code-vs-plan drift (that is the personas' job at gate
+    reviews, §5)."""
+    fv = drift.get("format_violations_by_file_and_domain", []) or []
+    bm = drift.get("banner_misses_by_source", {}) or {}
+    return {
+        "format_non_grandfathered": sum(e.get("violations_non_grandfathered", 0) for e in fv),
+        "intake_unmatched": len(drift.get("intake_reconciliation_unmatched", []) or []),
+        "banner_timeouts": sum(c.get("timeout", 0) for c in bm.values()),
+        "low_volume_aggregate": dict(drift.get("low_volume_aggregate", {}) or {}),
+    }
+
+
+def _read_prior_record_state(record_path: Path) -> dict[str, Any] | None:
+    """Parse the machine-state block of an existing run record, if any.
+    Returns None when there's no prior record or it can't be parsed — the
+    record write then notes 'first recorded run'."""
+    if not record_path.is_file():
+        return None
+    try:
+        text = record_path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    start = text.find(_RECORD_STATE_OPEN)
+    if start == -1:
+        return None
+    start += len(_RECORD_STATE_OPEN)
+    end = text.find(_RECORD_STATE_CLOSE, start)
+    if end == -1:
+        return None
+    try:
+        parsed = json.loads(text[start:end].strip())
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        return None
+
+
+def _compute_changes(prior: dict[str, Any] | None,
+                     verdict: str, failures: int, advisories: int,
+                     dc: dict[str, Any]) -> list[str]:
+    """Human-readable 'what changed since last run' lines."""
+    if prior is None:
+        return ["First recorded run — no prior baseline to compare against."]
+    lines: list[str] = []
+    if prior.get("verdict") != verdict:
+        lines.append(f"Verdict: {prior.get('verdict', '?')} → {verdict}")
+    if prior.get("failures") != failures:
+        lines.append(f"Failures: {prior.get('failures', '?')} → {failures}")
+    if prior.get("advisories") != advisories:
+        lines.append(f"Advisories: {prior.get('advisories', '?')} → {advisories}")
+    pdc = prior.get("drift_counts", {}) if isinstance(prior.get("drift_counts"), dict) else {}
+    for key, label in (("format_non_grandfathered", "Format violations (non-grandfathered)"),
+                       ("intake_unmatched", "Intake-unmatched backlog events"),
+                       ("banner_timeouts", "SessionStart hook timeouts")):
+        before, after = pdc.get(key), dc.get(key)
+        if before != after:
+            lines.append(f"{label}: {before if before is not None else '?'} → {after}")
+    pl = pdc.get("low_volume_aggregate", {}) if isinstance(pdc.get("low_volume_aggregate"), dict) else {}
+    cl = dc.get("low_volume_aggregate", {})
+    for key in sorted(set(pl) | set(cl)):
+        before, after = pl.get(key, 0), cl.get(key, 0)
+        if before != after:
+            lines.append(f"Drift '{key}': {before} → {after}")
+    if not lines:
+        lines.append("No change since last run — same verdict, same drift counts.")
+    return lines
+
+
+def write_run_record(project_root: Path, verdict: str, exit_code: int,
+                     failures: int, advisories: int, trigger: str,
+                     drift: dict[str, Any], plugin_root: Path | None,
+                     root_source: str) -> Path | None:
+    """Write Argus's durable run record to status/argus-last-run.md (§4.4).
+
+    The ONLY project file Argus mutates besides its freshness cache. Never
+    touches backlog state or state.json. Failures are swallowed — a record
+    write that fails must never change Argus's verdict or exit code.
+    """
+    record_path = project_root / RUN_RECORD_REL
+    ran_at = dt.datetime.now(dt.timezone.utc).isoformat()
+    dc = _drift_counts(drift)
+    prior = _read_prior_record_state(record_path)
+    changes = _compute_changes(prior, verdict, failures, advisories, dc)
+
+    machine_state = {
+        "ran_at": ran_at,
+        "verdict": verdict,
+        "exit_code": exit_code,
+        "failures": failures,
+        "advisories": advisories,
+        "trigger": trigger,
+        "plugin_root": str(plugin_root) if plugin_root else None,
+        "plugin_root_source": root_source,
+        "drift_counts": dc,
+        "schema_version": SCHEMA_VERSION,
+    }
+
+    lines = [
+        "# Argus — last run",
+        "",
+        "_Machine-managed by `hermes-argus.py` (Argus's memory). Do not hand-edit._",
+        "",
+        f"- Ran at: {ran_at}",
+        f"- Trigger: {trigger}",
+        f"- Verdict: {verdict} (exit {exit_code})",
+        f"- Failures: {failures} · Advisories: {advisories}",
+        f"- Plugin root: {plugin_root if plugin_root else 'CANNOT_LOCATE'} (via {root_source})",
+        "",
+        "## What changed since last run",
+        "",
+    ]
+    lines += [f"- {c}" for c in changes]
+    lines += [
+        "",
+        "## Drift snapshot (framework-drift only)",
+        "",
+        f"- Format violations (non-grandfathered): {dc['format_non_grandfathered']}",
+        f"- Intake-unmatched backlog events: {dc['intake_unmatched']}",
+        f"- SessionStart hook timeouts: {dc['banner_timeouts']}",
+        f"- Low-volume drift: {dc['low_volume_aggregate']}",
+        "",
+        _RECORD_STATE_OPEN,
+        json.dumps(machine_state, indent=2),
+        _RECORD_STATE_CLOSE,
+        "",
+    ]
+
+    try:
+        record_path.parent.mkdir(parents=True, exist_ok=True)
+        record_path.write_text("\n".join(lines), encoding="utf-8")
+        return record_path
+    except OSError:
+        return None
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="cc-forge framework self-check")
     p.add_argument("--project-root", default=".", help="Project root (default: cwd)")
     p.add_argument("--json", action="store_true", help="Emit JSON instead of banner")
     p.add_argument("--no-cache", action="store_true",
                    help="Skip the freshness-checked Layer-2 cache; always recompute")
+    p.add_argument("--no-record", action="store_true",
+                   help="Skip writing the durable run record at "
+                        "status/argus-last-run.md (Argus's memory)")
+    p.add_argument("--trigger", default="manual",
+                   help="What invoked this run (recorded in the run record): "
+                        "e.g. 'manual', 'session-close'")
     args = p.parse_args(argv)
 
     project_root = Path(args.project_root).resolve()
@@ -926,7 +1083,16 @@ def main(argv: list[str] | None = None) -> int:
     #   2  BROKEN
     #   3  CANNOT_LOCATE (distinct from BROKEN — we couldn't find the
     #                    plugin to check it; not a Layer-1 failure verdict)
-    return {"HEALTHY": 0, "DEGRADED": 1, "BROKEN": 2, "CANNOT_LOCATE": 3}[verdict]
+    exit_code = {"HEALTHY": 0, "DEGRADED": 1, "BROKEN": 2, "CANNOT_LOCATE": 3}[verdict]
+
+    # Durable run record (§5.4) — Argus's memory. Written on every run unless
+    # --no-record. Wrapped so a write failure never changes the verdict/exit.
+    if not args.no_record:
+        write_run_record(project_root, verdict, exit_code,
+                         l1_fails + l2_fails, l2_advisories, args.trigger,
+                         drift, plugin_root, root_source)
+
+    return exit_code
 
 
 if __name__ == "__main__":

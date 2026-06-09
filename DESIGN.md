@@ -1113,6 +1113,41 @@ without checking it accumulate silent failures.
 
 Appendix B maps each gap to the Argus check that catches it.
 
+### 5.1 The watching division (three layers)
+
+cc-forge watches itself on three distinct layers, and keeping them
+distinct is what keeps each one honest:
+
+- **Hermes directs the session.** The conductor orchestrates: routes work
+  to personas, frames each prompt, owns the session bookends. Hermes is
+  the *yang* — active, directing.
+- **Argus watches the framework — deterministically.** Argus is the
+  *yin* — vigilant, reactive, never directing. It checks that cc-forge's
+  own contracts (§2–§4) still hold: plugin integrity, hooks registered
+  and firing, state.json/usage.log/backlog *format*, session_end cadence,
+  and the drift counts. Every Argus check is a pass/fail predicate over
+  framework state — no opinion, no judgment.
+- **Personas judge the project — expertly, at gate reviews.** The Product
+  Owner, CTO, Security Auditor and the rest assess whether what was built
+  is *right*: PRD alignment, scope, code quality, security posture. That
+  is expert judgment, exercised at gates, and it is theirs alone.
+
+**The boundary that matters: Argus measures framework drift only, never
+code-vs-plan drift.** "Did the build match the plan?" and "is this code
+good?" are persona questions, answered at gate reviews — they are *not*
+Argus checks. This boundary is deliberate and load-bearing:
+
+- It stops Argus from duplicating the personas.
+- It keeps Argus deterministic. The moment Argus starts scanning the
+  project's source for quality, its output stops being a clean pass/fail
+  and becomes a judgment call — and a judgment call that disagrees with
+  the persona who owns that judgment.
+- So **no future work should bolt codebase-scanning onto Argus.** Drift
+  subtypes are framework-drift kinds only — the §5.3 catalogue
+  (`format_violation`, `orphan_task`, `missing_coverage`,
+  `standards_strip_detected`, `bypass_detected`, `intake_reconciliation`,
+  banner-miss). Project-code assessment belongs to the personas at gates.
+
 ### 5.2 What Argus does
 
 Three check categories (one per layer), a drift summary, and an overall
@@ -1120,7 +1155,7 @@ verdict (`HEALTHY` / `DEGRADED` / `BROKEN`):
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES-DOCTOR · CLARK · 2026-05-22
+  HERMES-ARGUS · CLARK · 2026-05-22
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Layer 1 — Plugin
     ✓ plugin registered (v1.0.0) · 16 commands · 4 hooks
@@ -1200,12 +1235,45 @@ by an arbitrary segment would be noise, not signal.
 
 **On-demand — `/hermes-argus`.** Full report; allowed several seconds.
 
-**At session start (subset, cached).** The SessionStart hook runs a
-small subset — hook registration (cached), last session_end presence,
-recent format_violation count, recent bypass_detected count, and a quick
-banner-miss check. Reads from the cache (§2.7) so it stays within
-budget. On cold cache, runs with relaxed budget and notes incompleteness
-rather than erroring.
+**At session close (auto-fire).** A watcher you must summon isn't
+watching. Argus is wired to the session-close hook (`hermes-handoff.sh`,
+the `Stop` hook) so framework drift is caught without anyone remembering
+to run it. It fires on `Stop` — a genuine session close — and not on
+`PreCompact` (mid-session compaction; work continues) or `PostToolUse`
+(fires constantly); neither is a session boundary.
+
+It is deliberately **not** gated on whether the session produced
+commits. Framework drift hides precisely in *uncommitted* edits — a
+hand-edited backlog item that introduces a format violation, an intake
+that never reconciled — and a session can end with that drift
+uncommitted. "Produced commits" is a leaky proxy for "did work" that
+would skip exactly the silent drift Argus exists to catch. Argus is
+cheap and deterministic (a warm cache rehydrates; a stale source
+recomputes and catches the drift), so over-firing costs almost nothing
+while under-firing misses drift — the worse error for a watcher. Cadence
+is handled separately by the staleness banner below.
+
+The auto-fire writes the durable record (below) and surfaces a one-line
+verdict in the closing banner; the full report stays in the record.
+
+**The durable record — `status/argus-last-run.md` (Argus's memory).**
+Every run (manual or auto) writes this committed record (§4.4): when it
+ran, what triggered it, the verdict, the drift snapshot, and *what
+changed since the last run* (computed by diffing against the previous
+record's machine-state block). Because it is committed, drift history
+survives in version control and is visible in code review. Suppress with
+`--no-record`; the auto-fire passes `--trigger session-close`.
+
+**At session start (subset, cached + staleness).** The SessionStart hook
+runs a small subset — hook registration (cached), last session_end
+presence, recent format_violation count, recent bypass_detected count,
+and a quick banner-miss check. Reads from the cache (§2.7) so it stays
+within budget. On cold cache, runs with relaxed budget and notes
+incompleteness rather than erroring. It also reads
+`status/argus-last-run.md` and counts the `session_start` events logged
+since Argus last ran; past a threshold (default 3 sessions) the opening
+banner surfaces *"Argus has not run in N sessions — framework drift
+unchecked."* Staleness is itself a drift signal.
 
 **session_end cadence is wall-clock, not prompt-count.** CLARK CC
 correctly noted that "once per 5 prompts" is the wrong shape — a long
@@ -1246,7 +1314,11 @@ disagrees with the dashboard's, the framework has already lost the
 discipline Argus enforces. One canonical parser per format.
 
 Modes: human (default) and `--json` (CI). Exit 0 HEALTHY / 1 DEGRADED /
-2 BROKEN.
+2 BROKEN / 3 CANNOT_LOCATE. Flags: `--trigger <what>` records what invoked
+the run (the session-close auto-fire passes `session-close`); `--no-record`
+suppresses the durable record. Writing that record (and its own freshness
+cache) is the *only* project state Argus mutates — it never writes backlog
+state or state.json, in keeping with the §5.1 boundary.
 
 The `--json` output conforms to a declared, versioned schema shipped
 with the plugin, not ad-hoc JSON. A CI job consuming Argus's output
