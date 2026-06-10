@@ -55,6 +55,7 @@ from _hermes_backlog import (  # noqa: E402
     GRANDFATHERED_FIELD,
     VALID_STATUS_VALUES,
     VALID_PHASE_VALUES,
+    VALID_OWNERS,
 )
 
 DEFAULT_RETRY_BUDGET = 3
@@ -129,6 +130,14 @@ def validate_backlog_item(item: dict[str, Any]) -> list[Violation]:
         violations.append(Violation(
             field="Phase",
             message=f"Phase must be one of {sorted(VALID_PHASE_VALUES)} (number or —); got {phase!r}",
+            retryable=True,
+        ))
+    owner = fields.get("Owner", "")
+    if owner and owner not in VALID_OWNERS:
+        violations.append(Violation(
+            field="Owner",
+            message=f"Owner must be one of {sorted(VALID_OWNERS)} (canonical persona "
+                    f"identifier, §3.2); got {owner!r}",
             retryable=True,
         ))
 

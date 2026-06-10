@@ -55,6 +55,17 @@ VALID_STATUS_VALUES = {
 }
 VALID_PHASE_VALUES = {"1", "2", "3", "4", "5", "—"}
 
+# Canonical Owner vocabulary (§3.2) — one identifier per backlog-owning
+# persona, matching the persona definitions in personas/ exactly (filename ==
+# name: == Owner). An Owner outside this set can't route to a persona, so it's
+# a format violation (kind="owner_not_recognised"). market-analyst /
+# research-agent / argus are personas but NOT backlog owners — ceo owns the
+# market/research domains; argus is the deterministic watcher.
+VALID_OWNERS = {
+    "security-sme", "cto", "qa-sme", "sre-sme", "ux-sme",
+    "product-owner", "legal-sme", "cfo", "growth-sme", "ceo",
+}
+
 # Markers that say "this file carries items in SOME form" — used by the
 # fail-loud guard to tell an item-bearing file (drift) from a legitimately
 # empty/scaffolding-only one (fine). Catches the forms a non-canonical file
@@ -120,6 +131,16 @@ def parse_backlog_items(text: str,
                     "field": required,
                     "grandfathered": required == GRANDFATHERED_FIELD,
                 })
+        # Owner-vocabulary enforcement (§3.2): a present Owner must be one of
+        # the canonical identifiers, or it can't route to a persona. Only
+        # checked when Owner is present — absence is already flagged above.
+        owner = cur_fields.get("Owner")
+        if owner is not None and owner not in VALID_OWNERS:
+            violations.append({
+                "kind": "owner_not_recognised",
+                "id": cur_id,
+                "owner": owner,
+            })
         items.append({"id": cur_id, "fields": dict(cur_fields),
                       "line_start": cur_line_start, "line_end": end_line})
         cur_id = None
