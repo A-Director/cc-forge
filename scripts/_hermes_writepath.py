@@ -44,18 +44,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
+# Backlog-item field/status contract per §3.2 — sourced from the canonical
+# module (Session F) so the write-path validator and the readers (Argus,
+# dashboard, classifier) cannot disagree on what a valid item is.
+_THIS_DIR = Path(__file__).resolve().parent
+if str(_THIS_DIR) not in sys.path:
+    sys.path.insert(0, str(_THIS_DIR))
+from _hermes_backlog import (  # noqa: E402
+    REQUIRED_FIELDS as REQUIRED_BACKLOG_FIELDS,
+    GRANDFATHERED_FIELD,
+    VALID_STATUS_VALUES,
+    VALID_PHASE_VALUES,
+)
+
 DEFAULT_RETRY_BUDGET = 3
-
-
-# Backlog-item field contract per spec §3.2.
-REQUIRED_BACKLOG_FIELDS = {"Outcome", "Standard", "Phase", "Status", "Owner", "Evidence"}
-GRANDFATHERED_FIELD = "Standard"
-
-VALID_STATUS_VALUES = {
-    "not-started", "in-progress", "done",
-    "not-applicable", "operator-action", "intake-pending",
-}
-VALID_PHASE_VALUES = {"1", "2", "3", "4", "5", "—"}
 
 
 @dataclass

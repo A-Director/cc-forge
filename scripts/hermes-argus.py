@@ -63,6 +63,14 @@ try:
 except ImportError:  # pragma: no cover — degrades gracefully if module missing
     HermesCache = None  # type: ignore[assignment]
 
+# The canonical §3.2 backlog parser (Session F). Required, not optional — if
+# it can't be imported Argus cannot check Layer-2 format, so fail loud rather
+# than silently skip the very check that catches silent-empty drift.
+from _hermes_backlog import (  # noqa: E402
+    parse_backlog_items, is_item_bearing,
+    REQUIRED_FIELDS, GRANDFATHERED_FIELD,
+)
+
 # Layer 1 (plugin) artifacts we expect to be reachable via CLAUDE_PLUGIN_ROOT.
 LAYER1_EXPECTED = [
     ".claude-plugin/plugin.json",
@@ -246,88 +254,11 @@ def check_layer2(project_root: Path) -> tuple[list[dict[str, Any]], int, int]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# Spec §3.2 list-item field regex. Single canonical form; strict per §3.8.
-FIELD_PATTERN = re.compile(r"^- ([A-Z][A-Za-z-]*):\s*(.+)$")
-ITEM_HEADER_PATTERN = re.compile(r"^### \[([A-Z][A-Z0-9-]+)\]")
-# Required fields per §3.2. Standard is grandfathered per §3.2 line 644 for
-# one transition cycle — Argus lists missing-Standard separately from
-# the other required-field gaps to preserve the spec's bucketing.
-REQUIRED_FIELDS = {"Outcome", "Standard", "Phase", "Status", "Owner", "Evidence"}
-GRANDFATHERED_FIELD = "Standard"
-
-
-def parse_backlog_items_strict(text: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """
-    Run the spec §3.2 strict parser over a backlog/catalogue file.
-
-    Returns (items, violations) where each violation is one of:
-      {"kind": "field_not_recognised", "line": int, "text": str}
-      {"kind": "required_field_missing", "id": str, "field": str,
-       "grandfathered": bool}
-      {"kind": "no_items", ...}
-
-    Crucially: this is the parser-strict-fail surface §3.8 names. Every
-    violation it emits feeds the E-1 stratified format-violation report.
-    """
-    items: list[dict[str, Any]] = []
-    violations: list[dict[str, Any]] = []
-
-    cur_id: str | None = None
-    cur_fields: dict[str, str] = {}
-    cur_line_start = 0
-
-    def finalise_current(end_line: int) -> None:
-        nonlocal cur_id, cur_fields
-        if cur_id is None:
-            return
-        # Check required fields
-        for required in REQUIRED_FIELDS:
-            if required not in cur_fields:
-                violations.append({
-                    "kind": "required_field_missing",
-                    "id": cur_id,
-                    "field": required,
-                    "grandfathered": required == GRANDFATHERED_FIELD,
-                })
-        items.append({"id": cur_id, "fields": dict(cur_fields),
-                      "line_start": cur_line_start, "line_end": end_line})
-        cur_id = None
-        cur_fields = {}
-
-    for ln_idx, line in enumerate(text.split("\n"), start=1):
-        header = ITEM_HEADER_PATTERN.match(line)
-        if header:
-            finalise_current(ln_idx - 1)
-            cur_id = header.group(1)
-            cur_line_start = ln_idx
-            continue
-        if cur_id is None:
-            # Not inside an item block — only validate field-syntax lines
-            # that look field-like (start with "- " and a capital).
-            continue
-        if not line.strip():
-            continue
-        # Lines beginning with "- " inside an item block must match the field
-        # pattern. Anything else (sub-bullet, prose) is allowed without flag.
-        if line.startswith("- ") and re.match(r"^- [A-Z]", line):
-            fm = FIELD_PATTERN.match(line)
-            if fm:
-                cur_fields[fm.group(1)] = fm.group(2).strip()
-            else:
-                violations.append({
-                    "kind": "field_not_recognised",
-                    "line": ln_idx,
-                    "text": line,
-                })
-    finalise_current(len(text.split("\n")))
-
-    if not items and "### [" in text:
-        violations.append({
-            "kind": "no_items",
-            "detail": "file contains '### [' headers but parser extracted zero items",
-        })
-
-    return items, violations
+# Spec §3.2 backlog parsing now lives in the ONE canonical module
+# (_hermes_backlog) so Argus, the dashboard, and the intake classifier can no
+# longer diverge (Session F, F9). `parse_backlog_items` IS the parser this file
+# used to define inline; it moved verbatim. `is_item_bearing` powers the
+# fail-loud check below.
 
 
 def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], int, int, list[dict[str, Any]]]:
@@ -335,9 +266,12 @@ def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], in
     Per-file format check over .cc-forge/backlog/*.md. Returns:
       (checks, fail_count, advisory_count, raw_violations_per_file)
 
-    raw_violations_per_file feeds E-1's stratification. The check itself is
-    a single advisory if any non-grandfathered violations exist (we don't
-    halt Argus — see §3.8 strict-but-not-blocking for Layer 2 data).
+    raw_violations_per_file feeds E-1's stratification. Non-grandfathered
+    field violations are an advisory (§3.8 strict-but-not-blocking). But the
+    silent-empty class is NOT an advisory: an item-bearing file that parses to
+    zero items is a hard FAIL → verdict BROKEN → exit 2. That is the CLARK
+    lesson — a downgraded advisory is how the vacuous 0/0 slipped through
+    (Session F). Severity must match danger.
     """
     checks: list[dict[str, Any]] = []
     fails = 0
@@ -366,7 +300,27 @@ def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], in
             fails += 1
             continue
 
-        items, violations = parse_backlog_items_strict(text)
+        items, violations = parse_backlog_items(text, source=str(f))
+
+        # Fail-loud (Session F): non-empty / item-bearing file → zero items is
+        # an integrity failure, never a silent empty count. Catches table-form
+        # and bold-form drift the strict parser can't read.
+        if not items and is_item_bearing(text):
+            checks.append({"name": f"format::{f.name}", "status": "fail",
+                           "detail": "item-bearing file parsed to ZERO items — "
+                                     "table-form/bold-form not in §3.2 form. "
+                                     "Refusing a vacuous empty result (silent-empty class)."})
+            fails += 1
+            per_file_violations.append({
+                "file": str(f.relative_to(project_root)),
+                "domain": f.stem,
+                "items": 0,
+                "violations": [{"kind": "silent_empty",
+                                "detail": "item-bearing file parsed to zero items"}],
+                "non_grandfathered_count": 1,
+            })
+            continue
+
         total_items += len(items)
         total_violations += len(violations)
         domain = f.stem  # e.g. "03-security"

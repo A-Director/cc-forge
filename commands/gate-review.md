@@ -6,6 +6,8 @@ description: >
   consolidated gate report. Run with /hermes-gate-review.
 allowed-tools: Read, Write, Bash, Task
 context: fork
+model: claude-opus-4-6
+invocation: user
 ---
 
 # Hermes Gate Review

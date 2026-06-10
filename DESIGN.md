@@ -995,19 +995,31 @@ user-project/
 `.cc-forge/` is framework state (config-like); `status/` is operational
 artifacts (user-facing).
 
-**status/ gitignore (explicit).** The `.gitignore` template includes:
+**The `status/` convention (formal).** `status/` holds operational
+artifacts. The committed-vs-ignored rule is one line — **durable finding
+records (markdown) are committed; regeneratable views are ignored** —
+applied per artifact:
+
+| Artifact | Written by | Committed? | Why |
+|---|---|---|---|
+| `argus-last-run.md` | Argus (`hermes-argus.py`) | **committed** | durable finding record — drift history survives in review |
+| `dashboard.html` | `/hermes-dashboard` | gitignored | regeneratable view (Markdown stays source of truth) |
+| `last-open-banner.md` | SessionStart hook | gitignored | regeneratable |
+| `last-handoff.md` | Stop/PreCompact hook | gitignored | regeneratable |
+| `*.png` | dashboard/exports | gitignored | generated images |
+
+The `.gitignore` template the installer writes (every installer must
+write this identical block — `hermes-bootstrap.sh` and `hermes-init.sh`):
 
 ```
 status/dashboard.html
 status/last-open-banner.md
 status/last-handoff.md
 status/*.png
+# (status/argus-last-run.md and other durable finding records stay committed)
 ```
 
-Generated/regeneratable artifacts are ignored. Durable finding records
-(`argus-last-run.md` and other markdown reports) are committed, so
-drift findings survive in history and are visible in code review. This
-resolves the ambiguity CLARK CC flagged — without an explicit rule,
+This resolves the ambiguity CLARK CC flagged — without an explicit rule,
 these files get accidentally committed or accidentally deleted.
 
 ### 4.5 Layer 3 — User-maintained

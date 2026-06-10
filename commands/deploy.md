@@ -4,6 +4,8 @@ description: >
   Run the production deploy sequence. Pre-flight checks, persona gate
   verification, Railway deploy, and post-deploy verification.
 allowed-tools: Read, Write, Bash, Task
+model: claude-opus-4-6
+invocation: user
 ---
 
 # Hermes Deploy
@@ -32,7 +34,7 @@ Output when blocked:
   Security gate: [missing / X days ago — must be < 7]
   SRE gate:      [missing / X days ago — must be < 7]
 
-  Run /hermes gate review first.
+  Run /hermes-gate-review first.
   Then retry /hermes-deploy.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -73,7 +75,7 @@ cat .cc-forge/state.json | grep gates_passed
 
 Verify SRE gate and Security gate have passed. If not:
 "Deploy blocked: SRE gate and Security gate must pass before deploy.
-Run `/hermes gate review` first."
+Run `/hermes-gate-review` first."
 
 Check RUNBOOK.md exists:
 ```bash
@@ -98,7 +100,7 @@ git push origin main
 
 Monitor the deploy:
 "Watch Railway dashboard → Deployments for build progress.
-Run `/hermes verify` after deploy completes (usually 3-5 minutes)."
+Run post-deploy verification after deploy completes (usually 3-5 minutes)."
 
 ## Post-deploy verification
 

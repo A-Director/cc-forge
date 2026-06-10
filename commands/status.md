@@ -6,6 +6,8 @@ description: >
   open risks, document completeness, and deploy status.
   Read-only — never modifies project state.
 allowed-tools: Read, Bash
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Status

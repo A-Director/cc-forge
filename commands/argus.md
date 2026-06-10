@@ -9,6 +9,8 @@ description: >
   auto-fixes (§5.5).
 allowed-tools: Read, Bash
 context: fork
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Argus

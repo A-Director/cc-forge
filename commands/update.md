@@ -5,6 +5,8 @@ description: >
   /plugin update, runs any pending state.json migrations, verifies layer
   reachability via /hermes-argus, and reports.
 allowed-tools: Bash, Read
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Update

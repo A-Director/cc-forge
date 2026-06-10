@@ -8,6 +8,7 @@ description: >
 model: claude-haiku-4-5
 effort: low
 allowed-tools: Read, Write, Bash
+invocation: internal
 ---
 
 # Hermes Taskmaster Seed

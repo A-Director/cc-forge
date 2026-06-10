@@ -4,9 +4,10 @@ description: >
   Greenfield onboarding for a new project. Interviews the developer, recommends
   a stack, and sets up the complete cc-forge environment: CLAUDE.md, PRD stub,
   Taskmaster, GitHub Actions, MCP servers, and project structure.
-  Run with /hermes init from your new project directory.
+  Run with /hermes-init from your new project directory.
 model: claude-opus-4-6
 allowed-tools: Read, Write, Bash, Glob, Grep, Task, TodoWrite, WebSearch
+invocation: user
 ---
 
 # Hermes Init — Greenfield Onboarding
@@ -169,7 +170,7 @@ cc-forge stage: 01 IDEA → moving to 02 SPEC
 
 ---
 > Next step: Expand this with full feature requirements before running
-> /hermes gate review at stage 02 SPEC.
+> /hermes-gate-review at stage 02 SPEC.
 ```
 
 ### 3.3 ARCHITECTURE.md stub
@@ -408,6 +409,6 @@ Create `.cc-forge/state.json`:
   Command:     task-master next
 
   When PRD is done:
-  → /hermes gate review  (stage 02 SPEC review)
+  → /hermes-gate-review  (stage 02 SPEC review)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

@@ -7,6 +7,8 @@ description: >
   commit. Distinct from /hermes-gate-review (regular SDLC gates).
 allowed-tools: Read, Write, Bash, Task
 context: fork
+model: claude-opus-4-6
+invocation: user
 ---
 
 # Hermes Phase Gate
@@ -17,7 +19,7 @@ context: fork
 ## When to run
 
 Run this **only** when advancing the PDLC phase. Most gate reviews
-inside a phase use `/hermes gate review` (regular SDLC gates). A
+inside a phase use `/hermes-gate-review` (regular SDLC gates). A
 phase gate is a once-per-phase event — typically 3–5 times in a
 project's life:
 
@@ -29,7 +31,7 @@ project's life:
   optional)
 
 If you're not sure whether you need a phase gate, the answer is
-probably no — run `/hermes gate review` for an SDLC gate instead.
+probably no — run `/hermes-gate-review` for an SDLC gate instead.
 
 ## What this command does
 
@@ -53,7 +55,7 @@ override.
 
 ## Related
 
-- `/hermes gate review` — regular within-phase SDLC gate (use this
+- `/hermes-gate-review` — regular within-phase SDLC gate (use this
   ~10–100× more often)
 - `PHASES.md` — phase definitions, exit gates, persona activation
 - `stages/00-phase-gate/phase-gate-agent.md` — agent that runs the

@@ -10,6 +10,8 @@ description: >
   can later confirm any resulting backlog change traces back to
   intake.
 allowed-tools: Read, Write, Bash, Task
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Intake
@@ -165,8 +167,8 @@ join against, and a subsequent `type: backlog` event keyed by
 - `intake_step` events land in `usage.log` so the deterministic
   backstop can match backlog changes to intake events. A backlog
   change without a matching intake_step is `intake_reconciliation`'s
-  job to flag (Doctor session C-1).
+  job to flag (Argus C-1).
 - `verify` mode (`python3 _hermes_intake.py verify`) checks
-  monotonicity of an existing log. Useful for the doctor and for
+  monotonicity of an existing log. Useful for Argus and for
   spot-checking after manual edits (though manual edits violate
   the append-only contract — surface them).

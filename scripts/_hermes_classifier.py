@@ -45,6 +45,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Canonical §3.2 backlog parser (Session F) — the classifier no longer rolls
+# its own header/field regex (F9). Same source of truth as Argus/dashboard.
+_THIS_DIR = Path(__file__).resolve().parent
+if str(_THIS_DIR) not in sys.path:
+    sys.path.insert(0, str(_THIS_DIR))
+from _hermes_backlog import (  # noqa: E402
+    ITEM_HEADER_PATTERN as _BACKLOG_HEADER,
+    FIELD_PATTERN as _BACKLOG_FIELD,
+)
+
 # Confidence threshold above which we log bypass_detected.
 BYPASS_THRESHOLD = 0.70
 
@@ -111,8 +121,10 @@ def parse_backlog_summary(project_root: Path) -> dict[str, Any]:
         return {"items": items, "total": 0, "in_progress": in_progress,
                 "note": ".cc-forge/backlog/ not initialised"}
 
-    header = re.compile(r"^###\s+\[([A-Z][A-Z0-9-]+)\]\s*(.*)$")
-    field = re.compile(r"^- ([A-Z][A-Za-z-]*):\s*(.+)$")
+    # One parser per format (Session F): header + field come from the
+    # canonical module, not a private copy.
+    header = _BACKLOG_HEADER
+    field = _BACKLOG_FIELD
 
     for f in sorted(backlog_dir.glob("*.md")):
         try:
