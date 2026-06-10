@@ -514,7 +514,7 @@ with one field per line, line-anchored for reliable persona editing.
 ```markdown
 ---
 domain: 03-security
-owner: security-auditor
+owner: security-sme
 phase_target_bars:
   1: 30
   2: 80
@@ -538,7 +538,7 @@ This domain is complete when:
 - Standard: OWASP ASVS V9.1.1
 - Phase: 1
 - Status: done
-- Owner: sec
+- Owner: security-sme
 - Evidence: railway.toml line 12; tests/integration/test_tls.py
 
 ### [SEC-STK-FNT-002] Theory content encrypted before persistence
@@ -546,7 +546,7 @@ This domain is complete when:
 - Standard: NIST SP 800-57
 - Phase: 1
 - Status: in-progress
-- Owner: sec
+- Owner: security-sme
 - Evidence: pending — see Taskmaster #41
 ```
 
@@ -559,8 +559,12 @@ This domain is complete when:
 - `Phase` — `1`–`5` or `—` (the latter reserved for `not-applicable`).
 - `Status` — exactly one of: `not-started`, `in-progress`, `done`,
   `not-applicable`, `operator-action`, `intake-pending`.
-- `Owner` — persona identifier (`sec`, `cto`, `qa`, `sre`, `ux`, `po`,
-  `legal`).
+- `Owner` — persona identifier; exactly one of the canonical set, which
+  matches the persona definitions in `personas/` one-to-one: `security-sme`,
+  `cto`, `qa-sme`, `sre-sme`, `ux-sme`, `product-owner`, `legal-sme`, `cfo`,
+  `growth-sme`, `ceo`. (`ceo` also owns items in the market-analyst /
+  research-agent domains — those personas advise at gates but are not backlog
+  owners.)
 - `Evidence` — where to verify the claim (file, test, ADR, task ID).
   Required.
 
@@ -875,7 +879,7 @@ cc-forge/                          ← GitHub repo root
 │   ├── hermes-handoff.sh
 │   └── hermes-prompt-submit.sh    ← UserPromptSubmit (Session D)
 ├── personas/
-│   ├── argus.md · security-auditor.md · cto.md · ...
+│   ├── argus.md · security-sme.md · cto.md · ...
 │   └── _shared/
 │       ├── backlog-update-protocol.md
 │       ├── phase-names.json
@@ -1140,7 +1144,7 @@ distinct is what keeps each one honest:
   and the drift counts. Every Argus check is a pass/fail predicate over
   framework state — no opinion, no judgment.
 - **Personas judge the project — expertly, at gate reviews.** The Product
-  Owner, CTO, Security Auditor and the rest assess whether what was built
+  Owner, CTO, Security SME and the rest assess whether what was built
   is *right*: PRD alignment, scope, code quality, security posture. That
   is expert judgment, exercised at gates, and it is theirs alone.
 

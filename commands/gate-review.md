@@ -19,11 +19,11 @@ gate history. Based on the trigger, invoke the appropriate personas.
 
 ```
 Stage 02 SPEC complete     → Product Owner
-Stage 04 DESIGN complete   → CTO + UX Expert
-Feature merged             → QA Engineer
-                             + Security Auditor (if auth/payment/data touched)
+Stage 04 DESIGN complete   → CTO + UX SME
+Feature merged             → QA SME
+                             + Security SME (if auth/payment/data touched)
 Stage 08 REVIEW            → All: CTO + QA + Security + UX + Product Owner
-Before deploy (stage 09)   → CTO + SRE + Security Auditor + Legal (first deploy)
+Before deploy (stage 09)   → CTO + SRE + Security SME + Legal (first deploy)
 ```
 
 If invoked without context, ask:

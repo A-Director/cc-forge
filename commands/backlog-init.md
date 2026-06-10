@@ -218,7 +218,7 @@ Given template item:
 ### [SEC-001] All API routes protected by authentication middleware
 - Outcome: All API routes are protected by authentication middleware
 - Standard: OWASP ASVS 4.0 — V4.1.1
-- Owner: Security Auditor
+- Owner: Security SME
 - Phase: 1 (MVP)
 ```
 
@@ -227,7 +227,7 @@ Correctly-customised project item:
 ### [SEC-UNI-001] All FastAPI routes protected by Clerk middleware
 - Outcome: All FastAPI routes are protected by Clerk middleware
 - Standard: OWASP ASVS 4.0 — V4.1.1        ← preserved verbatim
-- Owner: Security Auditor                  ← preserved
+- Owner: Security SME                  ← preserved
 - Phase: 1 (MVP)                            ← preserved
 ```
 
@@ -235,7 +235,7 @@ Incorrectly-customised (the gap-#48 case — verification MUST catch this):
 ```
 ### [SEC-UNI-001] All FastAPI routes protected by Clerk middleware
 - Outcome: All FastAPI routes are protected by Clerk middleware
-- Owner: Security Auditor
+- Owner: Security SME
 - Phase: 1 (MVP)
 ```
 Missing Standard line. Phase 6 errors out, logs

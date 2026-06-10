@@ -106,8 +106,8 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 |---|---|---|
 | New requirement/bug/change to triage | `/hermes-intake` | Triage before it becomes work-in-flight; logged for reconciliation |
 | Feature merged to main | `/hermes-gate-review` | Triggers QA + Security (if auth/data touched) |
-| Design approved | `/hermes-gate-review` | Triggers CTO + UX Expert |
-| Before any deploy | `/hermes-gate-review` | Triggers CTO + SRE + Security Auditor |
+| Design approved | `/hermes-gate-review` | Triggers CTO + UX SME |
+| Before any deploy | `/hermes-gate-review` | Triggers CTO + SRE + Security SME |
 | Advancing PDLC phase (MVP→Beta etc.) | `/hermes-phase-gate` | Full-panel review, bumps state.json current_phase, dedicated commit |
 | Framework self-check on demand | `/hermes-argus` | Deterministic — names every deviation (also auto-fires at session close) |
 
@@ -138,16 +138,16 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 | Persona | Model | Activates at |
 |---|---|---|
 | CTO | Opus | After design · before deploy |
-| Security auditor | Opus | Before every deploy · after auth/payment changes |
-| SRE engineer | Sonnet | Before every deploy |
-| QA engineer | Sonnet | After every feature merge |
-| UX expert | Sonnet | After design · after build |
+| Security SME | Opus | Before every deploy · after auth/payment changes |
+| SRE SME | Sonnet | Before every deploy |
+| QA SME | Sonnet | After every feature merge |
+| UX SME | Sonnet | After design · after build |
 | Product owner | Sonnet | After each sprint |
 | CEO | Opus | Sprint end · before launch |
 | CFO | Haiku | Weekly · infra cost check |
-| Legal / compliance | Sonnet | Before first public launch |
+| Legal SME | Sonnet | Before first public launch |
 | Market analyst | Sonnet | Monthly · at pivots |
-| Growth agent | Sonnet | Post-launch · monthly |
+| Growth SME | Sonnet | Post-launch · monthly |
 | Research agent | Opus | On demand · technology decisions |
 | **Argus** | **deterministic** | **Auto-fires at session close · before deploy · on demand** |
 

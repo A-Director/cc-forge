@@ -13,7 +13,7 @@
 
 - Outcome: Application accessible via intended domain, not hosting subdomain
 - Standard: cc-forge launch standards — Domain configuration
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -25,7 +25,7 @@
 
 - Outcome: Users see green lock — no security warnings blocking access
 - Standard: OWASP ASVS 4.0 — V9.1.1
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -37,7 +37,7 @@
 
 - Outcome: Users receive critical emails reliably
 - Standard: cc-forge launch standards — Email deliverability
-- Owner: CTO
+- Owner: cto
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -49,7 +49,7 @@
 
 - Outcome: Users have a way to report problems and get help
 - Standard: cc-forge launch standards — Support readiness
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -61,7 +61,7 @@
 
 - Outcome: First users onboarded in a controlled, feedback-rich environment
 - Standard: cc-forge launch standards — Beta program
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 2 (Beta)

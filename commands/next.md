@@ -59,7 +59,7 @@ following match:
 - Task `title` contains (case-insensitive) any of: `UI`, `React`,
   `frontend`, `component`, `KaTeX`, `panel`, `view`, `page`
 
-When a UI/frontend task is detected, decide where the UX Expert
+When a UI/frontend task is detected, decide where the UX SME
 gate runs based on whether a design document already exists:
 
 **Look in `docs/`** for a design document, wireframe, mockup, or
@@ -72,7 +72,7 @@ Expert gate review as the step that comes BEFORE the task:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  GATE DUE  ·  UX Expert review
+  GATE DUE  ·  UX SME review
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Next task:  #[id] — [title]
@@ -80,15 +80,15 @@ Expert gate review as the step that comes BEFORE the task:
   Design doc found: [path]
 
   Required step before writing code:
-  /hermes-gate-review  ← UX Expert (design review)
+  /hermes-gate-review  ← UX SME (design review)
 
-  Once UX Expert review is complete (PASS or CONDITIONAL),
+  Once UX SME review is complete (PASS or CONDITIONAL),
   proceed with task #[id].
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **If no design doc exists** → surface the task as normal, but include
-an explicit reminder that the UX Expert gate must run after build,
+an explicit reminder that the UX SME gate must run after build,
 before merging to main:
 
 ```
@@ -100,12 +100,12 @@ before merging to main:
   [...standard task surface block...]
 
   Post-build gate (required before merge to main):
-  /hermes-gate-review  ← UX Expert
+  /hermes-gate-review  ← UX SME
   No design doc found in docs/ — UX reviews the built UI instead.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-If the developer has already run the UX Expert gate for this task
+If the developer has already run the UX SME gate for this task
 (check `DECISIONS.md` or recent gate review output for a matching
 entry), skip the gate and surface the task as normal.
 

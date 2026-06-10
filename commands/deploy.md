@@ -18,9 +18,9 @@ Before executing ANY deploy step:
 
 1. Read `.cc-forge/state.json` and find the `gates_passed` array.
 2. Look for the most recent entry with `personas` containing
-   `security-auditor` — record its date.
+   `security-sme` — record its date.
 3. Look for the most recent entry with `personas` containing
-   `sre-engineer` — record its date.
+   `sre-sme` — record its date.
 4. Compute the age of each in days against today.
 5. **If either gate is missing OR older than 7 days → STOP.**
    Do not proceed to the Pre-flight section below.

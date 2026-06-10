@@ -62,8 +62,8 @@ Industry sequence for reference: PoC → Prototype → MVP → Pilot → Beta
   feedback loop.
 - **Out of scope:** Full compliance (GDPR endpoints), public
   marketing motion, scaling work.
-- **Personas active:** + UX Expert (friction review), Security
-  Auditor (auth + secrets), SRE Engineer (basic uptime).
+- **Personas active:** + UX SME (friction review), Security
+  Auditor (auth + secrets), SRE SME (basic uptime).
 - **Typical SDLC stages:** `05-build` + `08-review` cycles.
 - **Domain bars:**
   - 01 100% · 02 80% · 03 60% · 04 40% · 05 60% · 06 70% · 07 10% ·
@@ -82,7 +82,7 @@ Industry sequence for reference: PoC → Prototype → MVP → Pilot → Beta
 - **Out of scope:** Public marketing, full GDPR, accessibility AA
   certification.
 - **Personas active:** + CFO (margin & burn), SRE (runbook +
-  on-call), Legal/Compliance (basic ToS, terms).
+  on-call), Legal SME (basic ToS, terms).
 - **Typical SDLC stages:** `06-auth`, `07-billing`, `09-deploy`,
   `10-monitor`.
 - **Domain bars:**
@@ -100,7 +100,7 @@ Industry sequence for reference: PoC → Prototype → MVP → Pilot → Beta
 - **In scope:** GDPR endpoints, ToS/Privacy/Cookie, accessibility,
   public docs, support workflow, marketing pages.
 - **Out of scope:** Sustained growth experimentation (Phase 5).
-- **Personas active:** + Growth Agent (acquisition setup), Legal
+- **Personas active:** + Growth SME (acquisition setup), Legal
   (full compliance), Market Analyst (positioning).
 - **Typical SDLC stages:** `08-review`, `09-deploy`, `10-monitor`.
 - **Domain bars:**

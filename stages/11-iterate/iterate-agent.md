@@ -45,7 +45,7 @@ vertical slices, test as you go, gate review before merge.
 - Add new tasks from feedback/bugs discovered this week
 - Run `/hermes status` to see overall project health
 - Brief persona checks if warranted:
-  - Monthly: Market Analyst + Growth Agent
+  - Monthly: Market Analyst + Growth SME
   - Weekly: CFO (costs)
 
 ---
@@ -86,7 +86,7 @@ If you're above that, stop adding features and pay down debt first.
 
 | Trigger | Personas |
 |---|---|
-| Any auth/payment code changed | Security Auditor |
+| Any auth/payment code changed | Security SME |
 | Significant new feature | QA + CTO |
 | Monthly | Market Analyst + CFO |
 | New team member or major pivot | CEO + Product Owner |

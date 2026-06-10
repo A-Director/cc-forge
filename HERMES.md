@@ -92,10 +92,10 @@ persona should review when it's done, and the estimated complexity.
 Trigger a phase gate review for the current stage. Invoke the appropriate
 personas based on stage:
 
-- Stage 04 DESIGN → CTO + UX Expert
-- Stage 05 BUILD → QA Engineer + Security Auditor (per feature)
+- Stage 04 DESIGN → CTO + UX SME
+- Stage 05 BUILD → QA SME + Security SME (per feature)
 - Stage 08 REVIEW → All technical personas
-- Stage 09 DEPLOY → SRE + Security Auditor + CTO
+- Stage 09 DEPLOY → SRE + Security SME + CTO
 
 Each persona reviews in its own subagent with a clean context window. Collect
 their outputs and present a consolidated gate report with pass/fail/conditional.
@@ -121,27 +121,27 @@ not all the time.
 ```
 TRIGGER                          PERSONAS
 ─────────────────────────────────────────────────────────
-Feature merged to main           QA Engineer
-                                 Security Auditor (if auth/data touched)
+Feature merged to main           QA SME
+                                 Security SME (if auth/data touched)
 
 Design approved                  CTO (architecture)
-                                 UX Expert (user flows)
+                                 UX SME (user flows)
 
 Sprint complete                  Product Owner (PRD alignment)
                                  CFO (infra cost check)
 
 Before deploy                    CTO
-                                 SRE Engineer
-                                 Security Auditor (full audit)
+                                 SRE SME
+                                 Security SME (full audit)
 
 Monthly                          Market Analyst
-                                 Growth Agent (post-launch)
+                                 Growth SME (post-launch)
 
 Weekly                           Argus (compliance — all agents on track?)
 
 On demand                        CEO (vision check)
                                  Research Agent (technology decisions)
-                                 Legal/Compliance (before launch, GDPR)
+                                 Legal SME (before launch, GDPR)
 ```
 
 ---

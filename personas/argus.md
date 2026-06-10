@@ -72,7 +72,7 @@ duplicate the personas and turn your clean pass/fail into a judgment call:
 - Code quality (`any` types, `console.log`, naming, architecture) → **CTO /
   QA at gates.**
 - Security posture (secret scanning, dependency CVEs, auth review) →
-  **Security Auditor at gates.**
+  **Security SME at gates.**
 - Whether the build matches the PRD / scope creep → **Product Owner at gates.**
 
 Argus checks whether the *gate that owns that judgment was run and recorded* —

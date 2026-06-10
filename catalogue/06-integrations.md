@@ -1,5 +1,5 @@
 # Backlog — 06 Integrations
-> Owner: CTO + Security Auditor
+> Owner: CTO + Security SME
 > Standard references: Clerk Docs · Stripe Docs · Railway Docs
 >
 > Definition of Done: All stack-specific integrations verified end-to-end
@@ -13,7 +13,7 @@
 
 - Outcome: Users can create accounts and authenticate reliably
 - Standard: Clerk Docs — Next.js Quickstart
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 1 (MVP)
@@ -25,7 +25,7 @@
 
 - Outcome: User records in application DB stay in sync with Clerk
 - Standard: Clerk Docs — Webhooks
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 2 (Beta)
@@ -37,7 +37,7 @@
 
 - Outcome: Auth works on production domain, not just localhost
 - Standard: Clerk Docs — Production Setup
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 3 (Pilot)
@@ -51,7 +51,7 @@
 
 - Outcome: Users can subscribe and access paid features
 - Standard: Stripe Docs — Checkout Sessions
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -63,7 +63,7 @@
 
 - Outcome: Subscription state in DB stays in sync with Stripe
 - Standard: Stripe Docs — Webhook Integration
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -75,7 +75,7 @@
 
 - Outcome: Users can cancel, update payment, and manage subscription without support
 - Standard: Stripe Docs — Customer Portal
-- Owner: CTO
+- Owner: cto
 - Blocks: Launch
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -87,7 +87,7 @@
 
 - Outcome: Payment flow verified in production conditions before launch
 - Standard: Stripe Docs — Going Live Checklist
-- Owner: CTO
+- Owner: cto
 - Blocks: Launch
 - Applicability: Stack: Stripe
 - Phase: 4 (Launch)
@@ -103,7 +103,7 @@
 
 - Outcome: Application boots reliably in production
 - Standard: FastAPI Docs — Application Structure
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Python/FastAPI
 - Phase: 1 (MVP)
@@ -115,7 +115,7 @@
 
 - Outcome: ORM and database are in sync — no silent data corruption
 - Standard: SQLAlchemy Docs — Migration Best Practices; Alembic Docs
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Python/SQLAlchemy
 - Phase: 1 (MVP)
@@ -127,7 +127,7 @@
 
 - Outcome: New environment setup is reproducible without manual SQL
 - Standard: Alembic Docs — Migration Environment
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Python/SQLAlchemy/Alembic
 - Phase: 2 (Beta)
@@ -139,7 +139,7 @@
 
 - Outcome: Database connections properly scoped and closed — no connection leaks
 - Standard: FastAPI Docs — SQL Databases; SQLAlchemy Session Management
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 08 REVIEW
 - Applicability: Stack: Python/FastAPI/SQLAlchemy
 - Phase: 2 (Beta)
@@ -153,7 +153,7 @@
 
 - Outcome: Semantic search over embeddings functional
 - Standard: pgvector Docs — Installation and Usage
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY (when pgvector is in scope)
 - Applicability: Stack: pgvector (Phase 2+)
 - Phase: 2 (Beta)
@@ -167,7 +167,7 @@
 
 - Outcome: Encryption key not exposed in repository or logs
 - Standard: cryptography.io Docs — Fernet; OWASP ASVS 4.0 — V2.10.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Python/Fernet encryption
 - Phase: 1 (MVP)
@@ -179,7 +179,7 @@
 
 - Outcome: Encrypted data can be re-keyed without data loss
 - Standard: cryptography.io Docs — Key Rotation; cc-forge reliability standards
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Stack: Python/Fernet encryption
 - Phase: 3 (Pilot)

@@ -29,7 +29,7 @@ Argus is Hermes's vigilant counterpart — the hundred-eyed giant who never full
 ## What you get
 
 - **One-command onboarding** — `/hermes-init` for a new project, `/hermes-adopt` to onboard an existing codebase.
-- **13 expert personas** reviewing your work at the right gates — CTO, Security Auditor, SRE, QA, Product Owner, and more.
+- **13 expert personas** reviewing your work at the right gates — CTO, Security SME, SRE, QA, Product Owner, and more.
 - **A 10-domain launch-readiness backlog** grounded in real industry standards (OWASP, Google SRE, WCAG, GDPR…).
 - **Deterministic self-checking** via Argus, so framework drift is caught automatically — never discovered too late.
 - **Token-disciplined sessions** that stay fast and focused across an entire project, not just the first hour.
@@ -127,15 +127,15 @@ At key gates, specialist personas review your work. Each has a specific lens and
 | CEO | Vision, value, shippability | Opus | Sprint end, before launch |
 | CTO | Architecture, tech debt, scale | Opus | After design, before deploy |
 | Product Owner | PRD alignment, scope | Sonnet | After each feature |
-| UX Expert | User flows, friction, a11y | Sonnet | After design, after build |
-| QA Engineer | Test coverage, edge cases | Sonnet | After each feature |
-| SRE Engineer | Reliability, runbook, ops | Sonnet | Before deploy |
-| Security Auditor | OWASP, auth, injection | Opus | Before deploy |
+| UX SME | User flows, friction, a11y | Sonnet | After design, after build |
+| QA SME | Test coverage, edge cases | Sonnet | After each feature |
+| SRE SME | Reliability, runbook, ops | Sonnet | Before deploy |
+| Security SME | OWASP, auth, injection | Opus | Before deploy |
 | CFO | Infra cost, burn, revenue | Haiku | Weekly |
 | Market Analyst | Competitors, positioning | Sonnet | Monthly, at pivots |
 | Research Agent | Tech evaluation, libraries | Opus | On demand |
-| Legal / Compliance | GDPR, ToS, data handling | Sonnet | Before launch |
-| Growth Agent | SEO, analytics, activation | Sonnet | Post-launch |
+| Legal SME | GDPR, ToS, data handling | Sonnet | Before launch |
+| Growth SME | SEO, analytics, activation | Sonnet | Post-launch |
 | **Argus** | **Framework self-check (deterministic) — watches the framework, not your code** | **—** | **Auto-fires at session close · on demand · before deploy** |
 
 ---
@@ -148,13 +148,13 @@ Every cc-forge project gets a structured backlog — not just dev tasks, but a l
 |---|---|---|
 | 01 Product | Product Owner | Stage 03 |
 | 02 Development | CTO + QA | Stage 08 |
-| 03 Security | Security Auditor | Deploy |
-| 04 Reliability | SRE Engineer | Deploy |
-| 05 Design | UX Expert | Launch |
+| 03 Security | Security SME | Deploy |
+| 04 Reliability | SRE SME | Deploy |
+| 05 Design | UX SME | Launch |
 | 06 Integrations | CTO | Deploy |
-| 07 Compliance | Legal / Compliance | Launch |
+| 07 Compliance | Legal SME | Launch |
 | 08 Launch | Product Owner | Launch |
-| 09 Growth | Growth Agent | Post-launch |
+| 09 Growth | Growth SME | Post-launch |
 | 10 Operations | CFO + SRE | Post-launch |
 
 Each item is a single canonical format (parsed by *one* shared parser — Argus, the dashboard, and the write path all agree on what a valid item is):
@@ -269,7 +269,7 @@ your-project/
 
 Most SDLC frameworks are written for teams with dedicated DevOps, QA, security, and product functions. Solo developers and small teams don't have those people — but they need those disciplines.
 
-cc-forge gives you the disciplines without the headcount. Every persona, every standard, every gate exists because a real product has failed without it. The QA persona catches the edge case you'd ship. The Security Auditor finds the auth bug before your users do. The CFO flags the Railway bill before it surprises you. Argus catches the framework drift before it quietly corrupts the work.
+cc-forge gives you the disciplines without the headcount. Every persona, every standard, every gate exists because a real product has failed without it. The QA persona catches the edge case you'd ship. The Security SME finds the auth bug before your users do. The CFO flags the Railway bill before it surprises you. Argus catches the framework drift before it quietly corrupts the work.
 
 You're still the one steering. cc-forge just makes sure the right expert is in the room at the right time — and that nothing slips through unnoticed.
 

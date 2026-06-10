@@ -76,7 +76,7 @@ own words, in 1–3 sentences. Confirm with the user before proceeding.
 
 **Step 4 — Consult relevant personas.** For a substantive intake, run a
 quick consultation with the personas whose domains are affected (CTO
-for architecture impact, Security Auditor for auth/data changes,
+for architecture impact, Security SME for auth/data changes,
 Product Owner for scope, etc.). Use the Task tool to invoke them as
 subagents with the intake summary. Collect their verdicts; record the
 ones consulted in `personas_consulted`.
