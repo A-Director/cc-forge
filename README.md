@@ -1,192 +1,126 @@
-# Hermes SDLC
+# cc-forge
 
-> From first idea to production — a complete, Claude Code-native software development lifecycle for solo developers and small teams.
+> Ship real software with Claude Code — not vibes. A complete, opinionated SDLC that runs *inside* Claude Code, built around two pillars: **Hermes** directs, **Argus** watches.
+
+cc-forge gives a solo developer or a small team the discipline of a full engineering org — CTO, Security, SRE, QA, Product — without the headcount. It is not a list of tips or a prompt pack. It is an operating system for building software with AI.
 
 ---
 
-## What this is
+## The two pillars
 
-Hermes is an opinionated SDLC framework built entirely around Claude Code. It gives you a structured, repeatable way to go from idea to running production app — with Hermes — the Conductor — orchestrating the process, a set of expert personas reviewing your work at each stage, and token-optimized workflows that keep Claude Code fast and focused across multiple projects.
+### Hermes — the Conductor
+Hermes is the orchestrating agent at the center of every session. Named after the Greek messenger who moved between all the gods, Hermes sits between you and every other agent, persona, and tool. He doesn't write the code — he makes sure the **right agent is doing the right thing at the right time**, and he always speaks last with a single clear next step. You never have to ask "what now?"
 
-It is not a list of tips. It is not another X thread. It is a complete operating system for building software with AI.
+### Argus — the Watcher
+Argus is Hermes's vigilant counterpart — the hundred-eyed giant who never fully slept. Where Hermes *directs*, Argus *watches*. It is **deterministic**: it checks that the framework's own contracts still hold — backlog integrity, gates actually run, no silent drift — and reports `HEALTHY` / `DEGRADED` / `BROKEN` with exact evidence. Argus **auto-fires at the end of every session** and surfaces a staleness warning at the start of the next one, so the framework can't quietly rot between check-ins.
+
+> **Hermes directs. Argus watches. Personas judge.** Three layers, kept distinct: Hermes orchestrates the session, Argus watches the *framework* (deterministically), and the expert personas judge the *project* at gate reviews. Argus never grades your code — that's the personas' job — and it never edits your backlog. It only reports drift.
 
 ---
 
 ## Who it's for
 
-- **Solo indie developers and founders** building real products, not demos
-- **Small teams (2–5 people)** who want consistent, professional engineering standards without a full engineering org
-- **Non-engineers with technical ambition** — founders, PMs, and operators who are building with Claude Code for the first time
+- **Solo indie developers and founders** building real products, not demos.
+- **Small teams (2–5)** who want consistent, professional engineering standards without a full org.
+- **Non-engineers with technical ambition** — founders, PMs, and operators building with Claude Code for the first time.
 
 ---
 
-## Two modes
+## What you get
 
-### `hermes init` — Greenfield
-Starting a new project from scratch. Hermes interviews you, understands your idea, recommends a stack, and sets up your entire project: CLAUDE.md, Taskmaster tasks, GitHub Actions, MCP servers, and your first PRD stub. You start building in minutes with everything already configured correctly.
-
-### `hermes adopt` — Existing project
-Already have a codebase? Hermes reads your entire repo — every file, doc, config, and commit pattern — and produces a gap report: what stage you're actually at, what's missing, what's inconsistent, and what your first tasks should be. Your existing code becomes the source of truth. Nothing is assumed.
-
----
-
-## The lifecycle
-
-```
-01  IDEA       →  Hermes interviews you, understands the problem
-02  SPEC       →  PRD Agent writes the product requirements document
-03  PLAN       →  Taskmaster breaks PRD into dependency-aware tasks
-04  DESIGN     →  Superpowers brainstorm + architecture decisions
-05  BUILD      →  Subagent-driven development with TDD
-06  AUTH       →  Clerk setup agent (standard, pre-baked)
-07  BILLING    →  Stripe setup agent (standard, pre-baked)
-08  REVIEW     →  Persona gate: CTO + QA + Security review
-09  DEPLOY     →  Railway deploy agent (CI/CD, env vars, domain)
-10  MONITOR    →  Sentry + Cloudflare + uptime setup agents
-11  ITERATE    →  Back to Taskmaster — next task, next sprint
-```
-
-Each stage has a dedicated agent. Stages feed into each other. Nothing is manual unless you want it to be.
+- **One-command onboarding** — `/hermes-init` for a new project, `/hermes-adopt` to onboard an existing codebase.
+- **13 expert personas** reviewing your work at the right gates — CTO, Security Auditor, SRE, QA, Product Owner, and more.
+- **A 10-domain launch-readiness backlog** grounded in real industry standards (OWASP, Google SRE, WCAG, GDPR…).
+- **Deterministic self-checking** via Argus, so framework drift is caught automatically — never discovered too late.
+- **Token-disciplined sessions** that stay fast and focused across an entire project, not just the first hour.
 
 ---
 
-## PDLC vs SDLC — two lifecycles that nest
+## Two ways to start
 
-The eleven stages above are **SDLC** (Software Development Life Cycle) activities — *what* the team is doing right now: planning, designing, building, deploying, monitoring.
+### `/hermes-init` — Greenfield
+Starting fresh. Hermes interviews you, understands your idea, recommends a stack, and sets up the entire project: `CLAUDE.md`, a PRD stub, Taskmaster tasks, GitHub Actions, and your backlog. You start building in minutes with everything configured correctly.
 
-Sitting around them is the **PDLC** (Product Development Life Cycle) — *what maturity bar* the product is shooting for right now:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ PDLC (outer) — what bar are we shooting for?                    │
-│                                                                 │
-│   Phase 1 MVP → Phase 2 Beta → Phase 3 Pilot → Phase 4 Launch   │
-│                                              → Phase 5 Growth   │
-│                                                                 │
-│   Each phase has: a goal · an exit gate · domain bars · the     │
-│   personas that activate · the SDLC stages typically run.       │
-│                                                                 │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │ SDLC (inner) — what activity right now?                 │   │
-│   │   01 IDEA → 02 SPEC → 03 PLAN → 04 DESIGN → 05 BUILD →  │   │
-│   │   06 AUTH → 07 BILLING → 08 REVIEW → 09 DEPLOY →        │   │
-│   │   10 MONITOR → 11 ITERATE                               │   │
-│   │                                                         │   │
-│   │   Each PDLC phase consumes many SDLC cycles.            │   │
-│   └─────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-**Within a phase:** run `/hermes gate review` after features, before deploys, etc. — these are SDLC gates, many per phase.
-
-**Between phases:** run `/hermes-phase-gate` to advance from one phase to the next — this is a PDLC gate, a few per project. It triggers a full-panel persona review and bumps `current_phase` in `state.json`.
-
-Every backlog item carries a `- Phase:` field — "what's the earliest phase a typical SaaS project needs this done?" — so the backlog naturally rolls up to per-phase target bars (see `catalogue/master.md`).
-
-See `docs-templates/PHASES.md` for the full phase definitions, exit gates, and domain bar tables. `session-lifecycle/phase-gates.md` covers the SDLC-vs-PDLC distinction in detail.
+### `/hermes-adopt` — Existing project
+Already have a codebase? Hermes reads your entire repo — every file, doc, config, and commit pattern — and produces a gap report: what stage you're really at, what's missing, what's inconsistent, what your first tasks should be. Your existing code is the source of truth. Nothing is assumed.
 
 ---
 
-## Hermes — the Conductor
+## The command surface
 
-Hermes is the orchestrating agent at the center of your SDLC. Named after the Greek messenger god who coordinated between all other gods — Hermes sits between you and every other agent, persona, and tool in this framework.
+cc-forge ships a focused set of `/hermes-*` commands. The ones you'll use daily are at the top.
 
-He doesn't write the code. He makes sure the right agent is doing the right thing at the right time.
+| Command | What it does |
+|---|---|
+| `/hermes-status` | Project health: stage, next task, backlog %, flags. Run it first every session. |
+| `/hermes-next` | The single highest-priority unblocked task, with full context. |
+| `/hermes-init` | Greenfield onboarding interview + full project setup. |
+| `/hermes-adopt` | Read an existing repo and produce a gap report. |
+| `/hermes-backlog-init` | Customize the 10-domain backlog to your stack; set a Definition of Done per domain. |
+| `/hermes-intake` | Triage a new requirement/bug/change before it becomes work-in-flight. |
+| `/hermes-gate-review` | Trigger an SDLC gate — the due personas review in clean contexts. |
+| `/hermes-phase-gate` | Advance a PDLC phase (MVP → Beta → Pilot → Launch → Growth) via full-panel review. |
+| `/hermes-argus` | Run the framework self-check on demand (it also auto-fires at session close). |
+| `/hermes-deploy` | Pre-flight checks → gate verification → Railway deploy. |
+| `/hermes-dashboard` | Generate `status/dashboard.html` — a single-file project overview. |
+| `/hermes-report` | Full usage report for review sessions. |
+| `/hermes-update` | Pull the latest cc-forge into this project (never touches your project-specific files). |
 
-```
-hermes init          # start a new project
-hermes adopt         # onboard an existing project  
-hermes status        # project health: stage, tasks, personas, docs
-hermes next          # what should I work on right now?
-hermes gate review   # trigger a persona gate review
-hermes phase-gate    # advance PDLC phase (MVP → Beta → Pilot → Launch → Growth)
-hermes dashboard     # generate dashboard.html — single-file project overview
-hermes deploy        # run the deploy agent
-hermes update        # pull latest cc-forge into this project
-hermes report        # full usage report for review sessions
-```
-
----
-
-## Understanding framework cost
-
-cc-forge adds structure on top of Claude Code. That structure costs tokens. The framework is honest about how much.
-
-**Where the cost shows up:**
-
-1. **CLAUDE.md context** reloaded each turn — the minimum document set (~600 tokens for the cc-forge baseline) is small but compounds across long sessions.
-2. **`/hermes-*` commands** consume tokens per invocation — light ones like `/hermes-status` (~800) up to heavier ones like `/hermes-phase-gate` (~8000).
-3. **Persona gate reviews** are the single highest-cost activity — each persona is a fresh subagent context (~2000 tokens), and a full panel can invoke 5–7 personas in one gate.
-
-For a normally-disciplined project, Hermes overhead sits in the **5–25%** range of total token spend. Below 5% usually means the framework isn't being used; above 25% means too many gate reviews or a stale CLAUDE.md.
-
-**Seeing your numbers:** `/hermes-dashboard` generates a single-file `dashboard.html` in the project root with a dedicated Usage tab. The Hermes overhead card breaks down where the tokens go — context, commands, persona gates — and shows the overall share. The estimate is derived from `.cc-forge/usage.log` plus `hermes/token-weights.json` (editable per project for re-calibration); a v2 measurement-by-hook will replace the estimate later.
-
-**When to regenerate the dashboard:**
-- After every PDLC phase transition — the phase indicator and target bars rebase.
-- Mid-project sanity check (once a sprint or once a week).
-- Before any major review — hands stakeholders a single artefact.
-
-The dashboard is read-only — it never modifies project files, and `dashboard.html` is gitignored by default.
+See **[CHEATSHEET.md](./CHEATSHEET.md)** for the full "what to run and when."
 
 ---
 
-## How Hermes works — session lifecycle
+## Two lifecycles that nest: PDLC + SDLC
 
-Every Claude Code session follows the same pattern automatically. You don't run these manually — Hermes handles them via the session protocol in `CLAUDE.md`.
+The **SDLC** (Software Development Life Cycle) is *what activity you're doing right now* — the eleven stages:
+
+```
+01 IDEA → 02 SPEC → 03 PLAN → 04 DESIGN → 05 BUILD → 06 AUTH →
+07 BILLING → 08 REVIEW → 09 DEPLOY → 10 MONITOR → 11 ITERATE
+```
+
+The **PDLC** (Product Development Life Cycle) sits around it — *what maturity bar the product is shooting for*:
+
+```
+Phase 1 MVP → Phase 2 Beta → Phase 3 Pilot → Phase 4 Launch → Phase 5 Growth
+```
+
+Each PDLC phase consumes many SDLC cycles. Within a phase, run `/hermes-gate-review` after features and before deploys (many per phase). Between phases, run `/hermes-phase-gate` to advance the maturity bar (a few per project). Every backlog item carries a `- Phase:` field, so the backlog naturally rolls up to per-phase target bars.
+
+Full definitions live in `docs-templates/PHASES.md`; the gate distinction is in `session-lifecycle/phase-gates.md`.
+
+---
+
+## How a session works
+
+Every Claude Code session follows the same shape automatically — you don't run these by hand.
 
 ```
 SESSION OPENS
-      │
-      ▼
-┌─────────────────────────────────────────┐
-│  Hermes auto-orients                    │
-│  reads: state.json · tasks · backlog%   │
-│  reads: RISKS.md · claude-mem history   │
-│  prints: stage · next task · one flag   │
-│  begins: first action (no question)     │
-└─────────────────────────────────────────┘
-      │
-      ▼  ┌─────────────────────────────┐
-         │  Build loop                 │
-         │  Taskmaster → next task     │
-         │  code → test → lint         │
-         │  commit                     │
-         │  Hermes closes every action │
-         │  ✓ done · stage · next      │
-         └──────────┬──────────────────┘
-                    │ gate due?
-                    ▼
-      ┌─────────────────────────────────────┐
-      │  Gate review (/hermes gate review)  │
-      │  personas run in clean contexts     │
-      │  PASS · CONDITIONAL · BLOCK         │
-      │  backlog updated · ADRs written     │
-      │  RISKS.md updated                   │
-      └─────────────────────────────────────┘
-                    │
-                    ▼
-┌─────────────────────────────────────────┐
-│  Session closes (Hermes speaks last)    │
-│  ✓ done this session                    │
-│  → next session task                    │
-│  · docs to update                       │
-│  runs /compact automatically            │
-└─────────────────────────────────────────┘
-      │
-      ▼
-SESSION COMPRESSED — next opens clean
+  Hermes auto-orients: reads state.json · tasks · backlog% · risks
+  prints: stage · next task · one flag (and an Argus-staleness note if overdue)
+  begins the first action — no question asked
+
+BUILD LOOP
+  Taskmaster → next task → code → test → lint → commit
+  Hermes closes every action: ✓ done · stage · next
+
+GATE (when due)
+  /hermes-gate-review → personas run in clean contexts
+  PASS · CONDITIONAL · BLOCK → backlog updated · ADRs + RISKS written
+
+SESSION CLOSES (Hermes speaks last)
+  ✓ done this session · → next task · docs to update
+  Argus auto-fires: framework self-check → status/argus-last-run.md
 ```
 
-**Weekly:** Argus runs a compliance audit — checks gate skips, doc staleness, standards drift, backlog accuracy. Flags every deviation specifically.
-
-**The rule:** Hermes always speaks last. Every significant action closes with a summary box — what was done, current stage, backlog %, single next step. You never have to ask "what next?"
+**The rule:** Hermes always speaks last. Every significant action ends with a summary box — what was done, current stage, backlog %, single next step.
 
 ---
 
 ## The personas
 
-At key phase gates, specialist personas review your work. Each has a specific lens, a specific model, and specific trigger conditions. They do not all run every session — that would be chaos. They activate at milestones.
+At key gates, specialist personas review your work. Each has a specific lens and trigger — they activate at milestones, not every session.
 
 | Persona | Lens | Model | Triggers at |
 |---|---|---|---|
@@ -194,89 +128,21 @@ At key phase gates, specialist personas review your work. Each has a specific le
 | CTO | Architecture, tech debt, scale | Opus | After design, before deploy |
 | Product Owner | PRD alignment, scope | Sonnet | After each feature |
 | UX Expert | User flows, friction, a11y | Sonnet | After design, after build |
-| QA Engineer | Test coverage, edge cases | Sonnet + Outcomes | After each feature |
+| QA Engineer | Test coverage, edge cases | Sonnet | After each feature |
 | SRE Engineer | Reliability, runbook, ops | Sonnet | Before deploy |
 | Security Auditor | OWASP, auth, injection | Opus | Before deploy |
-| CFO | Infra cost, burn, Stripe revenue | Haiku | Weekly |
+| CFO | Infra cost, burn, revenue | Haiku | Weekly |
 | Market Analyst | Competitors, positioning | Sonnet | Monthly, at pivots |
-| Research Agent | Tech evaluation, library choices | Opus + Context7 | On demand |
+| Research Agent | Tech evaluation, libraries | Opus | On demand |
 | Legal / Compliance | GDPR, ToS, data handling | Sonnet | Before launch |
 | Growth Agent | SEO, analytics, activation | Sonnet | Post-launch |
-| **Argus** | **Framework compliance monitor — watches all other agents** | **Opus** | **Weekly + before deploy** |
-
----
-
-## The standards
-
-Every project using Hermes follows the same standards. They load automatically into your CLAUDE.md at init or adopt time.
-
-- `standards/coding.md` — naming, structure, complexity, comments
-- `standards/security.md` — OWASP top 10, secrets management, auth rules
-- `standards/api.md` — REST conventions, versioning, error formats
-- `standards/git.md` — branching strategy, commit messages, PR rules
-- `standards/testing.md` — coverage minimums, unit vs integration vs e2e
-- `standards/accessibility.md` — WCAG basics, baked in from day one
-- `standards/token-rules.md` — 12 golden rules for token-optimized CC sessions
-
----
-
-## The minimum document set
-
-Every Hermes project maintains a living set of documents. Hermes creates them, keeps them updated, and reviews them at each gate.
-
-**Created at init/adopt:**
-- `CLAUDE.md` — Claude Code standing orders (kept under 600 tokens)
-- `PRD.md` — product requirements
-- `ARCHITECTURE.md` — system design and decisions
-- `DECISIONS.md` — architecture decision records (ADRs)
-- `CHANGELOG.md` — auto-updated on every merge
-
-**Created during build:**
-- `API.md` — endpoint documentation
-- `ENV.md` — environment variables (non-secret values + descriptions)
-
-**Created before deploy:**
-- `RUNBOOK.md` — how to operate the app in production
-- `INCIDENT.md` — what to do when things break
-- `MONITORING.md` — what's watched, alert thresholds, escalation
-
----
-
-## How a session works
-
-Not everything fires every session. That would fill your context window and produce noise, not signal.
-
-**Every session — automatic:**
-- CLAUDE.md loads (standing orders, ~400 tokens)
-- claude-mem injects last session context
-- Taskmaster surfaces the next task
-- Right model selected for the task type
-
-**During build — triggered by task:**
-- Superpowers brainstorm activates on new features
-- Context7 activates when touching a library
-- criticalthink available on-demand via `/criticalthink`
-- `/btw` for parallel thoughts without interrupting flow
-
-**Phase gates — triggered by milestone:**
-- After design → CTO + UX review
-- After feature → QA + Security review
-- After sprint → Product Owner alignment
-- Weekly → CFO cost check + Market Analyst scan
-- Before deploy → SRE + full Security audit
-
-**Every session end — automatic:**
-- `/compact` summarizes the session
-- Taskmaster marks completed tasks
-- GitHub Action syncs updated docs
+| **Argus** | **Framework self-check (deterministic) — watches the framework, not your code** | **—** | **Auto-fires at session close · on demand · before deploy** |
 
 ---
 
 ## The product backlog
 
-Every cc-forge project gets a structured product backlog — not just a list of development tasks, but a complete launch-readiness view across every domain.
-
-**10 domains, each with a Definition of Done:**
+Every cc-forge project gets a structured backlog — not just dev tasks, but a launch-readiness view across **10 domains**, each with a Definition of Done.
 
 | Domain | Owner | Blocks |
 |---|---|---|
@@ -291,42 +157,27 @@ Every cc-forge project gets a structured product backlog — not just a list of 
 | 09 Growth | Growth Agent | Post-launch |
 | 10 Operations | CFO + SRE | Post-launch |
 
-**Backlog item format:**
+Each item is a single canonical format (parsed by *one* shared parser — Argus, the dashboard, and the write path all agree on what a valid item is):
+
 ```markdown
 ### [SEC-003] All webhook endpoints verify request signatures
-
-**Outcome:** No webhook can be spoofed by an external actor
-**Standard:** OWASP ASVS 4.0 — V9.2.1
-**Owner:** Security Auditor
-**Blocks:** Stage 09 DEPLOY
-**Applicability:** Stack: Stripe, Clerk
-**Status:** not-started | in-progress | done | not-applicable
-**Evidence:** [commit / file:line / doc link]
+- Outcome: No webhook can be spoofed by an external actor
+- Standard: OWASP ASVS 4.0 — V9.2.1
+- Phase: 1
+- Status: not-started
+- Owner: Security Auditor
+- Evidence: [commit / file:line / doc link]
 ```
 
-Every item references the standard it comes from. Override decisions go into `DECISIONS.md`. Accepted risks go into `RISKS.md`. Nothing is silent.
+Every item references the standard it comes from. Overrides go to `DECISIONS.md`; accepted risks go to `RISKS.md`. **Nothing is silent.** Launch is blocked until domains 01–08 are 100% (done or not-applicable with a decision record).
 
-**Methodology:** outcome-oriented items (JTBD), Kanban flow states, single Product Owner accountability. See `standards/prompt-standards.md` for the full standards map.
+**Standards backing the backlog:** OWASP Top 10 / ASVS · Google SRE Book · DORA · WCAG 2.1 AA · GDPR · Pirate Metrics (AARRR) · SOLID · JTBD. See `standards/` for the full set.
 
-## Standards referenced
+---
 
-cc-forge backlog items are grounded in established industry standards.
+## The opinionated stack
 
-| Domain | Standards |
-|---|---|
-| Security | OWASP Top 10 · OWASP ASVS 4.0 · NIST CSF |
-| Reliability | Google SRE Book · DORA metrics · AWS Well-Architected |
-| Design | WCAG 2.1 AA · Nielsen's 10 Heuristics · Core Web Vitals |
-| Compliance | GDPR Articles · CCPA · ePrivacy Directive |
-| Growth | Pirate Metrics (AARRR) · Google HEART Framework |
-| Operations | FinOps Foundation principles |
-| Development | Google Engineering Practices · SOLID · TypeScript Strict |
-| Product | JTBD Framework · Google HEART |
-| Launch | cc-forge opinionated standard |
-
-## The stack
-
-Hermes is opinionated about services so you don't have to decide:
+cc-forge picks services so you don't have to. The onboarding agent adapts if you prefer your own.
 
 | Layer | Choice | Why |
 |---|---|---|
@@ -335,218 +186,82 @@ Hermes is opinionated about services so you don't have to decide:
 | Hosting | Railway | One-click deploy, no DevOps overhead |
 | DNS / CDN | Cloudflare | Free, fast, DDoS protection |
 | Error tracking | Sentry | Free tier, Railway plugin |
-| Uptime | UptimeRobot | Free, reliable |
-| Domain | Namecheap | Agent can check availability and suggest names |
-| DB | Railway Postgres | Co-located, automatic backups |
-
-The onboarding agent asks about your stack. If you want to deviate from defaults, it adapts. If you don't have a preference, it configures everything above automatically.
+| Database | Railway Postgres | Co-located, automatic backups |
 
 ---
 
-## Token rules (the golden 12)
+## Token discipline (the short version)
 
-Token efficiency is not optional — it determines how long Claude Code stays useful in a session before hitting limits. These 12 rules are enforced by Hermes across every session:
+Token efficiency determines how long a Claude Code session stays useful. cc-forge enforces a handful of rules — the full 12 are in **[CHEATSHEET.md](./CHEATSHEET.md)**:
 
-1. **CLAUDE.md is your standing orders** — 300–600 tokens, no task state, no docs
-2. **`/context` is your memory profiler** — know what's in your window
-3. **`/compact` proactively** — run at end of each phase, not when degrading
-4. **`/commands` for repeated sequences** — deterministic beats probabilistic
-5. **Reasoning mode off for simple tasks** — renaming a variable needs no deep thought
-6. **`/btw` for parallel thoughts** — never interrupt the main task thread
-7. **Right model for the job** — Opus for hard planning, Sonnet for daily build, Haiku for simple queries
-8. **`@file` references over paste** — never paste entire files into chat
-9. **Specific prompts over lazy prompts** — name the file, the bug, the expected outcome
-10. **MCPs are not Pokémon** — every connected MCP loads into context; only connect what you need
-11. **New task = new session** — genuinely unrelated work deserves a fresh context
-12. **Vertical slices, not horizontal phases** — build end-to-end features, not DB-then-API-then-UI layers
-
----
-
-## What's inside
-
-**The cc-forge repo (source):**
-```
-cc-forge/
-├── README.md · HERMES.md · CHEATSHEET.md · INSTALL.md · CONTRIBUTING.md · LICENSE
-├── hermes/
-│   ├── init.md · adopt.md · backlog-init.md · log.md
-│   └── commands/
-│       ├── status.md · next.md · gate-review.md · deploy.md
-│       ├── report.md · update.md
-├── personas/          ← 13 expert persona definitions
-├── standards/         ← 8 standards files
-├── stages/            ← 11 stage agents (01-idea → 11-iterate)
-├── backlog/           ← 10 domain catalogues + master.md
-├── docs-templates/    ← PRD, ARCHITECTURE, RUNBOOK, INCIDENT, MONITORING, DECISIONS, RISKS
-├── session-lifecycle/ ← session-start, session-end, phase-gates
-└── scripts/
-    ├── hermes-install.sh   ← one-time global install
-    └── hermes-init.sh      ← per-project scaffolding
-```
-
-**What gets created in your project (after init or adopt):**
-```
-your-project/
-├── .cc-forge/
-│   ├── state.json          ← project stage and stack (filled by /hermes-init)
-│   ├── personas/           ← persona definitions copied from cc-forge
-│   ├── standards/          ← standards copied from cc-forge
-│   ├── catalogue/          ← default backlog catalogue (reference)
-│   ├── backlog/            ← your project's live backlog (10 domains)
-│   └── usage.log           ← automatic session log (committed)
-├── .claude/
-│   └── commands/           ← all /hermes-* commands + /persona-* + /criticalthink
-├── .github/
-│   └── workflows/          ← doc-sync + @claude actions
-├── CLAUDE.md               ← standing orders (filled by /hermes-init)
-├── PRD.md · ARCHITECTURE.md · DECISIONS.md · RISKS.md · ENV.md
-└── .env.example
-```
-│   ├── 02-spec/
-│   ├── 03-plan/
-│   ├── 04-design/
-│   ├── 05-build/
-│   ├── 06-auth/
-│   ├── 07-billing/
-│   ├── 08-review/
-│   ├── 09-deploy/
-│   ├── 10-monitor/
-│   └── 11-iterate/
-├── docs-templates/
-│   ├── PRD.md
-│   ├── ARCHITECTURE.md
-│   ├── DECISIONS.md             ← decision log (upgraded to first-class)
-│   ├── RISKS.md                 ← risk register (new)
-│   ├── RUNBOOK.md
-│   ├── INCIDENT.md
-│   └── MONITORING.md
-├── backlog/                     ← product backlog catalogue (new)
-│   ├── master.md                ← overall % completion view
-│   ├── 01-product.md
-│   ├── 02-development.md
-│   ├── 03-security.md
-│   ├── 04-reliability.md
-│   ├── 05-design.md
-│   ├── 06-integrations.md
-│   ├── 07-compliance.md
-│   ├── 08-launch.md
-│   ├── 09-growth.md
-│   └── 10-operations.md
-├── session-lifecycle/
-│   ├── session-start.md
-│   ├── phase-gates.md
-│   └── session-end.md
-└── scripts/
-    ├── hermes-install.sh
-    └── hermes-init.sh
-```
+- `CLAUDE.md` is standing orders — 300–600 tokens, no task state, no docs.
+- Right model for the job: Opus for hard planning, Sonnet for daily build, Haiku for simple lookups.
+- `/compact` proactively at the end of each phase, not when Claude starts forgetting.
+- Vertical slices (one feature end-to-end), not horizontal layers.
+- New, unrelated task = new session.
 
 ---
 
 ## Getting started
 
-**Full installation guide: [INSTALL.md](./INSTALL.md)**
+**Full guide: [INSTALL.md](./INSTALL.md).** The short version:
 
-The short version:
+**Prerequisites:** [Claude Code](https://claude.ai/code) (Pro or Max), Node.js 20+, Git.
 
-### Prerequisites
-- [Claude Code](https://claude.ai/code) (Pro or Max plan)
-- Node.js 20+
-- Git
-
-### 1. Clone cc-forge
 ```bash
-cd ~
-git clone https://github.com/A-Director/cc-forge.git
+# 1. Clone cc-forge somewhere permanent
+git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
 ```
 
-### 2. Install the cc-forge plugin (one-time, in Claude Code)
-
-cc-forge ships as a single-plugin Claude Code marketplace. Add the
-marketplace, then install the plugin:
-
 ```
+# 2. Install the plugin (inside Claude Code)
 /plugin marketplace add ~/cc-forge
 /plugin install cc-forge@cc-forge
 ```
 
-The plugin system handles command installation, hook registration
-(SessionStart, Stop, PreCompact, UserPromptSubmit), and version management.
-There is no separate global-install shell step — the old
-`scripts/hermes-install.sh` is now a thin redirect to `/plugin install`.
+The plugin system handles command installation, hook registration (SessionStart, Stop, PreCompact, UserPromptSubmit), and version management.
 
-**Verify the install:**
-```
-/hermes-argus
-```
-
-If Argus reports Layer 1 failures, the plugin isn't reachable —
-check `${CLAUDE_PLUGIN_ROOT}` is set and `/plugin list` shows
-`cc-forge@cc-forge` as enabled.
-
-**Note for Claude Code CLI v2.1.x and earlier:** there's an upstream bug
-([#17832](https://github.com/anthropics/claude-code/issues/17832)) where
-directory-marketplace plugins install but don't auto-add to
-`settings.json` `enabledPlugins`. If `/plugin list` shows cc-forge as
-*disabled* immediately after install, manually edit `~/.claude/settings.json`:
-
-```json
-"enabledPlugins": {
-  "cc-forge@cc-forge": true
-}
-```
-
-Recent CLI versions auto-enable correctly; verified clean on v2.1.161.
-
-### 3. Bootstrap your project
 ```bash
+# 3. Bootstrap your project (idempotent — safe to re-run)
 cd ~/your-project
 bash ~/cc-forge/scripts/hermes-bootstrap.sh
 ```
 
-Creates `.cc-forge/state.json`, `.cc-forge/usage.log`, `status/` directory,
-and updates `.gitignore` for cc-forge artifacts. Idempotent — safe to re-run.
-
-Then open Claude Code and run:
 ```
-/plugin install claude-mem
-/plugin install superpowers
-```
-Restart Claude Code after installing plugins.
-
-### 3. Set up your project
-
-**New project:**
-```bash
-mkdir my-project && cd my-project && git init
-bash ~/cc-forge/scripts/hermes-init.sh
-claude
-# then in Claude Code:
-/hermes-init
+# 4. Onboard, then verify
+/hermes-init       # (new project)  — or:  /hermes-adopt  (existing)
+/hermes-argus      # verify the install: Layer 1 + Layer 2 should be HEALTHY
 ```
 
-This copies persona definitions, standards, and commands into your project automatically.
+Keep cc-forge current anytime with `/hermes-update` — it pulls the latest personas, standards, and commands, and never touches your backlog, `CLAUDE.md`, decisions, or risks.
 
-**Existing project:**
-```bash
-cd your-existing-project
-bash ~/cc-forge/scripts/hermes-init.sh  # scaffolds .cc-forge/ structure
-claude
-# then in Claude Code:
-/hermes-adopt
+---
+
+## What's inside
+
+```
+cc-forge/                       (the framework source)
+├── .claude-plugin/             ← plugin + marketplace manifests
+├── commands/                   ← the /hermes-* command set
+├── personas/                   ← 13 expert persona definitions (incl. argus.md)
+├── hooks/                      ← SessionStart / Stop / PreCompact / UserPromptSubmit
+├── scripts/                    ← hermes-argus.py, hermes-dashboard.py, installers, _hermes_backlog.py (canonical parser)
+├── catalogue/                  ← the 10-domain backlog catalogue + master.md
+├── standards/                  ← coding, security, api, git, testing, a11y, token rules
+├── session-lifecycle/          ← lifecycle + phase-gate definitions
+├── doc-templates/ docs-templates/  ← PRD, ARCHITECTURE, RUNBOOK, INCIDENT, MONITORING, PHASES
+└── DESIGN.md · README.md · INSTALL.md · CHEATSHEET.md
 ```
 
-### 4. Keeping cc-forge updated
+After `/hermes-init` or `/hermes-adopt`, your project gains:
 
-When cc-forge releases updates, pull them into any project:
-```bash
-# Inside Claude Code in your project:
-/hermes-update
 ```
-
-Pulls latest personas, standards, and commands from cc-forge — never touches your project-specific files (backlog, CLAUDE.md, decisions, risks).
-
-> See [INSTALL.md](./INSTALL.md) for troubleshooting, Windows setup, and full details.
+your-project/
+├── .cc-forge/        ← state.json · usage.log · backlog/ · intake-log.md · cache.json
+├── status/           ← dashboard.html (gitignored) · argus-last-run.md (committed)
+├── CLAUDE.md         ← standing orders
+└── PRD.md · DECISIONS.md · RISKS.md · .env.example
+```
 
 ---
 
@@ -554,112 +269,35 @@ Pulls latest personas, standards, and commands from cc-forge — never touches y
 
 Most SDLC frameworks are written for teams with dedicated DevOps, QA, security, and product functions. Solo developers and small teams don't have those people — but they need those disciplines.
 
-Hermes gives you the disciplines without the headcount.
+cc-forge gives you the disciplines without the headcount. Every persona, every standard, every gate exists because a real product has failed without it. The QA persona catches the edge case you'd ship. The Security Auditor finds the auth bug before your users do. The CFO flags the Railway bill before it surprises you. Argus catches the framework drift before it quietly corrupts the work.
 
-Every persona, every standard, every gate exists because a real product has failed without it. The QA persona catches edge cases you'd ship. The Security Auditor finds the auth bug before your users do. The CFO flags the Railway bill before it surprises you. The SRE engineer writes the runbook before 3am when you need it.
-
-You're still the one steering. Hermes just makes sure the right expert is in the room at the right time.
+You're still the one steering. cc-forge just makes sure the right expert is in the room at the right time — and that nothing slips through unnoticed.
 
 ---
 
 ## Built on the shoulders of giants
 
-cc-forge is an orchestration framework, not an island. It works because of
-the tools it sits on top of. Full credit where it's due:
+cc-forge is an orchestration framework, not an island — it works because of the tools beneath it.
 
-### Open source tools
+- **[Claude Code](https://claude.ai/code)** — the CLI at the heart of everything; cc-forge is built entirely on its agent, plugin, MCP, and command capabilities.
+- **[Taskmaster](https://github.com/eyaltoledano/claude-task-master)** by Eyal Toledano — the task-management backbone; parses your PRD into a dependency-aware task list.
+- **[claude-mem](https://github.com/thedotmack/claude-mem)** — session memory across Claude Code sessions.
+- **[Context7](https://github.com/upstash/context7)** by Upstash — live, version-specific library docs injected into sessions.
+- **[Superpowers](https://github.com/obra/superpowers-dev)** — agentic workflow skills (brainstorm, TDD, subagent execution) powering stage 05 BUILD.
+- **[slash-criticalthink](https://github.com/abagames/slash-criticalthink)** by abagames — forces Claude to score confidence and expose assumptions.
 
-**[Taskmaster](https://github.com/eyaltoledano/claude-task-master)** by Eyal Toledano
-The task management backbone of cc-forge. Taskmaster parses your PRD into a
-dependency-aware task list and keeps Claude Code oriented across sessions.
-cc-forge would not have a persistent planning layer without it.
-
-**[claude-mem](https://github.com/thedotmack/claude-mem)**
-Session memory for Claude Code. Captures what happened in each session,
-compresses it intelligently, and injects relevant context into future sessions.
-Solves the "Claude forgot what we built last week" problem.
-
-**[Context7](https://github.com/upstash/context7)** by Upstash
-Injects live, version-specific library documentation directly into Claude Code
-sessions. Stops Claude from hallucinating outdated APIs. Used every time you
-touch a library.
-
-**[Superpowers](https://github.com/obra/superpowers-dev)**
-Structured agentic workflow skills for Claude Code — brainstorming, TDD,
-subagent execution, and code review. Powers the stage 05 BUILD workflow.
-
-**[slash-criticalthink](https://github.com/abagames/slash-criticalthink)** by abagames
-A `/criticalthink` command that forces Claude to score its own confidence,
-expose hidden assumptions, and flag risks in any response. Used throughout
-cc-forge whenever a decision needs scrutiny.
-
-### Anthropic products and features
-
-**[Claude Code](https://claude.ai/code)** — the CLI at the heart of everything.
-cc-forge is a framework built entirely around Claude Code's agent, plugin,
-MCP, and command capabilities.
-
-**[Claude Code Action](https://github.com/anthropics/claude-code-action)** —
-the GitHub Action that auto-syncs docs on PR merge and enables `@claude`
-in issues and PRs. Powers the documentation stewardship in cc-forge.
-
-**Claude Code subagents** — cc-forge uses Claude Code's native subagent
-capabilities for persona gate reviews. Each persona runs as an independent
-Claude Code subagent with its own clean context window.
-
-### Standards and inspiration
-
-**Token rules** — informed by the community post
-*"10 Tips to Stop Burning Your Tokens in Claude Code"* by Habib Mohammed,
-and Boris Cherny's (creator of Claude Code) public guidance on session management.
-
-**Prompt standards** — sourced directly from Anthropic's official
-[Claude 4 Prompting Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices)
-documentation, distilled for the cc-forge context.
+If you authored any of the above and something is misattributed, open an Issue — happy to fix it immediately.
 
 ---
-
-If you're the author of any of the above and something is incorrectly
-attributed or described, please open an Issue — happy to fix it immediately.
 
 ## License
 
-Open core. Core framework is MIT licensed. Contributions welcome.
-
-Premium components (pre-built Clerk + Stripe agents, full persona library, hermes status TUI) available via [Polar.sh](https://polar.sh) for a small monthly fee that supports ongoing development.
-
----
+Open core. The core framework is **MIT** licensed; contributions welcome. Premium components (pre-built Clerk + Stripe agents, the full persona library, the status TUI) are available via [Polar.sh](https://polar.sh) to support ongoing development.
 
 ## Security
 
-cc-forge is a collection of markdown instruction files. It contains no
-executable code beyond two shell scripts for installation that install
-well-known open source packages via npm.
-
-**What cc-forge does NOT do:**
-- Send your code to any cc-forge servers (there are none)
-- Store any project data externally
-- Execute automatically without your input
-- Make any network calls beyond npm package installation
-
-**What happens to your code:**
-When Hermes reads your codebase during `hermes adopt` or any session,
-that code is processed by Claude Code via Anthropic's API — the same
-as any standard Claude Code session. Review
-[Anthropic's privacy policy](https://www.anthropic.com/privacy) if
-this is a concern for your project.
-
-**Before running on sensitive projects:**
-- Confirm `.env` and `.env.local` are in `.gitignore`
-- Confirm no secrets are hardcoded in source files
-- Run `npm audit` to check for vulnerable dependencies
-
-**Reporting a security issue:**
-If you find a security vulnerability in cc-forge itself, please open
-a GitHub Issue marked `[SECURITY]` rather than a public discussion.
+cc-forge is a collection of markdown instruction files plus a few Python/shell utilities. It sends your code to no cc-forge servers (there are none), stores nothing externally, and makes no network calls beyond npm package installation. When Hermes reads your code, that happens through Claude Code via Anthropic's API — the same as any Claude Code session. Before running on sensitive projects, confirm `.env*` is gitignored and run `npm audit`. Report security issues via a GitHub Issue marked `[SECURITY]`.
 
 ## Contributing
 
-Issues, persona improvements, stage agents, and MCP integrations welcome. See `CONTRIBUTING.md`.
-
-Join the conversation: [GitHub Discussions](https://github.com/yourusername/hermes-sdlc/discussions)
+Issues, persona improvements, and integrations welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md). Join the conversation in [GitHub Discussions](https://github.com/A-Director/cc-forge/discussions).

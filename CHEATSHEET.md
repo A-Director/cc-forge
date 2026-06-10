@@ -3,6 +3,8 @@
 > What to run and when. Keep this open in a tab.
 > First time? See [INSTALL.md](./INSTALL.md) for setup instructions.
 
+**Two pillars:** **Hermes** directs the session (orchestrates, speaks last with one next step); **Argus** watches the framework (deterministic self-check, auto-fires at session close, flags drift). Hermes directs, Argus watches, personas judge your project at gates.
+
 ---
 
 ## Installation (first time only)
@@ -42,8 +44,6 @@ claude                    # open Claude Code
 # Pulls latest personas, standards, commands from cc-forge
 # Never touches: backlog, CLAUDE.md, state.json, decisions, risks
 ```
-
----
 
 ---
 
@@ -92,7 +92,7 @@ cc-forge runs **two** lifecycles. **SDLC** (the 11 stages: idea → iterate) is 
 
 | Lifecycle | Gate command | Frequency |
 |---|---|---|
-| SDLC (within phase) | `/hermes gate review` | Many per phase — features, deploys, design changes |
+| SDLC (within phase) | `/hermes-gate-review` | Many per phase — features, deploys, design changes |
 | PDLC (between phases) | `/hermes-phase-gate` | 3–5 per project total |
 
 Every backlog item carries a `**Phase:**` field — the earliest phase a typical SaaS project needs the item done.
@@ -103,14 +103,12 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 
 | When | Command | What it does |
 |---|---|---|
-| Feature merged to main | `/hermes-gate review` | Triggers QA + Security (if auth/data touched) |
-| Design approved | `/hermes-gate review` | Triggers CTO + UX Expert |
-| Before any deploy | `/hermes-gate review` | Triggers CTO + SRE + Security Auditor |
+| New requirement/bug/change to triage | `/hermes-intake` | Triage before it becomes work-in-flight; logged for reconciliation |
+| Feature merged to main | `/hermes-gate-review` | Triggers QA + Security (if auth/data touched) |
+| Design approved | `/hermes-gate-review` | Triggers CTO + UX Expert |
+| Before any deploy | `/hermes-gate-review` | Triggers CTO + SRE + Security Auditor |
 | Advancing PDLC phase (MVP→Beta etc.) | `/hermes-phase-gate` | Full-panel review, bumps state.json current_phase, dedicated commit |
-| Something feels off | `/hermes-argus` | Compliance monitor — names every deviation |
-| Before release / sprint end | `/hermes-clean` | Dead code report with confidence levels |
-| Tech debt feeling heavy | `/hermes-quality` | Complexity, duplication, lint debt backlog |
-| Evaluating a library | `/hermes-research` | Options analysis + clear recommendation + ADR |
+| Framework self-check on demand | `/hermes-argus` | Deterministic — names every deviation (also auto-fires at session close) |
 
 **Gate outcomes:**
 - `PASS` — proceed
@@ -126,7 +124,6 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 | When | Command | What it does |
 |---|---|---|
 | Ready to ship | `/hermes-deploy` | Pre-flight checks → gate verification → Railway push |
-| Every Monday | `/hermes-health` | App health, Sentry errors, uptime, Railway metrics |
 | Review session | `/hermes-report` | Full usage report — paste into Claude.ai to review together |
 | Need a one-glance view | `/hermes-dashboard` | Generate `dashboard.html` — backlog, risks, decisions, framework cost |
 | cc-forge updated | `/hermes-update` | Pull latest personas, standards, commands from cc-forge into this project |
@@ -151,9 +148,9 @@ Every backlog item carries a `**Phase:**` field — the earliest phase a typical
 | Market analyst | Sonnet | Monthly · at pivots |
 | Growth agent | Sonnet | Post-launch · monthly |
 | Research agent | Opus | On demand · technology decisions |
-| **Argus** | **Opus** | **Weekly · before every deploy** |
+| **Argus** | **deterministic** | **Auto-fires at session close · before deploy · on demand** |
 
-Personas run as independent subagents with clean context windows — they don't see each other's findings, which prevents bias.
+Personas run as independent subagents with clean context windows — they don't see each other's findings, which prevents bias. Argus is the exception: it's a deterministic script (not a judging persona) that watches the *framework*, never your code.
 
 ---
 
@@ -218,7 +215,7 @@ New task           Genuinely unrelated work = new session. /clear and restart.
 | When | Command | What it does |
 |---|---|---|
 | After init or adopt | `/hermes-backlog-init` | Customises backlog for your stack, sets DoD per domain |
-| Check launch readiness | `/hermes-backlog` | Shows % completion across all 10 domains |
+| Check launch readiness | `/hermes-status` | Shows % completion across all 10 domains |
 | After any gate review | Persona updates domain file | Each persona ticks off their items with evidence |
 | Override an item | Mark `not-applicable` | Triggers DECISIONS.md + RISKS.md entries automatically |
 
@@ -253,11 +250,11 @@ New task           Genuinely unrelated work = new session. /clear and restart.
 
 ---
 
-
+## Session flow (at a glance)
 
 ```
 SESSION START
-  /hermes-status          ← orient
+  /hermes-status          ← orient (Hermes; surfaces any Argus-staleness flag)
   /hermes-next            ← get the task
   select right model      ← Opus / Sonnet / Haiku
 
@@ -268,11 +265,12 @@ DURING BUILD
   /context if slow        ← diagnose bloat
 
 FEATURE COMPLETE
-  /hermes-gate review     ← QA + Security
+  /hermes-gate-review     ← QA + Security
   task-master done [id]   ← mark complete
 
 SESSION END
   /compact                ← always
+  (Argus auto-fires)      ← framework self-check → status/argus-last-run.md
   note doc updates needed ← ARCHITECTURE.md, API.md, ENV.md etc.
 ```
 
