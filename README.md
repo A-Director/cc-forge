@@ -249,7 +249,8 @@ cc-forge/                       (the framework source)
 ├── catalogue/                  ← the 10-domain backlog catalogue + master.md
 ├── standards/                  ← coding, security, api, git, testing, a11y, token rules
 ├── session-lifecycle/          ← lifecycle + phase-gate definitions
-├── doc-templates/ docs-templates/  ← PRD, ARCHITECTURE, RUNBOOK, INCIDENT, MONITORING, PHASES
+├── stages/                     ← the 11 stage agents (01-idea → 11-iterate)
+├── docs-templates/             ← PRD, ARCHITECTURE, RUNBOOK, INCIDENT, MONITORING, PHASES
 └── DESIGN.md · README.md · INSTALL.md · CHEATSHEET.md
 ```
 

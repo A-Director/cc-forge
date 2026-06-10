@@ -16,15 +16,9 @@ on screen — these files are the answer.
 - **`session-closures/`** — End-of-session Hermes summaries. Useful
   for seeing the closing-banner pattern in real use, with real
   task IDs, real backlog deltas, real "next session" pointers.
-- **`gate-reviews/`** — Full persona gate review outputs. CTO,
-  Security, QA, UX, SRE, etc. Captures show what each persona
-  actually emits — both PASS and BLOCK shapes.
-- **`status-snapshots/`** — `/hermes-status` outputs from real
-  projects mid-sprint. Useful to calibrate what "in-progress"
-  status actually looks like.
-- **`phase-transitions/`** — `/hermes-phase-gate` outputs.
-  Full-panel reviews advancing MVP → Beta, Beta → Pilot, etc.
-  Rare event — small sample by design.
+
+More capture categories (gate reviews, status snapshots, phase
+transitions) will be added here as real sessions produce them.
 
 ## Contributing a capture
 
