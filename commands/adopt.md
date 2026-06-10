@@ -4,9 +4,11 @@ description: >
   Onboards an existing codebase into the Hermes SDLC. Reads the entire repo,
   infers stack and current state, produces a gap report, generates CLAUDE.md,
   and populates Taskmaster with tasks derived from the current project state.
-  Run with /hermes adopt from the project root.
+  Run with /hermes-adopt from the project root.
 model: claude-opus-4-6
 allowed-tools: Read, Write, Bash, Glob, Grep, Task, TodoWrite, WebSearch
+context: fork
+invocation: user
 ---
 
 # Hermes Adopt — Existing Project Onboarding
@@ -305,7 +307,7 @@ Summarize what was done and what comes next. Be brief.
   Stage:        [N] [NAME]
   First task:  [task title]
 
-  Recommended next: /hermes gate review
+  Recommended next: /hermes-gate-review
   (You're at stage [N] — run a baseline
   review before adding new features.)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

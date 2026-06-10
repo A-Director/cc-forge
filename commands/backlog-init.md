@@ -10,6 +10,7 @@ description: >
 model: claude-sonnet-4-6
 effort: high
 allowed-tools: Read, Write, Bash, Glob
+invocation: user
 ---
 
 # Hermes Backlog Init
@@ -282,8 +283,8 @@ After completing all phases, print:
   Standards preservation: [N]/[N] items carry Standard lines (verified)
   Standards-strip events: 0   (any non-zero = init refused to complete)
 
-  Next: run /hermes-backlog to see completion %
-        run /hermes-gate review to begin reviews
+  Next: run /hermes-status to see completion %
+        run /hermes-gate-review to begin reviews
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

@@ -4,6 +4,8 @@ description: >
   Surface the single highest-priority unblocked task from Taskmaster
   with full context. Read-only — never modifies project state.
 allowed-tools: Read, Bash
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Next
@@ -35,7 +37,7 @@ Output:
   Tags:           [feat / fix / auth / billing / etc.]
 
   When done, run:
-  /hermes gate review  ← [if gate is due after this task]
+  /hermes-gate-review  ← [if gate is due after this task]
   task-master done [id]  ← mark complete
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -78,7 +80,7 @@ Expert gate review as the step that comes BEFORE the task:
   Design doc found: [path]
 
   Required step before writing code:
-  /hermes gate review  ← UX Expert (design review)
+  /hermes-gate-review  ← UX Expert (design review)
 
   Once UX Expert review is complete (PASS or CONDITIONAL),
   proceed with task #[id].
@@ -98,7 +100,7 @@ before merging to main:
   [...standard task surface block...]
 
   Post-build gate (required before merge to main):
-  /hermes gate review  ← UX Expert
+  /hermes-gate-review  ← UX Expert
   No design doc found in docs/ — UX reviews the built UI instead.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

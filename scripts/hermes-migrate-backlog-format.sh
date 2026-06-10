@@ -254,6 +254,32 @@ $(echo "$dirty" | sed 's/^/      /')
 "
 fi
 
+# ─── SILENT-EMPTY gate (the CLARK lesson) ───
+# The (field, value) comparison above passes VACUOUSLY when both sides are
+# empty — a table-form file the transform doesn't touch yields 0 pairs pre AND
+# post, so "FIDELITY PASSED on 0/0" reports success for a no-op. Defend against
+# it at the §3.2 contract level: ask the canonical parser whether each
+# post-transform file is item-bearing-but-parses-to-zero. Exit 2 ⇒ halt.
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+CANON_PARSER="${SCRIPT_DIR}/_hermes_backlog.py"
+silent_empty=""
+if [ -f "$CANON_PARSER" ] && command -v python3 >/dev/null 2>&1; then
+  for f in "${catalogue_files[@]}"; do
+    base=$(basename "$f")
+    if ! err=$(python3 "$CANON_PARSER" --assert-nonempty "$post_dir/$base" 2>&1 >/dev/null); then
+      silent_empty="${silent_empty}      ${base}: ${err}
+"
+    fi
+  done
+fi
+if [ -n "$silent_empty" ]; then
+  fidelity_failed=1
+  report="$report
+  ✗ FIDELITY FAILURE — item-bearing file parsed to ZERO items (silent-empty;
+    transform was a no-op on non-§3.2 form — recommend rollback):
+${silent_empty}"
+fi
+
 if [ "$fidelity_failed" -eq 0 ]; then
   report="$report
   ✓ FIDELITY PASSED — every field and value carried through unchanged.

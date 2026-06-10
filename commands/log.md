@@ -8,6 +8,7 @@ description: >
 model: claude-haiku-4-5
 effort: low
 allowed-tools: Read, Write, Bash
+invocation: internal
 ---
 
 # Hermes Log
@@ -246,7 +247,7 @@ truth for entry types.
   "stage": 5,
   "data": {
     "duration_minutes": 47,
-    "commands_run": ["/hermes-status", "/hermes-next", "/hermes-gate review"],
+    "commands_run": ["/hermes-status", "/hermes-next", "/hermes-gate-review"],
     "tasks_completed": [12, 13],
     "gates_run": 1,
     "personas_invoked": ["qa-engineer"],
@@ -288,12 +289,10 @@ TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 | Session opens | `session_start` | Immediately |
 | `/hermes-status` | `command` | After running |
 | `/hermes-next` | `command` | After running |
-| `/hermes-gate review` | `gate` + `persona` per persona | After each persona |
+| `/hermes-gate-review` | `gate` + `persona` per persona | After each persona |
 | `/hermes-backlog-init` | `backlog` per domain + `standards_strip_detected` per offender | After init / verification failure |
 | `/hermes-phase-gate` | `phase_transition` | After phase advances |
 | Persona gate-review seeding orphan tasks | `orphan_task` + `missing_coverage` | After each persona |
 | `/hermes-argus` | `drift` per finding | After running |
 | `/hermes-deploy` | `command` | After running |
-| `/hermes-clean` | `command` | After running |
-| `/hermes-quality` | `command` | After running |
 | Session ends (`/compact`) | `session_end` | On compact/close |

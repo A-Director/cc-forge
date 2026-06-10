@@ -9,6 +9,7 @@ description: >
 model: claude-sonnet-4-6
 effort: high
 allowed-tools: Read, Bash
+invocation: user
 ---
 
 # Hermes Report
@@ -117,12 +118,10 @@ COMMAND USAGE
   ─────────────────────────────────────────────
   /hermes-status      [N] uses
   /hermes-next        [N] uses
-  /hermes-gate review [N] uses
+  /hermes-gate-review [N] uses
   /hermes-argus       [N] uses
   /hermes-deploy      [N] uses
-  /hermes-clean       [N] uses
-  /hermes-quality     [N] uses
-  /hermes-backlog     [N] uses
+  /hermes-backlog-init [N] uses
   /criticalthink      [N] uses
 
   Never used: [list commands with 0 uses]

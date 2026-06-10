@@ -28,6 +28,17 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Canonical §3.2 backlog parser (Session F) — the dashboard no longer rolls
+# its own regex (F9). Importing it tightens the dashboard to the strict form
+# and gives it the same fail-loud guard as Argus and the migration.
+_THIS_DIR = Path(__file__).resolve().parent
+if str(_THIS_DIR) not in sys.path:
+    sys.path.insert(0, str(_THIS_DIR))
+from _hermes_backlog import (  # noqa: E402
+    FIELD_PATTERN as BACKLOG_FIELD_PATTERN,
+    is_item_bearing, BacklogParseError,
+)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Constants
@@ -216,12 +227,11 @@ def parse_backlog_item(block: str) -> dict[str, Any]:
         if idm:
             item["id"] = idm.group(1).strip()
             item["title"] = idm.group(2).strip()
-    # Canonical list-item form per spec §3.2 (post-Session-0). Lines look
-    # like "- Field: value". Note: this is line-anchored on the stripped
-    # form; whitespace before "- " is acceptable.
-    field_pat = re.compile(r"^-\s+([A-Za-z][A-Za-z-]*):\s*(.+)$")
+    # Canonical §3.2 list-item form, shared with Argus/classifier via
+    # _hermes_backlog (Session F, F9). Strict: "- Field: value" with a
+    # Capitalized field name — no longer the dashboard's old looser regex.
     for ln in lines[1:]:
-        fm = field_pat.match(ln.strip())
+        fm = BACKLOG_FIELD_PATTERN.match(ln.strip())
         if not fm:
             continue
         key = fm.group(1).lower()
@@ -280,6 +290,15 @@ def parse_backlog_domain(project_root: Path, dn: str) -> dict[str, Any]:
                 it = parse_backlog_item(ch)
                 if it["id"]:
                     items.append(it)
+
+    # Fail-loud (Session F): a non-empty / item-bearing domain file that
+    # yields zero items is the silent-empty class — the dashboard must NOT
+    # render a vacuous 0/0. Raise; main() turns this into a non-zero exit.
+    if raw and not items and is_item_bearing(raw):
+        raise BacklogParseError(
+            f"{used.relative_to(project_root) if used else dn}: item-bearing "
+            f"file parsed to ZERO backlog items — table-form or bold-form, not "
+            f"§3.2. Refusing to render a vacuous 0/0 dashboard.")
 
     # Compute counts (excluding not-applicable from completion %)
     applicable = [i for i in items if i["status"] != "not-applicable"]
@@ -1851,7 +1870,11 @@ def main(argv: list[str] | None = None) -> int:
     current_phase = state.get("current_phase") or master.get("phase") or 1
     phase = parse_phases_md(project_root, current_phase)
 
-    domains = [parse_backlog_domain(project_root, dn) for dn in DOMAIN_NUMBERS]
+    try:
+        domains = [parse_backlog_domain(project_root, dn) for dn in DOMAIN_NUMBERS]
+    except BacklogParseError as e:
+        print(f"dashboard: REFUSING to generate — {e}", file=sys.stderr)
+        return 2
     overall = compute_overall_pct(domains)
     exit_progress = compute_phase_exit_progress(phase, domains)
 

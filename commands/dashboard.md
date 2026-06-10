@@ -8,6 +8,8 @@ description: >
   checks, or before major reviews.
 allowed-tools: Read, Write, Bash
 context: fork
+model: claude-sonnet-4-6
+invocation: user
 ---
 
 # Hermes Dashboard

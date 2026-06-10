@@ -344,11 +344,18 @@ fi
 # ── Write .gitignore additions ───────────────────
 if [ -f ".gitignore" ]; then
   if ! grep -q ".cc-forge/state.json" .gitignore; then
-    echo "" >> .gitignore
-    echo "# cc-forge" >> .gitignore
-    echo ".cc-forge/state.json" >> .gitignore
-    echo "dashboard.html" >> .gitignore
-    echo "# usage.log is intentionally committed — it tracks cc-forge usage" >> .gitignore
+    # Canonical status/ block per DESIGN §4.4 — identical to hermes-bootstrap.sh.
+    {
+      echo ""
+      echo "# cc-forge"
+      echo ".cc-forge/state.json"
+      echo "status/dashboard.html"
+      echo "status/last-open-banner.md"
+      echo "status/last-handoff.md"
+      echo "status/*.png"
+      echo "# (status/argus-last-run.md and other durable finding records stay committed)"
+      echo "# (.cc-forge/usage.log is intentionally committed — it tracks cc-forge usage)"
+    } >> .gitignore
     echo "  ✓ .gitignore updated"
   fi
 else
@@ -365,9 +372,13 @@ out/
 .env.local
 .env.*.local
 
-# cc-forge
+# cc-forge — status/ block per DESIGN §4.4 (identical to hermes-bootstrap.sh)
 .cc-forge/state.json
-dashboard.html
+status/dashboard.html
+status/last-open-banner.md
+status/last-handoff.md
+status/*.png
+# (status/argus-last-run.md and other durable finding records stay committed)
 
 # OS
 .DS_Store
@@ -375,6 +386,8 @@ Thumbs.db
 
 # Logs
 *.log
+# (.cc-forge/usage.log is intentionally committed — it tracks cc-forge usage)
+!.cc-forge/usage.log
 npm-debug.log*
 EOF
   echo "  ✓ .gitignore created"
