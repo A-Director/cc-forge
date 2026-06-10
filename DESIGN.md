@@ -564,7 +564,10 @@ This domain is complete when:
   `cto`, `qa-sme`, `sre-sme`, `ux-sme`, `product-owner`, `legal-sme`, `cfo`,
   `growth-sme`, `ceo`. (`ceo` also owns items in the market-analyst /
   research-agent domains — those personas advise at gates but are not backlog
-  owners.)
+  owners.) **Enforced:** an Owner outside this set is a format violation
+  (`owner_not_recognised`) — surfaced by Argus on read, and retryable/blocked
+  by the write-path validator on write. The set is defined once in
+  `scripts/_hermes_backlog.py` (`VALID_OWNERS`).
 - `Evidence` — where to verify the claim (file, test, ADR, task ID).
   Required.
 
