@@ -1015,8 +1015,9 @@ applied per artifact:
 | `last-handoff.md` | Stop/PreCompact hook | gitignored | regeneratable |
 | `*.png` | dashboard/exports | gitignored | generated images |
 
-The `.gitignore` template the installer writes (every installer must
-write this identical block — `hermes-bootstrap.sh` and `hermes-init.sh`):
+The `.gitignore` template `hermes-bootstrap.sh` writes (the canonical
+project bootstrapper — `hermes-init.sh` is deprecated and now only redirects
+to the plugin + bootstrap path):
 
 ```
 status/dashboard.html
