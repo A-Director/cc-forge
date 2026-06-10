@@ -165,11 +165,11 @@ Each item is a single canonical format (parsed by *one* shared parser — Argus,
 - Standard: OWASP ASVS 4.0 — V9.2.1
 - Phase: 1
 - Status: not-started
-- Owner: Security Auditor
+- Owner: sec
 - Evidence: [commit / file:line / doc link]
 ```
 
-Every item references the standard it comes from. Overrides go to `DECISIONS.md`; accepted risks go to `RISKS.md`. **Nothing is silent.** Launch is blocked until domains 01–08 are 100% (done or not-applicable with a decision record).
+`Owner` is the short persona identifier (`sec`, `cto`, `sre`, `ux`, `po`, `qa`, `legal`) — not the display name — per §3.2. Every item references the standard it comes from. Overrides go to `DECISIONS.md`; accepted risks go to `RISKS.md`. **Nothing is silent.** Launch is gated on the Phase-4 domain bars across 01–08 (see `catalogue/master.md`) — graduated targets, not a flat 100%.
 
 **Standards backing the backlog:** OWASP Top 10 / ASVS · Google SRE Book · DORA · WCAG 2.1 AA · GDPR · Pirate Metrics (AARRR) · SOLID · JTBD. See `standards/` for the full set.
 
@@ -233,7 +233,7 @@ bash ~/cc-forge/scripts/hermes-bootstrap.sh
 /hermes-argus      # verify the install: Layer 1 + Layer 2 should be HEALTHY
 ```
 
-Keep cc-forge current anytime with `/hermes-update` — it pulls the latest personas, standards, and commands, and never touches your backlog, `CLAUDE.md`, decisions, or risks.
+Keep cc-forge current anytime with `/hermes-update` — it pulls the latest personas, standards, and commands, and never touches your backlog, `CLAUDE.md`, `state.json`, decisions, or risks.
 
 ---
 

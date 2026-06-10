@@ -75,12 +75,13 @@ Never skip `/compact` — a healthy session produces a better summary than a deg
 
 ## During build
 
-| When | Command | What it does |
-|---|---|---|
-| Unsure about a decision | `/criticalthink` | Scores confidence, exposes assumptions, flags risks |
-| Side thought mid-session | `/btw` | Parallel channel — doesn't interrupt main task |
-| Session feels slow | `/context` | Shows every item in context window with token counts |
-| Switching to unrelated work | `/clear` | Wipes context, fresh session |
+| When | Command | Provenance | What it does |
+|---|---|---|---|
+| Unsure about a decision | `/criticalthink` | third-party ([slash-criticalthink](https://github.com/abagames/slash-criticalthink), optional) | Scores confidence, exposes assumptions, flags risks |
+| Session feels slow | `/context` | Claude Code built-in | Shows every item in context window with token counts |
+| Switching to unrelated work | `/clear` | Claude Code built-in | Wipes context, fresh session |
+
+Only `/hermes-*` are cc-forge commands. `/context`, `/clear`, and `/compact` are Claude Code built-ins; `/criticalthink` is an optional third-party install (credited in the README).
 
 **Rule:** One task per session where possible. Genuinely unrelated work deserves a fresh context.
 
@@ -233,7 +234,7 @@ New task           Genuinely unrelated work = new session. /clear and restart.
 10 Operations     Support, FinOps, cost tracking (post-launch)
 ```
 
-**Launch is blocked until** domains 01-08 are 100% (done or not-applicable with decision record).
+**Launch gate:** the Phase-4 domain bars across 01–08 must be met (see `catalogue/master.md`) — graduated targets (mostly ≥95%), not a flat 100%. Items are "met" when done or not-applicable with a decision record.
 
 ---
 
@@ -260,9 +261,8 @@ SESSION START
 
 DURING BUILD
   @file refs over paste   ← keep context clean
-  /btw for side thoughts  ← don't interrupt flow
-  /criticalthink on doubt ← challenge assumptions
-  /context if slow        ← diagnose bloat
+  /criticalthink on doubt ← challenge assumptions (third-party, optional)
+  /context if slow        ← diagnose bloat (Claude Code built-in)
 
 FEATURE COMPLETE
   /hermes-gate-review     ← QA + Security
