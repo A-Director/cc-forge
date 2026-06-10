@@ -12,7 +12,7 @@ Two jobs:
 1. **Parse** the strict §3.2 form: `### [ID]` item headers with `- Field: value`
    list lines. One regex pair, shared by every consumer.
 
-2. **Fail loud on the silent-empty class.** During CLARK's migration a parser
+2. **Fail loud on the silent-empty class.** During the pilot project's migration a parser
    hit table-form input, returned zero items from a NON-EMPTY file, and the
    migration reported a vacuous "FIDELITY PASSED on 0/0 pairs" — a no-op that
    nearly passed for success. The rule encoded here: parsing an item-bearing
@@ -70,7 +70,7 @@ VALID_OWNERS = {
 # fail-loud guard to tell an item-bearing file (drift) from a legitimately
 # empty/scaffolding-only one (fine). Catches the forms a non-canonical file
 # takes: canonical headers, the legacy bold form, and table rows that carry an
-# item ID (CLARK's table-form case).
+# item ID (the pilot project's table-form case).
 _BOLD_FIELD = re.compile(r"^\*\*[A-Z][A-Za-z -]*:\*\*")
 _TABLE_ID_ROW = re.compile(r"^\|.*[A-Z]{2,}-[A-Z0-9-]+")
 

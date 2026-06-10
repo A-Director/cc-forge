@@ -17,13 +17,13 @@
 cc-forge is an open-source framework for Claude Code that orchestrates
 software development through a conductor (Hermes), a monitor (Argus),
 and a panel of domain expert personas. After two weeks of active
-dogfooding on CLARK (realitybyclark.com), the framework has accumulated
+dogfooding on a pilot project, the framework has accumulated
 significant features — PDLC phases, standards-grounded backlog with
 persona linkage, a dashboard generator — and has also surfaced a class
 of structural problem that requires deliberate attention before more
 features are added.
 
-The pattern visible in CLARK is this: the framework's design decisions
+The pattern visible in the pilot project is this: the framework's design decisions
 have been made implicitly, in flight, during individual implementation
 sessions. Each session produced a working PR. Each PR landed. But the
 foundations underneath — what files look like, who's responsible for
@@ -39,7 +39,7 @@ The gaps that have been caught so far through dogfooding:
 - **Gap #48** — `/hermes-backlog-init` silently stripped `Standard:`
   references during project customization.
 - **Gap #49** — new requirements bypassed PRD, persona review, and ADR
-  check entirely (the IMP-* discovery in CLARK).
+  check entirely (the IMP-* discovery in the pilot project).
 - **Gap #50** — `/hermes-update` silently corrupted command namespaces
   by stripping the `hermes-` prefix (took two hotfix attempts to
   actually fix).
@@ -52,7 +52,7 @@ The gaps that have been caught so far through dogfooding:
   it depended entirely on the model attending to a CLAUDE.md instruction.
 - **The format fork** — the dashboard parser was written against a
   different backlog schema than `/hermes-backlog-init` produces, so
-  CLARK's first dashboard render showed all zeroes.
+  The pilot project's first dashboard render showed all zeroes.
 
 Each gap is individually fixable. But the *pattern* matters more than
 the individual instances. cc-forge has been documenting behaviors it
@@ -129,7 +129,7 @@ The work to produce this document is itself a recognition that the
 framework's velocity has exceeded its discipline. Sessions A through C
 shipped quickly because each one looked complete at the PR level. The
 integration between pieces was never verified end-to-end against a real
-project until CLARK tried to render a dashboard and found zeroes. The
+project until the pilot project tried to render a dashboard and found zeroes. The
 pause here is the framework re-applying its own discipline standard —
 diagnose, specify, verify — to itself.
 
@@ -191,13 +191,13 @@ user-facing expression of the state the hooks recorded.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES · CLARK · Phase 1.5 · Stage 10 MONITOR
+  HERMES · acme · Phase 1.5 · Stage 10 MONITOR
   Backlog 36/63 · 4 critical risks open
   Next: #13 external uptime monitor
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-The default banner is deliberately minimal. CLARK CC's review noted
+The default banner is deliberately minimal. The pilot review noted
 that the earlier 25-line banner was too heavy — twenty-five lines of
 structured context on every session open (including post-compact
 resumes) is a token tax and a wall of text to read past before working.
@@ -213,7 +213,7 @@ relevant detail and recommended action:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES · CLARK · Phase 1.5 · Stage 10 MONITOR
+  HERMES · acme · Phase 1.5 · Stage 10 MONITOR
   Backlog 36/63 · 4 critical risks open
   Next: #13 external uptime monitor
 
@@ -256,7 +256,7 @@ The opening banner for cold start is:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES · CLARK · Phase 1 · Stage 1
+  HERMES · acme · Phase 1 · Stage 1
   New cc-forge project — no prior session history.
   Start with /hermes-status to orient, or /hermes-next.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -293,13 +293,13 @@ context. The payload looks like:
 ```json
 {
   "hookSpecificOutput": {
-    "additionalContext": "[cc-forge] Render the following banner verbatim as the first line(s) of your reply, then proceed normally:\n\n━━━━ HERMES · CLARK · ...\n..."
+    "additionalContext": "[cc-forge] Render the following banner verbatim as the first line(s) of your reply, then proceed normally:\n\n━━━━ HERMES · acme · ...\n..."
   }
 }
 ```
 
 This eliminates the CLAUDE.md `@import` dependency that an earlier draft
-proposed. CLARK CC correctly noted that the `@import` adds a Layer 3
+proposed. The pilot review correctly noted that the `@import` adds a Layer 3
 contract that fails open — no import means no rendering instruction
 means silent regression, exactly the failure mode being eliminated. The
 self-contained payload has no such dependency: the instruction travels
@@ -387,7 +387,7 @@ stretch).
 ### 2.7 SessionStart performance: the cache layer
 
 The SessionStart hook reads `state.json`, ten backlog files, RISKS.md,
-and tails `usage.log`, then computes flags — every session. CLARK CC's
+and tails `usage.log`, then computes flags — every session. The pilot review's
 review correctly flagged that doing all of this in a tight latency
 budget every session, with no cache, will routinely exceed any
 reasonable budget and trigger timeout fallbacks that mask real
@@ -811,7 +811,7 @@ alone.
 ### 3.9 Schema migration — all formats
 
 Schema migration covers every framework-managed format, not just
-state.json. CLARK CC correctly noted that usage.log event types,
+state.json. The pilot review correctly noted that usage.log event types,
 backlog item format, and other contracts will all evolve.
 
 Each format carries an implicit or explicit version. When a format
@@ -1027,7 +1027,7 @@ status/*.png
 # (status/argus-last-run.md and other durable finding records stay committed)
 ```
 
-This resolves the ambiguity CLARK CC flagged — without an explicit rule,
+This resolves the ambiguity the pilot review flagged — without an explicit rule,
 these files get accidentally committed or accidentally deleted.
 
 ### 4.5 Layer 3 — User-maintained
@@ -1089,10 +1089,10 @@ and an un-migrated project.
 cc-forge v2.x; removed in v3.0. After removal, `/hermes-update` detects
 pre-plugin shape and directs the user to a documented manual path.
 
-### 4.7 The Session 0 migration (CLARK first)
+### 4.7 The Session 0 migration (the pilot project first)
 
-The pre-plugin → plugin migration runs first against CLARK. Because
-CLARK is real and the migration has partial-failure modes, the
+The pre-plugin → plugin migration runs first against a pilot project. Because
+the pilot project is real and the migration has partial-failure modes, the
 migration is not treated as binary success. It provides:
 
 - **Dry-run mode** (`--dry-run`) — prints the full diff of what would
@@ -1175,7 +1175,7 @@ verdict (`HEALTHY` / `DEGRADED` / `BROKEN`):
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  HERMES-ARGUS · CLARK · 2026-05-22
+  HERMES-ARGUS · acme · 2026-05-22
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Layer 1 — Plugin
     ✓ plugin registered (v1.0.0) · 16 commands · 4 hooks
@@ -1295,7 +1295,7 @@ since Argus last ran; past a threshold (default 3 sessions) the opening
 banner surfaces *"Argus has not run in N sessions — framework drift
 unchecked."* Staleness is itself a drift signal.
 
-**session_end cadence is wall-clock, not prompt-count.** CLARK CC
+**session_end cadence is wall-clock, not prompt-count.** the pilot review
 correctly noted that "once per 5 prompts" is the wrong shape — a long
 debugging session has 50 prompts and one close; a quick check has 3. The
 check is: a session with more than 90 minutes of activity that produced
@@ -1425,11 +1425,11 @@ are tracked honestly rather than glossed.
 now backed by deterministic side effects and verified retrospectively.
 But the *middle* of a session — Hermes's "one next step, stated not
 asked" discipline after each significant action — remains model-driven
-and decays over long sessions, exactly as it did in CLARK before this
+and decays over long sessions, exactly as it did in the pilot project before this
 document. The per-prompt UserPromptSubmit framing (§2.8) raises the
 baseline reliability of this discipline by re-injecting a compact
 reminder on every prompt, but injection is not attendance: the model
-may still drift. This is the most visible regression CLARK experienced,
+may still drift. This is the most visible regression a pilot project experienced,
 and the design *reduces* it without *eliminating* it. There is no known
 mechanism in Claude Code to make in-conversation voice deterministic.
 Tracking: the banner-rendering sample check (§2.5) measures bookend
@@ -1567,7 +1567,7 @@ now caught by a check.
 
 ```
 ~/.claude/commands/   ← mixed prefixed/unprefixed (gap #50), drift (gap #51)
-~/.claude/settings.json ← hardcoded project path (CLARK)
+~/.claude/settings.json ← hardcoded project path (the pilot project)
 <project>/.cc-forge/  ← per-project copies of personas/standards (gap #48)
                         no session-lifecycle/, no HERMES.md (never shipped)
 <project>/scripts/    ← sometimes (gap #52)
