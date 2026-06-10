@@ -178,7 +178,7 @@ else:
 ### ✅ Correctly-formed update (do this)
 
 ```
-Finding from Security Auditor:
+Finding from Security SME:
   [VULN-003] A05 Security Misconfiguration — api/checkout.ts:84
   Issue: Express error handler re-throws with full stack to client on 500.
 
@@ -186,7 +186,7 @@ Update steps:
   1. Parent: .cc-forge/backlog/03-security.md → [SEC-UNI-006]
   2. Backlog edit:
        SEC-UNI-006 Status: not-started → in-progress
-       Evidence: in-flight — Taskmaster #47 seeded by security-auditor on 2026-05-22
+       Evidence: in-flight — Taskmaster #47 seeded by security-sme on 2026-05-22
   3. Taskmaster seed (via hermes/commands/taskmaster-seed.md):
        Title:       [SEC-UNI-006] Strip stack traces from production errors
        Parent:      .cc-forge/backlog/03-security.md → [SEC-UNI-006]
@@ -195,7 +195,7 @@ Update steps:
        Phase:       2 (Beta)
        Acceptance:  Express error handler returns generic 500 in NODE_ENV=production;
                     full stack still emitted to Sentry. Test added.
-       Source:      gate-review:security-auditor
+       Source:      gate-review:security-sme
 ```
 
 ### ❌ Malformed updates (never do this)

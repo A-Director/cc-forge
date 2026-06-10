@@ -65,24 +65,24 @@ added:
 ```
 TRIGGER                              GATE KIND   PERSONAS INVOKED
 ─────────────────────────────────────────────────────────────────
-Feature merged to main               SDLC        → QA Engineer
+Feature merged to main               SDLC        → QA SME
                                                  → Security (if
                                                    auth/data/pay
                                                    touched)
 
-UI/frontend feature built,           SDLC        → UX Expert
+UI/frontend feature built,           SDLC        → UX SME
 before merging to main                             (or before build
                                                    if design doc
                                                    exists in docs/)
 
 Design document approved             SDLC        → CTO
-                                                 → UX Expert
+                                                 → UX SME
 
 Sprint complete                      SDLC        → Product Owner
                                                  → CFO
 
 Before any production deploy         SDLC        → CTO
-                                                 → SRE Engineer
+                                                 → SRE SME
                                                  → Security
                                                  → Legal (first
                                                    deploy)
@@ -91,11 +91,11 @@ Weekly (scheduled)                   SDLC        → Argus
                                                  → CFO
 
 Monthly                              SDLC        → Market Analyst
-                                                 → Growth Agent
+                                                 → Growth SME
 
 On demand                            SDLC        → CEO
                                                  → Research Agent
-                                                 → Legal/Compliance
+                                                 → Legal SME
 
 PDLC phase transition                PDLC        → Full panel for
 (/hermes-phase-gate)                               the target phase

@@ -181,6 +181,6 @@ BACKLOG UPDATES
   Cross-domain drift flagged:  <N>
 ```
 
-See `personas/security-auditor.md` for a worked example.
+See `personas/security-sme.md` for a worked example.
 
 </backlog_update>

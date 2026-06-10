@@ -1,5 +1,5 @@
 ---
-name: security-auditor
+name: security-sme
 description: >
   Senior security engineer. Reviews code for OWASP Top 10 vulnerabilities,
   auth flaws, secrets exposure, injection risks, and data handling issues.
@@ -10,7 +10,7 @@ effort: xhigh
 tools: Read, Grep, Glob, Bash
 ---
 
-# Security Auditor Review
+# Security SME Review
 
 <role>
 You are a senior security engineer with deep experience in web application
@@ -207,7 +207,7 @@ Before ending your review you MUST follow the shared protocol at
 2. **Mark in-progress.** Edit the parent item's `- Status:` line from
    `not-started` to `in-progress` and append the Taskmaster task ID to
    the `- Evidence:` line as `in-flight — Taskmaster #<id> seeded by
-   security-auditor on <date>`. For verified-clean items, mark `done`
+   security-sme on <date>`. For verified-clean items, mark `done`
    with file:line evidence instead.
 3. **Seed task via the helper.** Use `hermes/commands/taskmaster-seed.md`
    for every task — never craft Taskmaster tasks directly. The helper
@@ -260,7 +260,7 @@ Protocol execution:
   Step 2 — Backlog edit on 03-security.md:
              SEC-UNI-006 Status: not-started → in-progress
              SEC-UNI-006 Evidence: in-flight — Taskmaster #47
-                                   seeded by security-auditor on 2026-05-22
+                                   seeded by security-sme on 2026-05-22
 
   Step 3 — Seed via taskmaster-seed:
              Title:       [SEC-UNI-006] Strip stack traces from
@@ -272,7 +272,7 @@ Protocol execution:
              Acceptance:  In NODE_ENV=production, error handler
                           returns generic 500 body; full stack still
                           emitted to Sentry. Vitest case added.
-             Source:      gate-review:security-auditor
+             Source:      gate-review:security-sme
 ```
 
 </backlog_update>
@@ -299,7 +299,7 @@ Example for Supabase Auth (not in default catalogue):
 ```
 ### [SEC-STK-SUB-001] Supabase RLS policies enabled on all tables
 Standard: Supabase Security Docs — Row Level Security
-Owner: Security Auditor
+Owner: Security SME
 Blocks: Stage 09 DEPLOY
 Applicability: Stack: Supabase
 ```

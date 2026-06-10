@@ -91,9 +91,9 @@ PERSONA GATE HISTORY
   ─────────────────────────────────────────────
   [Persona]         [N] times  Last: [date]  Outcomes: [P/C/B counts]
   CTO               [N]        [date]        [N]P [N]C [N]B
-  Security Auditor  [N]        [date]        [N]P [N]C [N]B
-  QA Engineer       [N]        [date]        [N]P [N]C [N]B
-  SRE Engineer      [N]        [date]        [N]P [N]C [N]B
+  Security SME  [N]        [date]        [N]P [N]C [N]B
+  QA SME       [N]        [date]        [N]P [N]C [N]B
+  SRE SME      [N]        [date]        [N]P [N]C [N]B
   Product Owner     [N]        [date]        [N]P [N]C [N]B
   Argus             [N]        [date]        [COMPLIANT/DRIFTING]
 

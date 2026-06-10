@@ -1,5 +1,5 @@
 # Backlog — 02 Development
-> Owner: CTO + QA Engineer
+> Owner: CTO + QA SME
 > Standard references: Google Engineering Practices · SOLID · Vitest/Jest docs
 >
 > Definition of Done: Architecture reviewed by CTO (PASS/CONDITIONAL),
@@ -14,7 +14,7 @@
 
 - Outcome: Business logic testable in isolation, not buried in route handlers
 - Standard: Google Engineering Practices — Service Layer; SOLID Single Responsibility
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 08 REVIEW
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -26,7 +26,7 @@
 
 - Outcome: Type safety enforced at compile time, no runtime type surprises
 - Standard: TypeScript Strict Mode — tsconfig strict: true
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 08 REVIEW
 - Applicability: Stack: TypeScript
 - Phase: 2 (Beta)
@@ -38,7 +38,7 @@
 
 - Outcome: Code readable and maintainable without deep context
 - Standard: Google Engineering Practices — Function Length
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 08 REVIEW
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -50,7 +50,7 @@
 
 - Outcome: Production logs are structured and intentional
 - Standard: cc-forge coding standards — Logging
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -62,7 +62,7 @@
 
 - Outcome: Known issues tracked in Taskmaster, not buried in code comments
 - Standard: cc-forge coding standards — Comments
-- Owner: CTO
+- Owner: cto
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -74,7 +74,7 @@
 
 - Outcome: Business logic regression-protected by automated tests
 - Standard: cc-forge testing standards — Coverage targets
-- Owner: QA Engineer
+- Owner: qa-sme
 - Blocks: Stage 08 REVIEW
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -86,7 +86,7 @@
 
 - Outcome: Webhook processing regressions caught before reaching production
 - Standard: cc-forge testing standards — Webhook coverage
-- Owner: QA Engineer
+- Owner: qa-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -98,7 +98,7 @@
 
 - Outcome: Core auth regression detectable before deploy
 - Standard: cc-forge testing standards — Critical flow coverage
-- Owner: QA Engineer
+- Owner: qa-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -110,7 +110,7 @@
 
 - Outcome: No regression ships without automated test verification
 - Standard: DORA metrics — Change Failure Rate reduction
-- Owner: QA Engineer
+- Owner: qa-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -122,7 +122,7 @@
 
 - Outcome: Known vulnerabilities blocked from shipping automatically
 - Standard: OWASP Top 10 — A06 Vulnerable Components
-- Owner: CTO
+- Owner: cto
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Node.js
 - Phase: 3 (Pilot)

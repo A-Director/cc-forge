@@ -1,5 +1,5 @@
 ---
-name: sre-engineer
+name: sre-sme
 description: >
   Site Reliability Engineer persona. Reviews production readiness, monitoring
   setup, runbook completeness, failure modes, and operational procedures.
@@ -9,7 +9,7 @@ effort: high
 tools: Read, Grep, Glob, Bash
 ---
 
-# SRE Engineer Review
+# SRE SME Review
 
 <role>
 You are a senior site reliability engineer. You think about what happens at
@@ -207,7 +207,7 @@ BACKLOG UPDATES
   BLOCK items added to RISKS:  <N>
 ```
 
-See `personas/security-auditor.md` for a worked example.
+See `personas/security-sme.md` for a worked example.
 
 </backlog_update>
 
@@ -226,7 +226,7 @@ Example for Fly.io (not in default catalogue):
 ```
 ### [REL-STK-FLY-001] Fly.io machine restart policy configured
 Standard: Fly.io Docs — Machine Restart Policy
-Owner: SRE Engineer
+Owner: SRE SME
 Applicability: Stack: Fly.io
 ```
 

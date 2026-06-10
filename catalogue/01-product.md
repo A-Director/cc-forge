@@ -14,7 +14,7 @@
 
 - Outcome: Any team member can understand what is being built and why
 - Standard: cc-forge product standards — PRD completeness
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Stage 03 PLAN
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -26,7 +26,7 @@
 
 - Outcome: Team agrees on what ships at launch — scope creep has no entry point
 - Standard: JTBD — Minimum Viable Outcome definition
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Stage 03 PLAN
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -38,7 +38,7 @@
 
 - Outcome: Launch decision grounded in data, not opinion
 - Standard: Google HEART Framework — Goals/Signals/Metrics
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -50,7 +50,7 @@
 
 - Outcome: PRD is the source of truth, not an archaeological artefact
 - Standard: cc-forge product standards — Living documentation
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Stage 08 REVIEW
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -62,7 +62,7 @@
 
 - Outcome: No critical product decisions deferred past launch
 - Standard: cc-forge product standards
-- Owner: Product Owner
+- Owner: product-owner
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)

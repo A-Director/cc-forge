@@ -89,10 +89,10 @@ Every entry is one line of JSON appended to `.cc-forge/usage.log`:
   "stage": 5,
   "data": {
     "trigger": "feature_merged",
-    "personas": ["qa-engineer", "security-auditor"],
+    "personas": ["qa-sme", "security-sme"],
     "outcomes": {
-      "qa-engineer": "PASS",
-      "security-auditor": "CONDITIONAL"
+      "qa-sme": "PASS",
+      "security-sme": "CONDITIONAL"
     },
     "blockers": 0,
     "conditions": 1,
@@ -109,7 +109,7 @@ Every entry is one line of JSON appended to `.cc-forge/usage.log`:
   "type": "persona",
   "stage": 5,
   "data": {
-    "persona": "security-auditor",
+    "persona": "security-sme",
     "outcome": "CONDITIONAL",
     "critical_findings": 0,
     "high_findings": 1,
@@ -168,7 +168,7 @@ Session C dashboard's drift counters.
   "type": "orphan_task",
   "stage": 5,
   "data": {
-    "persona": "security-auditor",
+    "persona": "security-sme",
     "task_id": "47",
     "finding": "Stack traces visible on /api/checkout 500s",
     "reason": "no parent backlog item exists for this finding category"
@@ -189,7 +189,7 @@ framework gap that caused it).
   "type": "missing_coverage",
   "stage": 5,
   "data": {
-    "persona": "security-auditor",
+    "persona": "security-sme",
     "domain": ".cc-forge/backlog/03-security.md",
     "finding": "WebSocket origin validation missing — no template item exists",
     "suggested_template_item": "SEC-WS-001 — WebSocket connections validate Origin header"
@@ -250,7 +250,7 @@ truth for entry types.
     "commands_run": ["/hermes-status", "/hermes-next", "/hermes-gate-review"],
     "tasks_completed": [12, 13],
     "gates_run": 1,
-    "personas_invoked": ["qa-engineer"],
+    "personas_invoked": ["qa-sme"],
     "backlog_overall_pct_start": 42,
     "backlog_overall_pct_end": 47,
     "compact_run": true,

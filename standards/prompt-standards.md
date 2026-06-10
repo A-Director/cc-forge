@@ -235,7 +235,7 @@ independent files or tasks that can run in parallel.
 
 Claude Opus 4.7 follows instructions like "be conservative" or "only report high-severity issues" more faithfully than earlier models. This can cause measured recall to fall even though the model's underlying ability has improved.
 
-For cc-forge review agents (Security Auditor, QA, CTO), use this pattern:
+For cc-forge review agents (Security SME, QA, CTO), use this pattern:
 
 ```
 Report every issue you find, including ones you are uncertain about or

@@ -1,9 +1,9 @@
 # Backlog — 03 Security
-> Owner: Security Auditor
+> Owner: Security SME
 > Standard references: OWASP Top 10 · OWASP ASVS 4.0 · NIST CSF
 >
 > Definition of Done: All applicable items are `done` with evidence,
-> or `not-applicable` with a decision record. Security Auditor gate
+> or `not-applicable` with a decision record. Security SME gate
 > has returned PASS or CONDITIONAL outcome. No CRITICAL items unresolved.
 
 ---
@@ -14,7 +14,7 @@
 
 - Outcome: No unauthenticated user can access protected data or actions
 - Standard: OWASP ASVS 4.0 — V4.1.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -26,7 +26,7 @@
 
 - Outcome: A user cannot access another user's data by manipulating IDs
 - Standard: OWASP ASVS 4.0 — V4.2.1 (Horizontal Privilege Escalation)
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -38,7 +38,7 @@
 
 - Outcome: Repository can be made public without exposing credentials
 - Standard: OWASP Top 10 2021 — A02 Cryptographic Failures
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -50,7 +50,7 @@
 
 - Outcome: Environment secrets cannot be exposed via git history
 - Standard: OWASP ASVS 4.0 — V2.10.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -62,7 +62,7 @@
 
 - Outcome: Malformed or malicious input is rejected before reaching business logic
 - Standard: OWASP Top 10 2021 — A03 Injection
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -74,7 +74,7 @@
 
 - Outcome: Internal system details not visible to potential attackers
 - Standard: OWASP ASVS 4.0 — V7.4.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -86,7 +86,7 @@
 
 - Outcome: No known exploitable vulnerabilities in dependencies
 - Standard: OWASP Top 10 2021 — A06 Vulnerable Components
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -98,7 +98,7 @@
 
 - Outcome: All traffic encrypted in transit
 - Standard: OWASP ASVS 4.0 — V9.1.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 1 (MVP)
@@ -110,7 +110,7 @@
 
 - Outcome: Cross-origin requests restricted to known trusted origins
 - Standard: OWASP ASVS 4.0 — V14.4.8
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -122,7 +122,7 @@
 
 - Outcome: Security incidents detectable via audit trail
 - Standard: OWASP ASVS 4.0 — V7.2.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -134,7 +134,7 @@
 
 - Outcome: Brute force attacks on login are mitigated
 - Standard: OWASP ASVS 4.0 — V4.2.2
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Public launch (not beta)
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -146,7 +146,7 @@
 
 - Outcome: XSS attack surface reduced via browser-enforced policy
 - Standard: OWASP ASVS 4.0 — V14.4.3
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Public launch (not beta)
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -160,7 +160,7 @@
 
 - Outcome: No Clerk-authenticated route is accidentally public
 - Standard: Clerk Security Docs — Middleware Configuration
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 1 (MVP)
@@ -172,7 +172,7 @@
 
 - Outcome: Webhook cannot be spoofed by external actor
 - Standard: Clerk Security Docs — Webhook Verification
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 2 (Beta)
@@ -184,7 +184,7 @@
 
 - Outcome: Production auth uses production-grade credentials
 - Standard: Clerk Docs — Environment Keys
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Clerk
 - Phase: 3 (Pilot)
@@ -198,7 +198,7 @@
 
 - Outcome: Payment webhooks cannot be forged
 - Standard: Stripe Security Docs — Webhook Signatures; OWASP ASVS V9.2.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -210,7 +210,7 @@
 
 - Outcome: Users cannot manipulate payment amounts from the client
 - Standard: Stripe Security Best Practices — Amount Validation
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -222,7 +222,7 @@
 
 - Outcome: PCI DSS scope minimised — card data never touches our servers
 - Standard: PCI DSS v4.0 — Requirement 3
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Stripe
 - Phase: 3 (Pilot)
@@ -236,7 +236,7 @@
 
 - Outcome: Secrets not in code, not in Railway config files, not in git
 - Standard: cc-forge security standards — Secrets Management
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Railway
 - Phase: 1 (MVP)
@@ -250,7 +250,7 @@
 
 - Outcome: Users can protect their accounts with 2FA
 - Standard: OWASP ASVS 4.0 — V2.8.1
-- Owner: Security Auditor
+- Owner: security-sme
 - Blocks: Not blocking — enhancement
 - Applicability: Optional: SaaS products with sensitive user data
 - Phase: 4 (Launch)

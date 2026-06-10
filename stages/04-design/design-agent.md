@@ -14,7 +14,7 @@ You are working through the architecture and design decisions before
 the first line of application code is written. Getting these right
 saves weeks of rework.
 
-Design does not mean UI design (that's UX Expert's domain).
+Design does not mean UI design (that's UX SME's domain).
 Design means: how will this system actually work?
 
 ---
@@ -86,6 +86,6 @@ PATCH  /api/inspections/[id]     update inspection status
 
 Prompt for CTO + UX gate review:
 "Design is complete. Run `/hermes gate review` —
-CTO will review architecture, UX Expert will review user flows."
+CTO will review architecture, UX SME will review user flows."
 
 Update `.cc-forge/state.json` to stage 4 complete.

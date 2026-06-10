@@ -1,5 +1,5 @@
 # Backlog — 05 Design
-> Owner: UX Expert
+> Owner: UX SME
 > Standard references: WCAG 2.1 AA · Nielsen's 10 Usability Heuristics · Core Web Vitals
 >
 > Definition of Done: All critical user flows complete without assistance,
@@ -14,7 +14,7 @@
 
 - Outcome: New user achieves first value within 5 minutes of sign-up
 - Standard: Nielsen Heuristic #6 — Recognition over Recall
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -26,7 +26,7 @@
 
 - Outcome: Form fields usable by screen readers and keyboard-only users
 - Standard: WCAG 2.1 — 1.3.1 Info and Relationships (Level A)
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -38,7 +38,7 @@
 
 - Outcome: Visual content accessible to screen reader users
 - Standard: WCAG 2.1 — 1.1.1 Non-text Content (Level A)
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -50,7 +50,7 @@
 
 - Outcome: Text readable by users with low vision or colour blindness
 - Standard: WCAG 2.1 — 1.4.3 Contrast (Level AA)
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -62,7 +62,7 @@
 
 - Outcome: Application usable without a mouse
 - Standard: WCAG 2.1 — 2.1.1 Keyboard (Level A)
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -74,7 +74,7 @@
 
 - Outcome: Users can self-recover from errors without support
 - Standard: Nielsen Heuristic #9 — Help Users Recognize and Recover from Errors
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -86,7 +86,7 @@
 
 - Outcome: Automated accessibility baseline verified
 - Standard: WCAG 2.1 AA — automated coverage via Lighthouse
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -98,7 +98,7 @@
 
 - Outcome: Application functional for the majority of real-world users
 - Standard: cc-forge launch standards — Cross-browser coverage
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -110,7 +110,7 @@
 
 - Outcome: Application performance meets Google's user experience thresholds
 - Standard: Google Core Web Vitals — Web.dev
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Public launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -124,7 +124,7 @@
 
 - Outcome: Mathematical notation displays correctly for all theory content
 - Standard: KaTeX Docs — Supported Functions
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Stack: KaTeX
 - Phase: 1 (MVP)
@@ -136,7 +136,7 @@
 
 - Outcome: Mathematical expressions consistent across browsers
 - Standard: cc-forge launch standards — Cross-browser coverage
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Stack: KaTeX
 - Phase: 3 (Pilot)
@@ -148,7 +148,7 @@
 
 - Outcome: No horizontal overflow breaking the UI on standard screen widths
 - Standard: WCAG 2.1 — 1.4.10 Reflow (Level AA)
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Stack: KaTeX
 - Phase: 2 (Beta)
@@ -160,7 +160,7 @@
 
 - Outcome: User knows immediately when LaTeX syntax is wrong
 - Standard: Nielsen Heuristic #9 — Help Users Recognize and Recover from Errors
-- Owner: UX Expert
+- Owner: ux-sme
 - Blocks: Launch
 - Applicability: Stack: Scientific/research UI
 - Phase: 2 (Beta)

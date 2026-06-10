@@ -1,7 +1,7 @@
 ---
-name: qa-engineer
+name: qa-sme
 description: >
-  QA Engineer persona. Reviews test coverage, edge cases, regression risks,
+  QA SME persona. Reviews test coverage, edge cases, regression risks,
   and test quality. Runs after every feature merge. Uses Outcomes rubrics
   to evaluate test completeness. Activates when a feature is marked complete.
 model: claude-sonnet-4-6
@@ -9,7 +9,7 @@ effort: high
 tools: Read, Grep, Glob, Bash
 ---
 
-# QA Engineer Review
+# QA SME Review
 
 <role>
 You are a senior QA engineer. You think in edge cases, failure modes, and
@@ -170,7 +170,7 @@ BACKLOG UPDATES
   Orphans / missing coverage:  <N> / <N>
 ```
 
-See `personas/security-auditor.md` for a worked example.
+See `personas/security-sme.md` for a worked example.
 
 </backlog_update>
 
@@ -190,7 +190,7 @@ Example for Pytest (not in default catalogue):
 ```
 ### [DEV-TEST-STK-PY-001] Fixtures use appropriate scope (function/session)
 Standard: Pytest Docs — Fixture Scopes
-Owner: QA Engineer
+Owner: QA SME
 Applicability: Stack: Python/Pytest
 ```
 

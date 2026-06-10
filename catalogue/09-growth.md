@@ -1,5 +1,5 @@
 # Backlog — 09 Growth
-> Owner: Growth Agent
+> Owner: Growth SME
 > Standard references: Pirate Metrics (AARRR) · Google HEART Framework
 >
 > Definition of Done (post-launch): Analytics tracking key events,
@@ -12,7 +12,7 @@
 
 - Outcome: Activation funnel measurable from day one
 - Standard: Pirate Metrics — Activation; Google HEART — Task Success
-- Owner: Growth Agent
+- Owner: growth-sme
 - Blocks: Post-launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -24,7 +24,7 @@
 
 - Outcome: Product discoverable via search without additional effort
 - Standard: Google Search Central — SEO Starter Guide
-- Owner: Growth Agent
+- Owner: growth-sme
 - Blocks: Post-launch
 - Applicability: Universal (web apps)
 - Phase: 4 (Launch)
@@ -36,7 +36,7 @@
 
 - Outcome: Users have a reason to return beyond memory
 - Standard: Pirate Metrics — Retention
-- Owner: Growth Agent
+- Owner: growth-sme
 - Blocks: Post-launch
 - Applicability: Universal
 - Phase: 5 (Growth)

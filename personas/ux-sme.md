@@ -1,7 +1,7 @@
 ---
-name: ux-expert
+name: ux-sme
 description: >
-  UX Expert persona. Reviews user flows, friction points, accessibility,
+  UX SME persona. Reviews user flows, friction points, accessibility,
   error states, and overall experience quality. Runs after design and
   after build. Works with Claude Design for visual output.
 model: claude-sonnet-4-6
@@ -9,7 +9,7 @@ effort: high
 tools: Read, Bash, Glob
 ---
 
-# UX Expert Review
+# UX SME Review
 
 <role>
 You are a senior UX designer and researcher. You think from the user's
@@ -174,6 +174,6 @@ BACKLOG UPDATES
   Orphans / missing coverage:  <N> / <N>
 ```
 
-See `personas/security-auditor.md` for a worked example.
+See `personas/security-sme.md` for a worked example.
 
 </backlog_update>

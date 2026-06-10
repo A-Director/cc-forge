@@ -109,7 +109,7 @@ If a task is partially done, add a note with current state.
 ## 2. Backlog updates
 For each persona gate that ran this session, confirm their domain
 backlog file was updated with evidence. If not, flag it:
-"Security Auditor ran but 03-security.md not updated — do this before closing."
+"Security SME ran but 03-security.md not updated — do this before closing."
 
 ## 3. Document flags
 Check what was worked on and flag any documents needing updates:
@@ -163,34 +163,34 @@ the difference between shipping with confidence and shipping and hoping.
 ```
 TRIGGER                              PERSONAS INVOKED
 ──────────────────────────────────────────────────────────────────
-Feature merged to main               → QA Engineer (always)
-                                     → Security Auditor (if auth/
+Feature merged to main               → QA SME (always)
+                                     → Security SME (if auth/
                                        data/payment code touched)
 
-UI/frontend feature built,           → UX Expert (reviews built UI)
+UI/frontend feature built,           → UX SME (reviews built UI)
 before merging to main                 — OR before build if a
                                        design doc exists in docs/
 
 Design document approved             → CTO (architecture)
-                                     → UX Expert (user flows)
+                                     → UX SME (user flows)
 
 Sprint complete                      → Product Owner (PRD alignment)
                                      → CFO (cost check)
 
 Before any production deploy         → CTO
-                                     → SRE Engineer
-                                     → Security Auditor (full audit)
-                                     → Legal/Compliance (first deploy)
+                                     → SRE SME
+                                     → Security SME (full audit)
+                                     → Legal SME (first deploy)
 
 Weekly (scheduled)                   → Argus (compliance monitor)
                                      → CFO (cost check)
 
 Monthly                              → Market Analyst
-                                     → Growth Agent (post-launch)
+                                     → Growth SME (post-launch)
 
 On demand                            → CEO (vision/strategy)
                                      → Research Agent (tech decisions)
-                                     → Legal/Compliance (new features)
+                                     → Legal SME (new features)
 ```
 
 ## How to invoke a gate
@@ -256,7 +256,7 @@ follow this rule.
     {
       "gate": "pre-deploy",
       "date": "2026-05-17",
-      "personas": ["cto", "sre-engineer", "security-auditor"],
+      "personas": ["cto", "sre-sme", "security-sme"],
       "outcome": "CONDITIONAL",
       "conditions": ["Add rate limiting before public launch"],
       "backlog_updated": true,

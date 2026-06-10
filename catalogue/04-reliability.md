@@ -1,5 +1,5 @@
 # Backlog — 04 Reliability
-> Owner: SRE Engineer
+> Owner: SRE SME
 > Standard references: Google SRE Book · DORA metrics · AWS Well-Architected
 >
 > Definition of Done: RUNBOOK.md complete and reviewed by SRE, INCIDENT.md
@@ -14,7 +14,7 @@
 
 - Outcome: Any incident can be diagnosed and resolved without the original developer
 - Standard: Google SRE Book — Chapter 8: On-Call; cc-forge reliability standards
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY — HARD BLOCK
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -26,7 +26,7 @@
 
 - Outcome: Incidents handled consistently — no improvising at 3am
 - Standard: Google SRE Book — Chapter 14: Managing Incidents
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -38,7 +38,7 @@
 
 - Outcome: Every production error visible within minutes of occurrence
 - Standard: Google SRE Book — Chapter 6: Monitoring; DORA — Mean Time to Detect
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY — HARD BLOCK
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -50,7 +50,7 @@
 
 - Outcome: Downtime detected automatically, not via user complaints
 - Standard: Google SRE Book — SLO/SLA; DORA metrics
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -62,7 +62,7 @@
 
 - Outcome: Application liveness verifiable without browser access
 - Standard: cc-forge reliability standards — Health Checks
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -74,7 +74,7 @@
 
 - Outcome: Regressions cannot ship via automated deploy
 - Standard: DORA metrics — Change Failure Rate
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 2 (Beta)
@@ -86,7 +86,7 @@
 
 - Outcome: Data loss recoverable — backup is only useful if restore works
 - Standard: AWS Well-Architected — Reliability Pillar; RPO/RTO defined
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -98,7 +98,7 @@
 
 - Outcome: Bad deploy recoverable in under 5 minutes
 - Standard: DORA metrics — Mean Time to Restore
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Universal
 - Phase: 3 (Pilot)
@@ -110,7 +110,7 @@
 
 - Outcome: Incidents diagnosable even when discovered after platform log expiry
 - Standard: Google SRE Book — Chapter 6: Logging
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Universal
 - Phase: 4 (Launch)
@@ -124,7 +124,7 @@
 
 - Outcome: Transient crashes recover automatically without manual intervention
 - Standard: Railway Docs — Deploy Configuration
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Stage 09 DEPLOY
 - Applicability: Stack: Railway
 - Phase: 2 (Beta)
@@ -136,7 +136,7 @@
 
 - Outcome: Memory leak detected before OOM crash
 - Standard: cc-forge reliability standards — Resource Monitoring
-- Owner: SRE Engineer
+- Owner: sre-sme
 - Blocks: Launch
 - Applicability: Stack: Railway
 - Phase: 3 (Pilot)

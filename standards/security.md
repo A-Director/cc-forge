@@ -1,6 +1,6 @@
 # Security Standards
 
-Core security rules. Enforced by the Security Auditor persona at every
+Core security rules. Enforced by the Security SME persona at every
 pre-deploy gate. Non-negotiable.
 
 ---

@@ -26,9 +26,9 @@ Your job during BUILD:
 
 For each Taskmaster task during BUILD:
 
-### 0. UI task check — when to run UX Expert
+### 0. UI task check — when to run UX SME
 Check the task title and tags. If the task involves frontend, UI,
-React, or components, decide when the UX Expert gate runs based on
+React, or components, decide when the UX SME gate runs based on
 whether a design document already exists:
 
 - **Look in `docs/`** for a design document, wireframe, mockup, or
@@ -36,9 +36,9 @@ whether a design document already exists:
   `docs/wireframes/<feature>.*`, or any file clearly describing the
   intended UI for this task).
 
-- **If a design doc exists** → run `/hermes gate review` (UX Expert)
+- **If a design doc exists** → run `/hermes gate review` (UX SME)
   **before** writing any code. UX reviews the design against the doc.
-  Proceed to step 1 only after UX Expert returns PASS or CONDITIONAL.
+  Proceed to step 1 only after UX SME returns PASS or CONDITIONAL.
 
 - **If no design doc exists** → proceed straight to step 1. The UX
   Expert gate runs **after** the UI is built, before merging to main
@@ -101,17 +101,17 @@ Detection rules (check in this order):
 1. **Deploy triggered** → run Security + SRE gates immediately
    (BLOCKING). Do not surface next task until both pass.
 
-2. **Auth / payment / encryption code touched** → Security Auditor now.
+2. **Auth / payment / encryption code touched** → Security SME now.
    Match on: `auth`, `password`, `token`, `key`, `encrypt`, `decrypt`,
    `webhook`, `stripe`, `clerk`, `fernet`, `jwt`.
 
 3. **Database migration added** → CTO review now.
    Match on: `alembic`, `migration`, `schema`, `ALTER`, `CREATE TABLE`.
 
-4. **API routes added or changed** → QA Engineer now.
+4. **API routes added or changed** → QA SME now.
    Match on: `@router`, `@app`, `route`, `endpoint`, `/api/`.
 
-5. **UI components built** → UX Expert now.
+5. **UI components built** → UX SME now.
    Match on: `.tsx`, `.jsx`, `component`, `panel`, `view`, `page`,
    `KaTeX`.
 
@@ -206,9 +206,9 @@ QA review due   → /hermes gate review
 ```
 
 After a UI/frontend feature is built, **before merging to main**
-(unless UX Expert already ran pre-build per step 0):
+(unless UX SME already ran pre-build per step 0):
 ```
-UX Expert review due → /hermes gate review
+UX SME review due → /hermes gate review
 ```
 
 After auth + billing complete:
@@ -228,7 +228,7 @@ Then stage 09 DEPLOY
 
 After each feature completes and gate review runs:
 - The QA persona updates `02-development.md` test coverage items
-- The Security Auditor updates `03-security.md` items if auth/data touched
+- The Security SME updates `03-security.md` items if auth/data touched
 - Run `/hermes-status` to see updated backlog % after each gate
 
 If a backlog item is deliberately skipped: record in `DECISIONS.md` + `RISKS.md`.
