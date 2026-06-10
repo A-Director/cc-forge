@@ -192,7 +192,7 @@ cc-forge picks services so you don't have to. The onboarding agent adapts if you
 
 ## Token discipline (the short version)
 
-Token efficiency determines how long a Claude Code session stays useful. cc-forge enforces a handful of rules — the full 12 are in **[CHEATSHEET.md](./CHEATSHEET.md)**:
+Token efficiency determines how long a Claude Code session stays useful. cc-forge enforces a handful of rules — the full 11 are in **[CHEATSHEET.md](./CHEATSHEET.md)**:
 
 - `CLAUDE.md` is standing orders — 300–600 tokens, no task state, no docs.
 - Right model for the job: Opus for hard planning, Sonnet for daily build, Haiku for simple lookups.

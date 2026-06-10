@@ -1,8 +1,8 @@
-# Token Rules — The Golden 12
+# Token Rules — The Golden 11
 
 Token efficiency is not optional. It determines how long Claude Code stays
 useful in a session, how much parallelism you can run, and ultimately how
-much you get done per dollar. These 12 rules are enforced by Hermes across
+much you get done per dollar. These 11 rules are enforced by Hermes across
 every session.
 
 ---
@@ -94,18 +94,7 @@ Rule of thumb:
 
 ---
 
-## Rule 6 — `/btw` for parallel thoughts
-
-When you have a side thought while Claude is working, `/btw` opens a parallel
-inference channel. The response never gets injected into the main conversation
-history. The main task continues uninterrupted.
-
-Never interrupt Claude mid-task with a new idea. Use `/btw` to capture it,
-review it when Claude finishes.
-
----
-
-## Rule 7 — Right model for the right job
+## Rule 6 — Right model for the right job
 
 Default model on Max plan is Opus. That is expensive. Use it deliberately.
 
@@ -123,7 +112,7 @@ frontier-model quality at a fraction of the cost. Use it for persona reviews.
 
 ---
 
-## Rule 8 — `@file` references over paste
+## Rule 7 — `@file` references over paste
 
 Never paste entire files into chat. The content becomes dead weight in
 conversation history, travelling with every subsequent message.
@@ -136,7 +125,7 @@ contents into the prompt.
 
 ---
 
-## Rule 9 — Specific prompts over lazy prompts
+## Rule 8 — Specific prompts over lazy prompts
 
 Vague prompts invite verbose responses and waste tokens on intent-parsing.
 
@@ -150,7 +139,7 @@ Specificity is not pedantry. It is the difference between 2 turns and 8 turns.
 
 ---
 
-## Rule 10 — MCPs are not Pokémon
+## Rule 9 — MCPs are not Pokémon
 
 Every connected MCP server loads its full tool definitions and schema into
 your context window at session start, whether you use it or not.
@@ -168,7 +157,7 @@ Run `/context` to see the actual token cost of each connected MCP.
 
 ---
 
-## Rule 11 — New task = new session
+## Rule 10 — New task = new session
 
 Related tasks can reuse context for efficiency. Genuinely new tasks deserve
 a fresh session.
@@ -183,7 +172,7 @@ re-explaining everything.
 
 ---
 
-## Rule 12 — Vertical slices, not horizontal phases
+## Rule 11 — Vertical slices, not horizontal phases
 
 AI coding agents default to horizontal phasing: build the whole DB layer, then
 the whole API layer, then the whole frontend. This delays end-to-end feedback
@@ -225,7 +214,6 @@ at all, or should I compact and continue?
 Context window filling up?    → /context to diagnose, /compact to compress
 Done with a distinct phase?   → /compact before continuing
 Done with the task entirely?  → /clear for the next task
-Side thought mid-session?     → /btw (doesn't pollute main history)
 Repeated multi-step task?     → define a /command
 Reading a file?               → @filename, never paste
 Complex planning?             → Opus + reasoning on
