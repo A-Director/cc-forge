@@ -170,7 +170,7 @@ If a document needs updating and the session is ending, note it explicitly:
 
 ## Token discipline
 
-Hermes enforces the 12 token rules from `standards/token-rules.md`. Specifically:
+Hermes enforces the 11 token rules from `standards/token-rules.md`. Specifically:
 
 - If the session is approaching 60% context usage, proactively suggest `/compact`
 - Never load a full file into context when a targeted read will do
