@@ -1,293 +1,164 @@
 # Installing cc-forge
 
-cc-forge is a framework of markdown files, not a package you install via npm
-or pip. Installation means: getting the prerequisites, running the install
-script, and scaffolding your first project.
+cc-forge ships as a **single-plugin Claude Code marketplace** — not an npm or pip package. Installing means: get the prerequisites, add the plugin, then bootstrap your first project. About 10 minutes the first time.
 
-This takes about 10 minutes the first time.
+> New here? Read the [README](./README.md) for what cc-forge is, then come back. The day-to-day commands live in [CHEATSHEET.md](./CHEATSHEET.md).
 
 ---
 
 ## Prerequisites
 
-You need these before anything else. cc-forge won't work without them.
+| Tool | Check | Get it |
+|---|---|---|
+| **Claude Code** (CLI, Pro or Max plan) | `claude --version` | https://claude.ai/code |
+| **Node.js 20+** | `node --version` | https://nodejs.org (or `nvm install 20`) |
+| **Git** | `git --version` | https://git-scm.com |
 
-### 1. Claude Code
-
-cc-forge is built entirely around Claude Code (the CLI, not the web app).
-
-```bash
-# Verify you have it
-claude --version
-```
-
-If not installed: https://claude.ai/code
-
-You need an active Claude subscription (Pro or Max) — cc-forge uses Opus
-for gate reviews and Sonnet for daily build tasks.
-
-### 2. Node.js 20+
-
-```bash
-# Verify version
-node --version   # must be 20.x or higher
-
-# Install if needed: https://nodejs.org
-# Or via nvm:
-nvm install 20
-nvm use 20
-```
-
-### 3. Git
-
-```bash
-git --version
-```
-
-If not installed: https://git-scm.com
+cc-forge uses Opus for gate reviews and Sonnet for daily build, so an active Claude subscription is required.
 
 ---
 
 ## Step 1 — Clone cc-forge
 
-Clone cc-forge to a permanent location on your machine (not inside a project):
+Clone to a permanent location (not inside a project):
 
 ```bash
-# Recommended location
-cd ~
-git clone https://github.com/A-Director/cc-forge.git
-
-# Or anywhere you keep your tools
-mkdir -p ~/tools
-cd ~/tools
-git clone https://github.com/A-Director/cc-forge.git
+git clone https://github.com/A-Director/cc-forge.git ~/cc-forge
 ```
+
+You can keep it anywhere (`~/tools/cc-forge`, etc.) — just somewhere stable, since the plugin marketplace points at this path.
 
 ---
 
-## Step 2 — Run the install script
+## Step 2 — Install the plugin (inside Claude Code)
 
-Run it once — it applies to all your projects.
-
-```bash
-bash ~/cc-forge/scripts/hermes-install.sh
-```
-
-**What the script installs automatically:**
-
-| Tool | Type | Purpose |
-|---|---|---|
-| task-master-ai | MCP server | Task management — reads your PRD, tracks progress |
-| context7 | MCP server | Live library docs injected into sessions |
-| criticalthink | Command | Forces Claude to challenge its own assumptions |
-| Hermes commands | Commands | /hermes-init, /hermes-adopt, /hermes-status, /hermes-next, /hermes-gate, /hermes-deploy, /hermes-report + all personas |
-
-**Plugins require a manual step inside Claude Code:**
-
-Plugins are Claude Code slash commands — they cannot be installed from a shell script. After the install script completes, open Claude Code and run:
+cc-forge is a single-plugin marketplace. Open Claude Code and run:
 
 ```
-/plugin install claude-mem
-/plugin install superpowers
+/plugin marketplace add ~/cc-forge
+/plugin install cc-forge@cc-forge
 ```
 
-Then **restart Claude Code** for plugins to activate.
+That's the whole install. The plugin system handles **everything** that used to be manual:
 
-| Plugin | Purpose |
-|---|---|
-| claude-mem | Session memory across projects |
-| superpowers | Agentic workflow — brainstorm, TDD, subagent execution |
+- all `/hermes-*` commands,
+- hook registration — `SessionStart`, `Stop`, `PreCompact`, `UserPromptSubmit`,
+- personas, standards, and the backlog catalogue,
+- version management (via `/plugin update`).
 
-**Known first-install issues:**
-- `ERR_MODULE_NOT_FOUND` on task-master-ai → run `npm cache clean --force` then retry the script
-- `/hermes-init`, `/hermes-adopt`, `/hermes-backlog-init` missing → script now copies these automatically; if still missing: `cp ~/cc-forge/hermes/*.md ~/.claude/commands/`
-- Taskmaster CLI warning → harmless, cc-forge uses Taskmaster as an MCP server not a CLI tool
+> There is no separate global-install shell step. The old `scripts/hermes-install.sh` is now a thin redirect to `/plugin install`.
 
-**Verify installation:**
-```bash
-# Check MCPs
-claude mcp list
+**Companion plugins (optional but recommended):**
 
-# Check commands (should see hermes-*, persona-*, criticalthink)
-ls ~/.claude/commands/
-
-# Check plugins (inside Claude Code after restart)
-/plugins
 ```
+/plugin install claude-mem      # session memory across projects
+/plugin install superpowers      # agentic workflow — brainstorm, TDD, subagents
+```
+
+Restart Claude Code after installing plugins for them to activate.
+
+**Claude Code CLI v2.1.x and earlier — known upstream bug.** Directory-marketplace plugins can install but not auto-add to `enabledPlugins` ([anthropics/claude-code#17832](https://github.com/anthropics/claude-code/issues/17832)). If `/plugin list` shows cc-forge as *disabled* right after install, add it manually to `~/.claude/settings.json`:
+
+```json
+"enabledPlugins": {
+  "cc-forge@cc-forge": true
+}
+```
+
+Recent CLI versions auto-enable correctly (verified clean on v2.1.161).
 
 ---
 
-## Step 3 — Set up your first project
+## Step 3 — Bootstrap your project
 
-### New project (starting from scratch)
+`hermes-bootstrap.sh` creates the project-local state cc-forge needs. It is **idempotent** — safe to re-run.
 
 ```bash
-# Create your project folder
-mkdir my-project
-cd my-project
-git init
-
-# Run the cc-forge scaffolding script
-bash ~/cc-forge/scripts/hermes-init.sh
+cd ~/your-project
+bash ~/cc-forge/scripts/hermes-bootstrap.sh
 ```
 
-This creates the cc-forge structure in your project:
-```
-my-project/
-├── .cc-forge/           ← project state
-├── .claude/
-│   ├── commands/        ← hermes commands
-│   └── hooks/
-│       ├── start.sh     ← auto-orient on session open
-│       └── stop.sh      ← Bun guard + session logging
-├── .github/workflows/   ← doc sync + @claude actions
-├── CLAUDE.md            ← standing orders (stub — fill in)
-├── PRD.md               ← product requirements (stub — fill in)
-├── .env.example         ← environment variables template
-└── .gitignore
-```
+It creates `.cc-forge/state.json`, `.cc-forge/usage.log`, the `status/` directory, and updates `.gitignore` with the cc-forge artifact rules (regeneratable views like `status/dashboard.html` ignored; durable records like `status/argus-last-run.md` and `.cc-forge/usage.log` committed).
 
-Then open Claude Code and complete the onboarding interview:
-```bash
-claude
-# In Claude Code:
+---
+
+## Step 4 — Onboard
+
+Open Claude Code in your project (`claude`), then:
+
+**New project (greenfield):**
+```
 /hermes-init
 ```
+Hermes interviews you about the project, recommends a stack, and completes setup — a proper `CLAUDE.md`, PRD stub, Taskmaster tasks, and backlog.
 
-Hermes will interview you about your project, recommend a stack, and
-complete the setup — generating a proper CLAUDE.md, PRD, Taskmaster tasks,
-and backlog.
-
-### Existing project (already have code)
-
-```bash
-cd your-existing-project
-
-# Copy Hermes commands into the project
-mkdir -p .claude/commands
-cp ~/cc-forge/hermes/commands/*.md .claude/commands/
-
-# Open Claude Code
-claude
-
-# In Claude Code:
+**Existing project:**
+```
 /hermes-adopt
 ```
+Hermes reads your entire codebase (code, docs, git history) and produces a gap report — assessment only, no code changes.
 
-Hermes will read your entire codebase and produce a gap report — no code
-changes, assessment only.
+Then initialise the backlog (recommended):
+```
+/hermes-backlog-init
+```
+This customises the 10-domain catalogue to your stack and generates a Definition of Done per domain.
 
 ---
 
-## Step 4 — Initialise the backlog (optional but recommended)
+## Step 5 — Verify
 
-After init or adopt, initialise the product backlog:
-
-```bash
-# In Claude Code:
-/hermes-backlog-init
+```
+/hermes-argus
 ```
 
-This customises the 10-domain backlog catalogue to your specific stack
-and project type, and generates a Definition of Done for each domain.
+Argus runs the framework self-check. A healthy install reports **Layer 1 (plugin)** and **Layer 2 (project state)** as `HEALTHY` (or `DEGRADED` if the backlog isn't initialised yet — that's fine). If Argus reports **`CANNOT_LOCATE`** or **Layer 1 failures**, the plugin isn't reachable: confirm `/plugin list` shows `cc-forge@cc-forge` as enabled and that `${CLAUDE_PLUGIN_ROOT}` resolves.
 
 ---
 
 ## Keeping cc-forge updated
 
-cc-forge updates regularly as Claude Code ships new features.
-
-**The easy way — from inside any project:**
-```bash
-# In Claude Code:
+**The easy way — inside any project:**
+```
 /hermes-update
 ```
+Delegates to `/plugin update`, runs any pending `state.json` migrations, verifies layer reachability via `/hermes-argus`, and reports. Safe to run anytime.
 
-This automatically pulls latest from GitHub and copies updated personas,
-standards, and commands into your project. Safe to run anytime — never
-touches project-specific files.
-
-**Manual update:**
+**Manual:**
 ```bash
-cd ~/cc-forge
-git pull origin main
-
-# Re-run install if new global tools were added
-bash scripts/hermes-install.sh
+cd ~/cc-forge && git pull origin main
+# then, in Claude Code:
+/plugin update cc-forge@cc-forge
 ```
 
-**What gets updated vs what stays untouched:**
+**What updates vs. what's never touched:**
 
-| Updated by /hermes-update | Never touched |
+| Updated | Never touched |
 |---|---|
-| `.cc-forge/personas/` | `.cc-forge/backlog/` (your project backlog) |
-| `.cc-forge/standards/` | `.cc-forge/state.json` (project state) |
-| `.claude/commands/hermes-*` | `CLAUDE.md` (your standing orders) |
-| `.cc-forge/catalogue/` | `DECISIONS.md` + `RISKS.md` |
-
----
-
-## Automatic session orient
-
-To get a Hermes status summary automatically at session start, merge the
-cc-forge hook into your Claude Code settings:
-
-```bash
-# View the hook to add
-cat ~/cc-forge/templates/hooks/settings-hook.json
-
-# Then manually merge the "hooks" section into:
-# ~/.claude/settings.json
-```
-
-The hook reads `.cc-forge/state.json` and `.taskmaster/tasks/tasks.json`
-and outputs the Hermes status banner before Claude responds. This fires
-on session open, `/clear`, and `/compact`.
-
-Note: `~/.claude/settings.json` is a local machine config — do not
-commit it to your project repo.
+| `/hermes-*` commands, hooks | `.cc-forge/backlog/` (your backlog) |
+| personas, standards | `.cc-forge/state.json` (project state) |
+| backlog catalogue (reference) | `CLAUDE.md`, `DECISIONS.md`, `RISKS.md` |
 
 ---
 
 ## Troubleshooting
 
-### `claude: command not found`
-Claude Code is not installed. Install from https://claude.ai/code
+**`claude: command not found`** — Claude Code isn't installed: https://claude.ai/code
 
-### `/hermes-init` not found in Claude Code
-The commands weren't copied to `.claude/commands/`. Run:
-```bash
-cp ~/cc-forge/hermes/commands/*.md .claude/commands/
-```
+**`/hermes-*` commands missing after install** — the plugin didn't enable. Check `/plugin list`; if cc-forge shows disabled, see the v2.1.x bug note in Step 2.
 
-### `task-master: command not found`
-Taskmaster MCP wasn't installed. Run:
-```bash
-claude mcp add task-master-ai --scope user -- npx -y task-master-ai@latest
-```
+**Argus reports `CANNOT_LOCATE`** — the plugin root can't be found. Confirm the plugin is enabled and re-run `/hermes-argus`. (Argus self-discovers its root, so this almost always means the plugin itself isn't installed/enabled.)
 
-### `context7` not resolving library docs
-Context7 MCP wasn't installed. Run:
+**Companion plugin not activating (superpowers, claude-mem)** — restart Claude Code after installing:
 ```bash
-claude mcp add context7 --scope user -- npx -y @upstash/context7-mcp
-```
-
-### Plugin not activating (superpowers, claude-mem)
-Plugins require Claude Code to be restarted after installation:
-```bash
-# Exit and reopen Claude Code
 exit
 claude
 ```
 
-### `hermes-install.sh` fails on Windows
-The install script is bash — run it in Git Bash or WSL:
+**Windows** — the bootstrap script is bash; run it in Git Bash or WSL:
 ```bash
-# Git Bash
-bash ~/cc-forge/scripts/hermes-install.sh
-
-# WSL
-wsl bash /mnt/c/Users/yourname/cc-forge/scripts/hermes-install.sh
+bash ~/cc-forge/scripts/hermes-bootstrap.sh          # Git Bash
+wsl bash /mnt/c/Users/you/cc-forge/scripts/hermes-bootstrap.sh   # WSL
 ```
 
 ---
@@ -295,31 +166,26 @@ wsl bash /mnt/c/Users/yourname/cc-forge/scripts/hermes-install.sh
 ## What you have after installation
 
 ```
-Global (applies to all projects):
-  ~/.claude/commands/criticalthink.md
-  ~/.claude/commands/hermes-*.md
-  Claude Code plugins: superpowers, claude-mem
-  MCPs: task-master-ai, context7
+Claude Code (global):
+  Plugin: cc-forge@cc-forge   → all /hermes-* commands + hooks + personas + standards
+  Optional plugins: claude-mem, superpowers
 
-Per project (after hermes-init or hermes-adopt):
+Per project (after bootstrap + init/adopt):
   .cc-forge/state.json        project state
+  .cc-forge/usage.log         session event log (committed)
   .cc-forge/backlog/          10-domain product backlog
-  .claude/commands/           hermes commands (local copy)
-  .github/workflows/          doc sync + @claude GitHub Actions
+  status/                     dashboard.html (ignored) · argus-last-run.md (committed)
   CLAUDE.md                   standing orders for this project
-  PRD.md                      product requirements
-  .env.example                environment variable template
-  DECISIONS.md                decision log
-  RISKS.md                    risk register
+  PRD.md · DECISIONS.md · RISKS.md · .env.example
 ```
 
 ---
 
 ## Next steps
 
-- Read the [CHEATSHEET.md](./CHEATSHEET.md) — what to run and when
-- Run `/hermes-status` at the start of every Claude Code session
-- Run `/hermes-adopt` on any existing project to get a gap report
-- Star the repo if cc-forge is useful — it helps others find it
+- Read **[CHEATSHEET.md](./CHEATSHEET.md)** — what to run and when.
+- Run `/hermes-status` at the start of every session.
+- Run `/hermes-adopt` on any existing project to get a gap report.
+- Star the repo if cc-forge is useful — it helps others find it.
 
 Questions? Open a [GitHub Discussion](https://github.com/A-Director/cc-forge/discussions).
