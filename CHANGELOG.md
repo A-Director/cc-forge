@@ -30,11 +30,11 @@ $ claude plugin details cc-forge@cc-forge
   Hooks (4)    SessionStart, Stop, PreCompact, UserPromptSubmit
 ```
 
-This unblocks CLARK's reset and any future cc-forge install.
+This unblocks the pilot project's reset and any future cc-forge install.
 
 ### Session 0 — plugin conversion + format unification + doctor skeleton
 
-Per the v3 plan agreed in design. Major restructuring; CLARK migration is a
+Per the v3 plan agreed in design. Major restructuring; the pilot migration is a
 separate operator action that runs the shipped migration script under the
 spec §4.7 safety (dry-run, backup, rollback).
 
@@ -124,16 +124,16 @@ spec §4.7 safety (dry-run, backup, rollback).
   mechanism — every forkable command produces correct results when
   silently run inline too).
 
-**Pre-plugin → plugin migration script (CLARK + future):**
+**Pre-plugin → plugin migration script (the pilot project + future):**
 - New `scripts/hermes-migrate-to-plugin.sh` ships the 12-step migration
   with `--dry-run`, `--rollback`, step-wise log, and the fidelity-gated
-  catalogue-format migration inside step 8. CLARK migration is a
+  catalogue-format migration inside step 8. The pilot migration is a
   separate operator action — this PR ships the script but does not run
   it against any real project.
 
 **README + CHEATSHEET updated** for the plugin install flow.
 
-This PR contains no behaviour against CLARK or any other real project.
+This PR contains no behaviour against a pilot project or any other real project.
 The migration script's dry-run output is the next review checkpoint
 before any apply.
 
@@ -156,7 +156,7 @@ before any apply.
 - Banner extended with `✓ [N] scripts → scripts/` and
   `✓ 1 calibration → .cc-forge/token-weights.json` lines (omitted
   when the respective sources don't exist).
-- Discovered when CLARK first ran `/hermes-dashboard` on 2026-05-22.
+- Discovered when the pilot project first ran `/hermes-dashboard` on 2026-05-22.
 - Pattern note for future sessions: every session that ships
   non-markdown files (Python scripts, JSON configs, HTML templates,
   etc.) must also extend `/hermes-update`'s copy list. A Session F
@@ -165,7 +165,7 @@ before any apply.
 
 ### Fixed — gap #50 hotfix, second pass
 - The 2026-05-21 hotfix for gap #50 landed in the repo but did not change
-  `/hermes-update`'s observable behaviour. CLARK's 2026-05-22 update run
+  `/hermes-update`'s observable behaviour. The pilot project's 2026-05-22 update run
   produced unprefixed files (`dashboard.md`, `status.md`, `next.md`,
   `update.md`, `report.md`, `gate-review.md`, `deploy.md`,
   `phase-gate.md`, `taskmaster-seed.md`) — the same bug as before.
@@ -189,7 +189,7 @@ before any apply.
     list and `exit 2`s with a `✗ FOUND ... — gap #50 regression` message
     if any are found. Silent slip → loud failure.
   - Added `update`, `init`, `adopt`, `backlog-init`, `log` to the
-    legacy-cleanup basename list. CLARK's run showed `update.md`
+    legacy-cleanup basename list. The pilot project's run showed `update.md`
     surviving, which the previous list missed.
 - Added a verification trace requirement in the prompt protocol so
   future hotfixes are walked through end-to-end before being declared
@@ -266,11 +266,11 @@ labelled *"Estimated from .cc-forge/usage.log · per-command weights ×
 invocation counts · v2 will measure directly via hook."*
 
 ### Fixed / Added — backlog-grounding discipline (Session B)
-Two CLARK-dogfooding gaps closed: (#48) `/hermes-backlog-init` was
+Two the pilot project-dogfooding gaps closed: (#48) `/hermes-backlog-init` was
 silently stripping `**Standard:**` lines when it rewrote items per
 stack; (#47) persona gate reviews surfaced findings as Taskmaster
 tasks but never updated the parent backlog items, so tasks orphaned
-from the standards-grounded backlog and CLARK's 22 ticked Phase 1.5
+from the standards-grounded backlog and the pilot project's 22 ticked Phase 1.5
 conditions referenced Taskmaster IDs and persona prefixes but no
 backlog IDs.
 
@@ -335,7 +335,7 @@ approach (rather than per-persona duplication) keeps the rules in
 one place when they evolve.
 
 ### Backwards compatibility
-- Existing CLARK-shaped backlog files (no `Phase` field) continue to
+- Existing the pilot project-shaped backlog files (no `Phase` field) continue to
   parse — the `Phase` line is optional in the task description.
 - Existing projects whose backlog items lack `Standard` lines (the
   gap #48 victims) will hit `standards_strip_detected` events when
@@ -344,8 +344,8 @@ one place when they evolve.
   fix in place; affected items get their Standards restored from the
   template.
 - The 3-step protocol is enforced for **new** gate reviews going
-  forward. CLARK's existing 22 ticked Phase 1.5 conditions and IMP-*
-  tasks are not retrofitted by this work — that's a future CLARK
+  forward. The pilot project's existing 22 ticked Phase 1.5 conditions and IMP-*
+  tasks are not retrofitted by this work — that's a future the pilot project
   session.
 
 ### Added — PDLC phases foundation
@@ -382,8 +382,8 @@ cc-forge today ships eleven SDLC stages (activities — plan, design,
 build, test, deploy, monitor) but nothing capturing **what maturity
 bar are we shooting for**. PDLC phases fill that gap. Industry
 convention: SDLC nests inside PDLC. Each PDLC phase consumes many
-SDLC cycles; phase changes the bar each domain must hit. Clark's
-informal "Phase 1 / Phase 1.5" terminology proved the pattern in
+SDLC cycles; phase changes the bar each domain must hit. The pilot
+project's informal "Phase 1 / Phase 1.5" terminology proved the pattern in
 practice — this release formalizes it as a first-class concept
 across templates, agents, and the backlog.
 

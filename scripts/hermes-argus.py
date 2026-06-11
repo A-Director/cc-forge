@@ -269,7 +269,7 @@ def check_catalogue_format(project_root: Path) -> tuple[list[dict[str, Any]], in
     raw_violations_per_file feeds E-1's stratification. Non-grandfathered
     field violations are an advisory (§3.8 strict-but-not-blocking). But the
     silent-empty class is NOT an advisory: an item-bearing file that parses to
-    zero items is a hard FAIL → verdict BROKEN → exit 2. That is the CLARK
+    zero items is a hard FAIL → verdict BROKEN → exit 2. That is the pilot project
     lesson — a downgraded advisory is how the vacuous 0/0 slipped through
     (Session F). Severity must match danger.
     """

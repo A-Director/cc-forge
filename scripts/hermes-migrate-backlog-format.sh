@@ -254,7 +254,7 @@ $(echo "$dirty" | sed 's/^/      /')
 "
 fi
 
-# ─── SILENT-EMPTY gate (the CLARK lesson) ───
+# ─── SILENT-EMPTY gate (the pilot project lesson) ───
 # The (field, value) comparison above passes VACUOUSLY when both sides are
 # empty — a table-form file the transform doesn't touch yields 0 pairs pre AND
 # post, so "FIDELITY PASSED on 0/0" reports success for a no-op. Defend against

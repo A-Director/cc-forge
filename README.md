@@ -190,9 +190,23 @@ cc-forge picks services so you don't have to. The onboarding agent adapts if you
 
 ---
 
-## Token discipline (the short version)
+## Token discipline & cost
 
-Token efficiency determines how long a Claude Code session stays useful. cc-forge enforces a handful of rules — the full 11 are in **[CHEATSHEET.md](./CHEATSHEET.md)**:
+cc-forge adds structure on top of Claude Code, and that structure costs tokens — worth being upfront about where it lands.
+
+**Rough per-activity cost:**
+
+| Activity | Cost | Notes |
+|---|---|---|
+| `/hermes-status`, `/hermes-next` | light (~hundreds–1k) | the daily loop is cheap |
+| Single-persona check | ~2k each | each persona runs in a fresh subagent |
+| `/hermes-gate-review` | a few thousand | QA + Security, etc. — 2–3 personas |
+| **`/hermes-phase-gate`** | **heaviest** | a full panel can spin up **5–7 personas, each on Opus** in clean contexts |
+| `CLAUDE.md` reload | every turn | keep it 300–600 tokens |
+
+The gates are where the money is — by design, since you run them deliberately. **`/hermes-phase-gate` is the one to watch:** a full-panel review is expensive, and on a **Pro** plan it can eat meaningfully into your limits. Run it a few times per project (between phases), not casually. For a normally-disciplined project, total framework overhead sits roughly in the **5–25%** range of token spend.
+
+The 11 token rules that keep this in check live in **[CHEATSHEET.md](./CHEATSHEET.md)**; the short version:
 
 - `CLAUDE.md` is standing orders — 300–600 tokens, no task state, no docs.
 - Right model for the job: Opus for hard planning, Sonnet for daily build, Haiku for simple lookups.
@@ -278,9 +292,9 @@ You're still the one steering. cc-forge just makes sure the right expert is in t
 
 ## Built on the shoulders of giants
 
-cc-forge is an orchestration framework, not an island — it works because of the tools beneath it.
+cc-forge is an orchestration framework, not an island — it works because of the tools beneath it. **Honest setup note:** the core (`/hermes-*` commands, Hermes, Argus) runs on the cc-forge plugin alone. The companions below are *separate* installs — each adds capability but is also another install and another failure point. Add them as you need them, not all up front; only Claude Code itself is strictly required.
 
-- **[Claude Code](https://claude.ai/code)** — the CLI at the heart of everything; cc-forge is built entirely on its agent, plugin, MCP, and command capabilities.
+- **[Claude Code](https://claude.ai/code)** — the CLI at the heart of everything; cc-forge is built entirely on its agent, plugin, MCP, and command capabilities. *(required)*
 - **[Taskmaster](https://github.com/eyaltoledano/claude-task-master)** by Eyal Toledano — the task-management backbone; parses your PRD into a dependency-aware task list.
 - **[claude-mem](https://github.com/thedotmack/claude-mem)** — session memory across Claude Code sessions.
 - **[Context7](https://github.com/upstash/context7)** by Upstash — live, version-specific library docs injected into sessions.
@@ -293,7 +307,7 @@ If you authored any of the above and something is misattributed, open an Issue �
 
 ## License
 
-Open core. The core framework is **MIT** licensed; contributions welcome. Premium components (pre-built Clerk + Stripe agents, the full persona library, the status TUI) are available via [Polar.sh](https://polar.sh) to support ongoing development.
+**MIT** — all of it. Everything in this repo ships under MIT: every persona, the Clerk + Stripe setup agents, the standards, the scripts. There is no paid tier and nothing is held back. If you find cc-forge useful, optional sponsorship via [Polar.sh](https://polar.sh) supports ongoing development — but it buys nothing you don't already have. Contributions welcome.
 
 ## Security
 

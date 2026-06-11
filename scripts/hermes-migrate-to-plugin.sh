@@ -1,7 +1,7 @@
 #!/bin/bash
 # hermes-migrate-to-plugin.sh — pre-plugin → plugin migration (Session 0).
 #
-# Spec §4.7. Runs first against CLARK, then any other pre-plugin project.
+# Spec §4.7. Runs first against a pilot project, then any other pre-plugin project.
 # Treats the migration as multi-step with explicit safety:
 #   --dry-run   : print the diff of what would change; no writes.
 #   --rollback  : restore from the most recent backup; undo the migration.
